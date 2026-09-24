@@ -1,0 +1,7 @@
+compress=unset --routines 0                 ok=1 routines=1 split=0 chunk=-1 leftover=[g|0] err=-
+compress=unset --routines false             ok=1 routines=1 split=0 chunk=-1 leftover=[g|false] err=-
+compress=unset --split_string_pk 1          ok=1 routines=0 split=0 chunk=-1 leftover=[g|--split_string_pk|1] err=-
+compress=unset --chunk_filesize 10          ok=1 routines=0 split=0 chunk=-1 leftover=[g|--chunk_filesize|10] err=-
+compress=unset --Routines 1                 ok=1 routines=0 split=0 chunk=-1 leftover=[g|--Routines|1] err=-
+compress=unset --chunk-filesize 10          ok=0 routines=0 split=0 chunk=-1 leftover=[g|--chunk-filesize|10 ] err=Cannot parse integer value “10 ” for --chunk-filesize
+compress=ZSTD --compress ZSTD              ok=1 routines=0 split=0 chunk=-1 leftover=[g] err=-

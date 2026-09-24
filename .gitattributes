@@ -1,0 +1,10 @@
+# Byte-exact fixtures: git must never rewrite their line endings or content.
+testdata/** -text
+*.cnf -text
+*.txtar -text
+e2e/scenarios/** -text
+
+# Generated files (collapsed in diffs, excluded from language stats)
+internal/optionsdb/data/*.json linguist-generated=true
+docs/rules/*.md linguist-generated=true
+schemas/*.json linguist-generated=true

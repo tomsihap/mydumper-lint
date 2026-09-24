@@ -1,0 +1,176 @@
+### 01_ws_line_mid.cnf
+ERROR: Key file contains line “  = 1” which is not a key-value pair, group, or comment
+### 02_ws_eof_no_nl.cnf
+OK groups=1
+  [mydumper] keys=1
+    <routines>=<1>
+### 03_ws_eof_then_append.cnf
+ERROR: Key file contains line “  = 1” which is not a key-value pair, group, or comment
+### 04_tab_line.cnf
+ERROR: Key file contains line “	= 1” which is not a key-value pair, group, or comment
+### 05_crlf.cnf
+OK groups=1
+  [mydumper] keys=2
+    <routines>=<1>
+    <outputdir>=</a/b>
+### 06_bom.cnf
+ERROR: Key file contains line “﻿[mydumper]” which is not a key-value pair, group, or comment
+### 07_semicolon_comment.cnf
+OK groups=1
+  [mydumper] keys=2
+    <; a comment>=<1>
+    <routines>=<1>
+### 08_key_before_group.cnf
+ERROR: Key file does not start with a group
+### 09_group_trailing.cnf
+ERROR: Key file contains line “[mydumper] # main” which is not a key-value pair, group, or comment
+### 10_dup_group.cnf
+OK groups=2
+  [mydumper] keys=2
+    <routines>=<1>
+    <events>=<1>
+  [myloader] keys=1
+    <x>=<1>
+### 11_dup_key.cnf
+OK groups=1
+  [mydumper] keys=2
+    <regex>=<^(b\.)>
+    <regex>=<^(b\.)>
+### 12_bracket_value_then_flag.cnf
+ERROR: Key file contains line “routines” which is not a key-value pair, group, or comment
+### 13_commented_header_then_blank.cnf
+ERROR: Key file contains line “= 1” which is not a key-value pair, group, or comment
+### 14_trailing_ws_value.cnf
+OK groups=1
+  [mydumper] keys=2
+    <regex>=<^(a\.)  >
+    <outputdir>=</x 	>
+### 15_leading_ws_key.cnf
+OK groups=1
+  [mydumper] keys=2
+    <routines>=<1>
+    <events>=<1>
+### 16_leading_ws_group_then_blank.cnf
+ERROR: Key file contains line “= 1” which is not a key-value pair, group, or comment
+### 17_leading_ws_group.cnf
+OK groups=1
+  [mydumper] keys=1
+    <routines>=<1>
+### 18_flag_no_eq_last_no_nl.cnf
+ERROR: Key file contains line “routines” which is not a key-value pair, group, or comment
+### 19_flag_no_eq.cnf
+OK groups=1
+  [mydumper] keys=2
+    <routines>=<1>
+    <events>=<1>
+### 20_spaces_around_eq.cnf
+OK groups=1
+  [mydumper] keys=1
+    <chunk-filesize>=<10>
+### 21_inline_comment.cnf
+OK groups=1
+  [mydumper] keys=1
+    <threads>=<4 # four>
+### 22_empty_value.cnf
+OK groups=1
+  [mydumper] keys=1
+    <outputdir>=<>
+### 23_eq_only.cnf
+ERROR: Key file contains line “=1” which is not a key-value pair, group, or comment
+### 24_invalid_utf8.cnf
+OK groups=1
+  [mydumper] keys=1
+    <where>=<��>
+### 25_key_with_space.cnf
+OK groups=1
+  [mydumper] keys=1
+    <chunk filesize>=<10>
+### 26_empty_group.cnf
+ERROR: Invalid group name: 
+### 27_escapes.cnf
+OK groups=1
+  [mydumper] keys=2
+    <regex>=<^(a\.)\s>
+    <where>=<a\nb>
+### 28_comment_no_eq_then_blank.cnf
+OK groups=1
+  [mydumper] keys=1
+    <routines>=<1>
+### 29_empty_file.cnf
+OK groups=0
+### 30_only_comments.cnf
+OK groups=0
+### 31_nul_byte.cnf
+OK groups=1
+  [mydumper] keys=1
+    <routines>=<1>
+### 32_blank_lines_eof.cnf
+OK groups=1
+  [mydumper] keys=1
+    <routines>=<1>
+### 33_table_section_key_typo.cnf
+OK groups=2
+  [mydumper] keys=1
+    <routines>=<1>
+  [`db`.`users`] keys=2
+    <columns_on_selet>=<id>
+    <`email`>=<radnom_string 10>
+### 34_lowercase_group.cnf
+OK groups=1
+  [MyDumper] keys=1
+    <routines>=<1>
+### 35_bracket_in_comment_then_flag.cnf
+OK groups=1
+  [mydumper] keys=2
+    <routines>=<1>
+    <events>=<1>
+### 36_cr_only_line.cnf
+ERROR: Key file contains line “= 1” which is not a key-value pair, group, or comment
+### 37_bracket_comment_then_blank.cnf
+ERROR: Key file contains line “= 1” which is not a key-value pair, group, or comment
+### 38_bracket_value_then_blank.cnf
+OK groups=1
+  [mydumper] keys=2
+    <regex>=<^(a[bc])>
+    <events>=<1>
+### 39_real_header_after_blank.cnf
+OK groups=2
+  [mydumper] keys=1
+    <routines>=<1>
+  [`db`.`t`] keys=1
+    <`c`>=<constant x>
+### 40_ws_after_group_bracket.cnf
+OK groups=1
+  [mydumper] keys=1
+    <routines>=<1>
+### 41_locale_key.cnf
+OK groups=1
+  [mydumper] keys=1
+    <events>=<1>
+### 42_group_with_bracket.cnf
+ERROR: Key file contains line “[a]b]” which is not a key-value pair, group, or comment
+### 43_invalid_utf8_key.cnf
+OK groups=1
+  [mydumper] keys=1
+    <k�>=<1>
+### 44_invalid_utf8_group.cnf
+OK groups=1
+  [my�dumper] keys=1
+    <k>=<1>
+### 45_crlf_flag_no_eq.cnf
+OK groups=1
+  [mydumper] keys=2
+    <routines>=<1>
+    <events>=<1>
+### 46_value_with_equals.cnf
+OK groups=1
+  [mydumper] keys=1
+    <where>=<a=b>
+### 47_crlf_blank_line.cnf
+ERROR: Key file contains line “= 1” which is not a key-value pair, group, or comment
+### 48_indented_comment_bracket_blank.cnf
+ERROR: Key file contains line “= 1” which is not a key-value pair, group, or comment
+### 49_group_leading_ws_after_bracket.cnf
+OK groups=1
+  [ mydumper ] keys=1
+    <routines>=<1>

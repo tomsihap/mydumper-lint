@@ -1,0 +1,21 @@
+# Build and test outputs
+/bin/
+/dist/
+/coverage.out
+/coverage.html
+*.test
+*.prof
+
+# Local oracle build
+/tools/oracle/oracle
+/tools/oracle/*.o
+
+# Caches
+/.cache/
+/e2e/.out/
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store

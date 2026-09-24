@@ -1,0 +1,5 @@
+[mydumper]
+routines=1
+#[`db`.`t`]
+
+[myloader]

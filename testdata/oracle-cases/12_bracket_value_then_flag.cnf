@@ -1,0 +1,4 @@
+[mydumper]
+regex=^(a[bc]\.)
+routines
+events=1

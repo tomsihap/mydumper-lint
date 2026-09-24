@@ -1,0 +1,5 @@
+[mydumper]
+routines=1
+# see [docs]
+
+events=1

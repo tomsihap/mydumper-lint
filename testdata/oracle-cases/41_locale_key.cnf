@@ -1,0 +1,3 @@
+[mydumper]
+columns_on_select[fr]=1
+events=1

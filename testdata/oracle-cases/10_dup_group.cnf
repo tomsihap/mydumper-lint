@@ -1,0 +1,6 @@
+[mydumper]
+routines=1
+[myloader]
+x=1
+[mydumper]
+events=1

@@ -1,0 +1,5 @@
+[mydumper]
+routines=1
+[`db`.`users`]
+columns_on_selet=id
+`email`=radnom_string 10
