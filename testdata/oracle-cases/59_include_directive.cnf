@@ -1,0 +1,2 @@
+[mydumper]
+!include /etc/x.cnf

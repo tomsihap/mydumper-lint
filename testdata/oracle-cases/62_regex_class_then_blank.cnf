@@ -1,0 +1,5 @@
+[mydumper]
+regex=^(a|b)\.[a-z]+$
+
+[`db`.`t`]
+`c`=constant x

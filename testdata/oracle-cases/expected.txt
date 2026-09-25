@@ -174,3 +174,65 @@ ERROR: Key file contains line “= 1” which is not a key-value pair, group, or
 OK groups=1
   [ mydumper ] keys=1
     <routines>=<1>
+### 50_key_close_bracket.cnf
+ERROR: Invalid key name: foo]
+### 51_key_bad_locale.cnf
+ERROR: Invalid key name: foo[bar baz]
+### 52_group_open_bracket.cnf
+ERROR: Invalid group name: a[b
+### 53_group_tab.cnf
+ERROR: Invalid group name: my	dumper
+### 54_locale_c_visible.cnf
+OK groups=1
+  [mydumper] keys=1
+    <threads[C]>=<4>
+### 55_locale_fr_visible.cnf
+OK groups=1
+  [mydumper] keys=1
+    <threads[fr]>=<4>
+### 56_nul_in_key.cnf
+ERROR: Key file contains line “rout�ines=1” which is not a key-value pair, group, or comment
+### 57_nul_in_value.cnf
+OK groups=1
+  [mydumper] keys=1
+    <where>=<a>
+### 58_leak_through_group.cnf
+ERROR: Key file contains line “= 1” which is not a key-value pair, group, or comment
+### 59_include_directive.cnf
+OK groups=1
+  [mydumper] keys=1
+    <!include /etc/x.cnf>=<1>
+### 60_vtab_indent.cnf
+OK groups=1
+  [mydumper] keys=1
+    <routines>=<1>
+### 61_masked_key_bracket.cnf
+ERROR: Invalid key name: `c[0]`
+### 62_regex_class_then_blank.cnf
+OK groups=2
+  [mydumper] keys=1
+    <regex>=<^(a|b)\.[a-z]+$>
+  [`db`.`t`] keys=1
+    <`c`>=<constant x>
+### 63_dashdash_key.cnf
+OK groups=1
+  [mydumper] keys=1
+    <--threads>=<4>
+### 64_lone_bracket.cnf
+ERROR: Key file contains line “[” which is not a key-value pair, group, or comment
+### 65_quoted_values.cnf
+OK groups=1
+  [mydumper] keys=2
+    <outputdir>=<"/backup">
+    <regex>=<'^db\.'>
+### 66_nul_line_start.cnf
+OK groups=1
+  [mydumper] keys=1
+    <events>=<1>
+### 67_nul_in_group.cnf
+ERROR: Key file contains line “[my�dumper]” which is not a key-value pair, group, or comment
+### 68_del_in_group.cnf
+ERROR: Invalid group name: mydumper
+### 69_locale_charset.cnf
+OK groups=1
+  [mydumper] keys=0

@@ -1,0 +1,69 @@
+{"case":"01_ws_line_mid.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c  = 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"02_ws_eof_no_nl.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"03_ws_eof_then_append.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c  = 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"04_tab_line.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c\u0009= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"05_crlf.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"},{"key":"outputdir","value":"/a/b"}]}]}
+{"case":"06_bom.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c\u00ef\u00bb\u00bf[mydumper]\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"07_semicolon_comment.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"; a comment","value":"1"},{"key":"routines","value":"1"}]}]}
+{"case":"08_key_before_group.cnf","loadable":false,"error":"Key file does not start with a group","groups":[]}
+{"case":"09_group_trailing.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c[mydumper] # main\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"10_dup_group.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"},{"key":"events","value":"1"}]},{"name":"myloader","entries":[{"key":"x","value":"1"}]}]}
+{"case":"11_dup_key.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"regex","value":"^(b\\.)"},{"key":"regex","value":"^(b\\.)"}]}]}
+{"case":"12_bracket_value_then_flag.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009croutines\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"13_commented_header_then_blank.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"14_trailing_ws_value.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"regex","value":"^(a\\.)  "},{"key":"outputdir","value":"/x \u0009"}]}]}
+{"case":"15_leading_ws_key.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"},{"key":"events","value":"1"}]}]}
+{"case":"16_leading_ws_group_then_blank.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"17_leading_ws_group.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"18_flag_no_eq_last_no_nl.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009croutines\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"19_flag_no_eq.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"},{"key":"events","value":"1"}]}]}
+{"case":"20_spaces_around_eq.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"chunk-filesize","value":"10"}]}]}
+{"case":"21_inline_comment.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"threads","value":"4 # four"}]}]}
+{"case":"22_empty_value.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"outputdir","value":""}]}]}
+{"case":"23_eq_only.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c=1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"24_invalid_utf8.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"where","value":"\u00ff\u00fe"}]}]}
+{"case":"25_key_with_space.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"chunk filesize","value":"10"}]}]}
+{"case":"26_empty_group.cnf","loadable":false,"error":"Invalid group name: ","groups":[]}
+{"case":"27_escapes.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"regex","value":"^(a\\.)\\s"},{"key":"where","value":"a\\nb"}]}]}
+{"case":"28_comment_no_eq_then_blank.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"29_empty_file.cnf","loadable":true,"error":null,"groups":[]}
+{"case":"30_only_comments.cnf","loadable":true,"error":null,"groups":[]}
+{"case":"31_nul_byte.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"32_blank_lines_eof.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"33_table_section_key_typo.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]},{"name":"`db`.`users`","entries":[{"key":"columns_on_selet","value":"id"},{"key":"`email`","value":"radnom_string 10"}]}]}
+{"case":"34_lowercase_group.cnf","loadable":true,"error":null,"groups":[{"name":"MyDumper","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"35_bracket_in_comment_then_flag.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"},{"key":"events","value":"1"}]}]}
+{"case":"36_cr_only_line.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c\u000d= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"37_bracket_comment_then_blank.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"38_bracket_value_then_blank.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"regex","value":"^(a[bc])"},{"key":"events","value":"1"}]}]}
+{"case":"39_real_header_after_blank.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]},{"name":"`db`.`t`","entries":[{"key":"`c`","value":"constant x"}]}]}
+{"case":"40_ws_after_group_bracket.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"41_locale_key.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"events","value":"1"}]}]}
+{"case":"42_group_with_bracket.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c[a]b]\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"43_invalid_utf8_key.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"k\u00ff","value":"1"}]}]}
+{"case":"44_invalid_utf8_group.cnf","loadable":true,"error":null,"groups":[{"name":"my\u00ffdumper","entries":[{"key":"k","value":"1"}]}]}
+{"case":"45_crlf_flag_no_eq.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"routines","value":"1"},{"key":"events","value":"1"}]}]}
+{"case":"46_value_with_equals.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"where","value":"a=b"}]}]}
+{"case":"47_crlf_blank_line.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c\u000d= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"48_indented_comment_bracket_blank.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"49_group_leading_ws_after_bracket.cnf","loadable":true,"error":null,"groups":[{"name":" mydumper ","entries":[{"key":"routines","value":"1"}]}]}
+{"case":"50_key_close_bracket.cnf","loadable":false,"error":"Invalid key name: foo]","groups":[]}
+{"case":"51_key_bad_locale.cnf","loadable":false,"error":"Invalid key name: foo[bar baz]","groups":[]}
+{"case":"52_group_open_bracket.cnf","loadable":false,"error":"Invalid group name: a[b","groups":[]}
+{"case":"53_group_tab.cnf","loadable":false,"error":"Invalid group name: my\u0009dumper","groups":[]}
+{"case":"54_locale_c_visible.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"threads[C]","value":"4"}]}]}
+{"case":"55_locale_fr_visible.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"threads[fr]","value":"4"}]}]}
+{"case":"56_nul_in_key.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009crout\u00ef\u00bf\u00bdines=1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"57_nul_in_value.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"where","value":"a"}]}]}
+{"case":"58_leak_through_group.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c= 1\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"59_include_directive.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"!include /etc/x.cnf","value":"1"}]}]}
+{"case":"60_vtab_indent.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"\u000broutines","value":"1"}]}]}
+{"case":"61_masked_key_bracket.cnf","loadable":false,"error":"Invalid key name: `c[0]`","groups":[]}
+{"case":"62_regex_class_then_blank.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"regex","value":"^(a|b)\\.[a-z]+$"}]},{"name":"`db`.`t`","entries":[{"key":"`c`","value":"constant x"}]}]}
+{"case":"63_dashdash_key.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"--threads","value":"4"}]}]}
+{"case":"64_lone_bracket.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c[\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"65_quoted_values.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"outputdir","value":"\"/backup\""},{"key":"regex","value":"'^db\\.'"}]}]}
+{"case":"66_nul_line_start.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[{"key":"events","value":"1"}]}]}
+{"case":"67_nul_in_group.cnf","loadable":false,"error":"Key file contains line \u00e2\u0080\u009c[my\u00ef\u00bf\u00bddumper]\u00e2\u0080\u009d which is not a key-value pair, group, or comment","groups":[]}
+{"case":"68_del_in_group.cnf","loadable":false,"error":"Invalid group name: my\u007fdumper","groups":[]}
+{"case":"69_locale_charset.cnf","loadable":true,"error":null,"groups":[{"name":"mydumper","entries":[]}]}
