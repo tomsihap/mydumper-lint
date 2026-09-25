@@ -514,10 +514,7 @@ func (p *program) groupOf(f *funcDef, v string, depth int) (groupInfo, error) {
 func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]string) (*cfgFacts, error) {
 	facts := &cfgFacts{options: map[string]map[string]regOption{}}
 	registered := map[*arrayDef]bool{}
-	macros, err := stringMacros(cus, cfg)
-	if err != nil {
-		return nil, err
-	}
+	macros := stringMacros(cus, cfg)
 	ignore := map[string]bool{}
 	for _, tool := range tools {
 		p := newProgram(tool, cus, sources[tool])
@@ -627,6 +624,7 @@ func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]str
 	}
 	facts.ignoreUnknown = ignore["mydumper"]
 
+	var err error
 	if facts.tableKeys, err = tableKeys(cus, macros); err != nil {
 		return nil, err
 	}
@@ -671,7 +669,7 @@ type macroValue struct {
 	err   error
 }
 
-func stringMacros(cus map[string]*cfgUnit, cfg config) (macroTable, error) {
+func stringMacros(cus map[string]*cfgUnit, cfg config) macroTable {
 	vals := map[string][]define{}
 	unsure := map[string]define{}
 	for _, path := range sortedKeys(cus) {
@@ -697,7 +695,7 @@ func stringMacros(cus map[string]*cfgUnit, cfg config) (macroTable, error) {
 	for name, d := range unsure {
 		t[name] = macroValue{err: fmt.Errorf("macro %s is defined under a condition the generator cannot evaluate (%s:%d)", name, d.path, d.line)}
 	}
-	return t, nil
+	return t
 }
 
 // stringValue evaluates a token sequence that must be a string: literals
