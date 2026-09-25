@@ -1,0 +1,16 @@
+# equal_found leaks into the next flag (case 12).
+-- input.cnf --
+[mydumper]
+regex=^(a[bc]\.)
+routines
+events=1
+-- fixed.cnf --
+[mydumper]
+regex=^(a[bc]\.)
+routines=1
+events=1
+-- diagnostics --
+3:1-3:9 error MDL108[bracket-state-leak] `routines` does not get its implicit `= 1` because line 2 contains `=` before `[` (GLib: Key file contains line “routines” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
+  note 2:1-2:17: mydumper's pre-processor does not reset its state after this line, because it contains `[`
+  fix (safe): Write the value explicitly (`=1`)

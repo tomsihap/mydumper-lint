@@ -1,0 +1,10 @@
+# A flag on the last line without a newline gets no value (case 18).
+-- input.cnf.esc --
+[mydumper]\nroutines
+-- fixed.cnf --
+[mydumper]
+routines
+-- diagnostics --
+2:9-2:9 error MDL104[missing-final-newline] the last line has no newline, so mydumper's pre-processor does not append `= 1` to `routines` (GLib: Key file contains line “routines” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
+  fix (safe): Add a final newline

@@ -1,0 +1,9 @@
+# Negative case.
+-- input.cnf --
+[mydumper]
+threads=4
+
+[myloader]
+threads=2
+-- diagnostics --
+(none)

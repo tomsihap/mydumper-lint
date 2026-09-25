@@ -61,6 +61,7 @@ const (
 	CauseKeyBeforeGroup            // key/value before any group (MDL105)
 	CauseInvalidKeyName            // ']' in a key, or a malformed [locale] (MDL110)
 	CauseNulByte                   // a NUL byte hides the rest of the line (MDL111)
+	CauseBracketNoValue            // no '=' before a '[': the '[' copy skips "= 1" (MDL108 c)
 	CauseUnknown                   // none of the above (MDL109)
 )
 
@@ -77,6 +78,7 @@ var causeNames = [...]string{
 	CauseKeyBeforeGroup:      "key-before-group",
 	CauseInvalidKeyName:      "invalid-key-name",
 	CauseNulByte:             "nul-byte",
+	CauseBracketNoValue:      "bracket-no-value",
 	CauseUnknown:             "unknown",
 }
 
@@ -501,8 +503,8 @@ func cause(f *source.File, l source.Line, info preprocess.LineInfo, content, g [
 		return CauseWhitespaceOnly
 	case bytes.IndexByte(content, 0) >= 0:
 		return CauseNulByte
-	case !l.HasNewline && info.BracketAt < 0 && classify(append(append([]byte{}, content...), preprocess.EqOne...), hasGroup).kind == KindEntry:
-		return CauseMissingFinalNewline
+	case !l.HasNewline && info.BracketAt < 0 && bytes.IndexByte(content, '=') < 0:
+		return CauseMissingFinalNewline // it would get "= 1" if it ended with '\n'
 	}
 	ls := 0
 	for ls < len(g) && isSpace(g[ls]) {
@@ -513,6 +515,8 @@ func cause(f *source.File, l source.Line, info preprocess.LineInfo, content, g [
 		return CauseInvalidGroupLine
 	case ls < len(g) && g[ls] == '=':
 		return CauseEmptyKey
+	case info.BracketAt >= 0 && res.failure == failNotKV:
+		return CauseBracketNoValue // no '=' at all: the '[' copy skipped "= 1"
 	case res.failure == failNoGroup:
 		return CauseKeyBeforeGroup
 	case res.failure == failKeyName:

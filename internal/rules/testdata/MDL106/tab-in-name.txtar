@@ -1,0 +1,7 @@
+# A tab inside the name (case 53).
+-- input.cnf --
+[my	dumper]
+k=1
+-- diagnostics --
+1:1-1:12 error MDL106[invalid-group-line] group name `my\tdumper` contains a control character (U+0009 TAB) (GLib: Invalid group name: my\tdumper)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

@@ -158,6 +158,9 @@ func TestClassification(t *testing.T) {
 		{"nul in key", "[g]\nrout\x00ines=1\n", 2, KindRejected, CauseNulByte, "Key file contains line “rout\ufffdines=1” which is not a key-value pair, group, or comment"},
 		{"nul in header", "[my\x00g]\n", 1, KindRejected, CauseNulByte, "Key file contains line “[my\ufffdg]” which is not a key-value pair, group, or comment"},
 		{"invalid utf-8 key is accepted", "[g]\n\xff\n", 2, KindEntry, NoCause, ""},
+		{"bracket before any equals sign", "[g]\nroutines # [x]\n", 2, KindRejected, CauseBracketNoValue, "Key file contains line “routines # [x]” which is not a key-value pair, group, or comment"},
+		{"semicolon comment with bracket", "[g]\n; see [docs]\n", 2, KindRejected, CauseBracketNoValue, "Key file contains line “; see [docs]” which is not a key-value pair, group, or comment"},
+		{"invalid key at eof without newline", "[g]\nfoo]", 2, KindRejected, CauseMissingFinalNewline, "Key file contains line “foo]” which is not a key-value pair, group, or comment"},
 		{"invalid utf-8 in message becomes U+FFFD", "[g]\n=\xff\xe2\x82\n", 2, KindRejected, CauseEmptyKey, "Key file contains line “=\ufffd\ufffd\ufffd” which is not a key-value pair, group, or comment"},
 	}
 	for _, tt := range tests {
@@ -299,4 +302,20 @@ func TestKindAndCauseStrings(t *testing.T) {
 			t.Errorf("kind %d has no name", k)
 		}
 	}
+}
+
+// FuzzNoUnknownCause checks that every rejected line gets a specific cause:
+// MDL109 (CauseUnknown) is a safety net that must never fire.
+func FuzzNoUnknownCause(f *testing.F) {
+	for _, s := range []string{"[g]\nabc[x]\n", "k\n", "[g]\nfoo]", "\xef\xbb\xbf=\n", "[g]\n=[\n  \n"} {
+		f.Add([]byte(s))
+	}
+	f.Fuzz(func(t *testing.T, b []byte) {
+		r := parse(string(b))
+		for i, lc := range r.Lines {
+			if lc.Kind == KindRejected && (lc.Cause == CauseUnknown || lc.Cause == NoCause) {
+				t.Fatalf("line %d of %q has no specific cause (%v): %s", i+1, b, lc.Cause, lc.Message)
+			}
+		}
+	})
 }

@@ -1,0 +1,7 @@
+# A line without '=' containing '[' never gets '= 1'.
+-- input.cnf --
+[mydumper]
+routines # [see docs]
+-- diagnostics --
+2:1-2:22 error MDL108[bracket-state-leak] `routines # [see docs]` contains `[` and no `=`: mydumper's pre-processor copies everything from the `[` verbatim and never appends `= 1`, so this line is not a key/value pair (GLib: Key file contains line “routines # [see docs]” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

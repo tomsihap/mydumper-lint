@@ -1,0 +1,6 @@
+# A NUL before '=' (case 56).
+-- input.cnf.esc --
+[mydumper]\nrout\x00ines=1\n
+-- diagnostics --
+2:5-2:6 error MDL111[nul-byte] NUL byte: GLib stops reading the line here and only sees `rout` (GLib: Key file contains line “rout�ines=1” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

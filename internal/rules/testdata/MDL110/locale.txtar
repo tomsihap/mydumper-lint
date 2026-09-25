@@ -1,0 +1,6 @@
+# Negative case: a valid locale suffix.
+-- input.cnf --
+[mydumper]
+threads[fr]=4
+-- diagnostics --
+(none)

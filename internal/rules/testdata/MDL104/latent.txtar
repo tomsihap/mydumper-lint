@@ -1,0 +1,10 @@
+# A key/value last line without newline: latent risk.
+-- input.cnf.esc --
+[mydumper]\nthreads=4
+-- fixed.cnf --
+[mydumper]
+threads=4
+-- diagnostics --
+2:10-2:10 error MDL104[missing-final-newline] file does not end with a newline
+  = Anything appended to this file (for example a [client] section added by a script) is glued to its last line.
+  fix (safe): Add a final newline

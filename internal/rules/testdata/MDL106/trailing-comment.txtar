@@ -1,0 +1,12 @@
+# An end-of-line comment after a header (case 09): safe fix.
+-- input.cnf --
+[mydumper] # main
+threads=4
+-- fixed.cnf --
+# main
+[mydumper]
+threads=4
+-- diagnostics --
+1:1-1:18 error MDL106[invalid-group-line] unexpected text after the group header: `# main`; GLib only allows spaces after `]` (GLib: Key file contains line “[mydumper] # main” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
+  fix (safe): Move the comment to its own line above the header

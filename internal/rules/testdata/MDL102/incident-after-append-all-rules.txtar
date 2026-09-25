@@ -1,0 +1,15 @@
+# M1 acceptance: the incident file after a [client] block was appended, with every rule.
+-- options --
+select: ALL
+-- input.cnf.esc --
+[mydumper]\nthreads=4\n\n  \n[client]\nuser=backup\n
+-- diagnostics --
+4:1-4:3 error MDL102[whitespace-only-line] line contains only whitespace: mydumper's pre-processor turns it into `  = 1`, a key/value pair with an empty key (GLib: Key file contains line “  = 1” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0. The [client] section is still read by the MySQL client library, so the connection works and the run looks normal.
+  fix (safe): Remove the whitespace
+-- fixed.cnf --
+[mydumper]
+threads=4
+
+[client]
+user=backup

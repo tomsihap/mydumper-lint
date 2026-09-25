@@ -1,0 +1,9 @@
+# A whitespace line with a CRLF ending: the fix leaves an LF empty line.
+-- input.cnf.esc --
+[mydumper]\r\n \r\nthreads=4\r\n
+-- fixed.cnf.esc --
+[mydumper]\r\n\nthreads=4\r\n
+-- diagnostics --
+2:1-2:2 error MDL102[whitespace-only-line] line contains only whitespace: mydumper's pre-processor turns it into ` \r= 1`, a key/value pair with an empty key (GLib: Key file contains line “ \r= 1” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
+  fix (safe): Remove the whitespace

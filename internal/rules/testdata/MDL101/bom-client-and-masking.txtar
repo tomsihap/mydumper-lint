@@ -1,0 +1,16 @@
+# The consequence mentions the [client] hand-off and the dropped masking rules.
+-- input.cnf.esc --
+\ufeff[mydumper]\nthreads=4\n\n[`app`.`users`]\n`email`=random_string\n\n[client]\nuser=backup\n
+-- fixed.cnf --
+[mydumper]
+threads=4
+
+[`app`.`users`]
+`email`=random_string
+
+[client]
+user=backup
+-- diagnostics --
+1:1-1:2 error MDL101[utf8-bom] file starts with a UTF-8 byte order mark (BOM)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0. The [client] section is still read by the MySQL client library, so the connection works and the run looks normal. The masking rules are NOT applied: masked columns are dumped in plaintext.
+  fix (safe): Remove the byte order mark

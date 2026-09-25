@@ -1,0 +1,6 @@
+# Negative case. MDL109 is a safety net: no known input triggers it.
+-- input.cnf --
+[mydumper]
+threads=4
+-- diagnostics --
+(none)

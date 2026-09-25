@@ -1,0 +1,6 @@
+# A vertical tab is not whitespace for GLib (case 60).
+-- input.cnf.esc --
+[mydumper]\n\x0broutines=1\n
+-- diagnostics --
+2:1-2:2 warning MDL312[control-character] vertical tab before the key: it is not whitespace for GLib
+  = The key is `\x0broutines`, which matches no option.

@@ -1,0 +1,6 @@
+# A NUL turns the line into a comment (case 66).
+-- input.cnf.esc --
+[mydumper]\n\x00routines=1\nevents=1\n
+-- diagnostics --
+2:1-2:2 error MDL312[control-character] NUL byte at the start of the line: GLib treats the whole line as a comment
+  = mydumper silently ignores `routines=1`.

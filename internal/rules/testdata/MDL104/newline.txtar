@@ -1,0 +1,6 @@
+# Negative case.
+-- input.cnf --
+[mydumper]
+threads=4
+-- diagnostics --
+(none)

@@ -1,0 +1,17 @@
+# The leak crosses a valid header (case 58).
+-- input.cnf --
+[mydumper]
+# see [docs]
+[myloader]
+
+k=1
+-- fixed.cnf --
+[mydumper]
+# see [docs]
+[myloader]
+k=1
+-- diagnostics --
+4:1-4:1 error MDL108[bracket-state-leak] mydumper's pre-processor turns this empty line into `= 1` because line 2 contains `[` after other text (GLib: Key file contains line “= 1” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
+  note 2:1-2:13: mydumper's pre-processor does not reset its state after this line, because it contains `[`
+  fix (safe): Remove the empty line

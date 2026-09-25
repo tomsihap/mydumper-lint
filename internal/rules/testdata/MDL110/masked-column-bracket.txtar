@@ -1,0 +1,7 @@
+# A masked column name with brackets (case 61).
+-- input.cnf --
+[`db`.`t`]
+`c[0]`=constant x
+-- diagnostics --
+2:1-2:18 error MDL110[invalid-key-name] invalid key name `` `c[0]` ``: `]` is not allowed, and `[` may only start a final locale suffix made of letters, digits, `-`, `_`, `.` and `@` (GLib: Invalid key name: `c[0]`)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

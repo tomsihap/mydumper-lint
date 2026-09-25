@@ -1,0 +1,6 @@
+# Negative case: an empty value is valid for GLib.
+-- input.cnf --
+[mydumper]
+k=
+-- diagnostics --
+(none)

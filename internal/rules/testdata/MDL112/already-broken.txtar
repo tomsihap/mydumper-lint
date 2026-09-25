@@ -1,0 +1,8 @@
+# Negative case: MDL108 reports the broken file instead.
+-- input.cnf --
+[mydumper]
+# see [docs]
+
+threads=4
+-- diagnostics --
+(none)

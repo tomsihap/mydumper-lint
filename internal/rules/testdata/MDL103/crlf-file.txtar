@@ -1,0 +1,11 @@
+# CRLF endings that load today (case 05).
+-- input.cnf.esc --
+[mydumper]\r\nthreads=4\r\nroutines\r\n
+-- fixed.cnf --
+[mydumper]
+threads=4
+routines
+-- diagnostics --
+1:11-1:12 error MDL103[carriage-return] file uses Windows (CRLF) line endings (3 lines)
+  = GLib strips the `\r` before `\n`, so the values are read correctly today, but a single empty line added to this file would make mydumper ignore all of it.
+  fix (safe): Convert the line endings to LF

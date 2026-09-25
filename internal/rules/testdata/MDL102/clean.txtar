@@ -1,0 +1,8 @@
+# Negative case: empty lines are fine.
+-- input.cnf --
+[mydumper]
+threads=4
+
+routines
+-- diagnostics --
+(none)

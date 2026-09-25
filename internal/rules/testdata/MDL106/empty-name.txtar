@@ -1,0 +1,7 @@
+# Empty group name (case 26).
+-- input.cnf --
+[]
+threads=4
+-- diagnostics --
+1:1-1:3 error MDL106[invalid-group-line] empty group name `[]` (GLib: Invalid group name: )
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

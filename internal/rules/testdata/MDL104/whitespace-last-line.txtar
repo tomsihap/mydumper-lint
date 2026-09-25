@@ -1,0 +1,6 @@
+# No fix offered: a newline would turn the spaces into '  = 1'.
+-- input.cnf.esc --
+[mydumper]\nthreads=4\n  
+-- diagnostics --
+3:3-3:3 error MDL104[missing-final-newline] file does not end with a newline
+  = Anything appended to this file (for example a [client] section added by a script) is glued to its last line.

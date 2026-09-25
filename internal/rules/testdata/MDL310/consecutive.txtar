@@ -1,0 +1,21 @@
+# Three empty lines between sections, one at the end.
+-- input.cnf --
+[mydumper]
+threads=4
+
+
+
+[myloader]
+threads=2
+
+-- fixed.cnf --
+[mydumper]
+threads=4
+
+[myloader]
+threads=2
+-- diagnostics --
+4:1-6:1 info MDL310[blank-lines] 3 consecutive empty lines
+  fix (safe): Keep a single empty line
+8:1-9:1 info MDL310[blank-lines] 1 empty line at the end of the file
+  fix (safe): Remove the empty lines at the end of the file

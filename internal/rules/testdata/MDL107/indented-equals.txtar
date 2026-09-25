@@ -1,0 +1,7 @@
+# Leading spaces do not help.
+-- input.cnf --
+[mydumper]
+  = value
+-- diagnostics --
+2:1-2:10 error MDL107[empty-key] line starts with `=`: there is no key before it (GLib: Key file contains line “  = value” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

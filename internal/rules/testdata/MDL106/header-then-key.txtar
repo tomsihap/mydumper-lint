@@ -1,0 +1,7 @@
+# A key written on the header line.
+-- input.cnf --
+[mydumper]
+[myloader] threads=4
+-- diagnostics --
+2:1-2:21 error MDL106[invalid-group-line] unexpected text after the group header: `threads=4`; GLib only allows spaces after `]` (GLib: Invalid key name: [myloader] threads)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

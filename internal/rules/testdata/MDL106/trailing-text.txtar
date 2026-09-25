@@ -1,0 +1,7 @@
+# Text after the header.
+-- input.cnf --
+[mydumper] extra
+threads=4
+-- diagnostics --
+1:1-1:17 error MDL106[invalid-group-line] unexpected text after the group header: `extra`; GLib only allows spaces after `]` (GLib: Key file contains line “[mydumper] extra” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

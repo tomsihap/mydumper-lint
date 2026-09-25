@@ -1,0 +1,8 @@
+# A key before the first header (case 08).
+-- input.cnf --
+threads=4
+[mydumper]
+routines
+-- diagnostics --
+1:1-1:10 error MDL105[key-before-group] `threads` is defined before any [group] header; move it under [mydumper] or [myloader] (GLib: Key file does not start with a group)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

@@ -1,0 +1,8 @@
+# Information: an empty line inserted after line 2 would break the file.
+-- input.cnf --
+[mydumper]
+# see [docs]
+threads=4
+-- diagnostics --
+2:1-2:13 info MDL112[bracket-leak-risk] line contains `[` after other text: an empty line placed right after line 2 would make mydumper's pre-processor produce `= 1`, which GLib rejects
+  = Adding an empty line after line 2 would make mydumper ignore the entire file.

@@ -1,0 +1,6 @@
+# A carriage return inside a value is kept by GLib.
+-- input.cnf.esc --
+[mydumper]\nwhere=a\rb\n
+-- diagnostics --
+2:8-2:9 warning MDL103[carriage-return] carriage return that is not part of a line ending: GLib keeps it in the text
+  = The carriage return becomes part of the key, value or name on this line, which then no longer matches what you wrote.

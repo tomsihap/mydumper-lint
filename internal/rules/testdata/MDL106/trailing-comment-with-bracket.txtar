@@ -1,0 +1,7 @@
+# No fix: moving the comment would create a bracket leak origin.
+-- input.cnf --
+[mydumper] # see [docs]
+threads=4
+-- diagnostics --
+1:1-1:24 error MDL106[invalid-group-line] unexpected text after the group header: `# see [docs]`; GLib only allows spaces after `]` (GLib: Key file contains line “[mydumper] # see [docs]” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

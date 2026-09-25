@@ -1,0 +1,6 @@
+# A NUL cuts the value (case 57).
+-- input.cnf.esc --
+[mydumper]\nwhere=a\x00b\n
+-- diagnostics --
+2:8-2:9 error MDL312[control-character] NUL byte in the value of `where`: GLib cuts the value there
+  = mydumper reads the value `a`.

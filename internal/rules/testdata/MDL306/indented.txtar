@@ -1,0 +1,16 @@
+# Indented header, key and comment.
+-- input.cnf --
+  [mydumper]
+	threads=4
+  # comment
+-- fixed.cnf --
+[mydumper]
+threads=4
+# comment
+-- diagnostics --
+1:1-1:3 info MDL306[leading-whitespace] indented group header: mydumper's pre-processor does not reset its state after it
+  fix (safe): Remove the indentation
+2:1-2:2 info MDL306[leading-whitespace] indented key
+  fix (safe): Remove the indentation
+3:1-3:3 info MDL306[leading-whitespace] indented comment
+  fix (safe): Remove the indentation

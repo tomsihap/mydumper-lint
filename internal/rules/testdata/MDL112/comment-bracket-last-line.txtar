@@ -1,0 +1,8 @@
+# Warning: a script appending a block would break the file.
+-- input.cnf --
+[mydumper]
+threads=4
+# see [docs]
+-- diagnostics --
+3:1-3:13 warning MDL112[bracket-leak-risk] line contains `[` after other text: an empty line placed right after line 3 would make mydumper's pre-processor produce `= 1`, which GLib rejects
+  = If a block starting with an empty line is appended to this file (for example "\n[client]" added by a script), mydumper will ignore the entire file.

@@ -1,0 +1,10 @@
+# Trailing spaces after a header and in a comment; values are MDL302.
+-- input.cnf.esc --
+[mydumper]  \n# comment \t\nthreads=4  \n
+-- fixed.cnf.esc --
+[mydumper]\n# comment\nthreads=4  \n
+-- diagnostics --
+1:11-1:13 warning MDL309[trailing-whitespace] trailing whitespace after the group header
+  fix (safe): Remove the trailing whitespace
+2:10-2:12 warning MDL309[trailing-whitespace] trailing whitespace in a comment
+  fix (safe): Remove the trailing whitespace

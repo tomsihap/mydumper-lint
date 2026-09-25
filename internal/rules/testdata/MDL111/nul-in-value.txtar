@@ -1,0 +1,5 @@
+# Negative case: a NUL in a value is MDL312.
+-- input.cnf.esc --
+[mydumper]\nwhere=a\x00b\n
+-- diagnostics --
+(none)

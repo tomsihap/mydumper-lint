@@ -1,0 +1,8 @@
+# Negative case: a flag after a bracket comment gets its value (case 35).
+-- input.cnf --
+[mydumper]
+# see [x]
+routines
+events=1
+-- diagnostics --
+(none)

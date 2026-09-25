@@ -1,0 +1,7 @@
+# ']' in a key (case 50).
+-- input.cnf --
+[mydumper]
+foo]=1
+-- diagnostics --
+2:1-2:7 error MDL110[invalid-key-name] invalid key name `foo]`: `]` is not allowed, and `[` may only start a final locale suffix made of letters, digits, `-`, `_`, `.` and `@` (GLib: Invalid key name: foo])
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

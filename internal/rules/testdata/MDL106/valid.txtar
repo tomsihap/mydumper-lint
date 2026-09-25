@@ -1,0 +1,5 @@
+# Negative case: spaces after ']' are allowed (case 40).
+-- input.cnf.esc --
+[mydumper]  \nthreads=4\n
+-- diagnostics --
+(none)

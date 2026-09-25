@@ -1,0 +1,5 @@
+# An ANSI escape in a comment.
+-- input.cnf.esc --
+[mydumper]\n# \x1bred\nthreads=4\n
+-- diagnostics --
+2:3-2:4 warning MDL312[control-character] control character U+001B ESCAPE in this line

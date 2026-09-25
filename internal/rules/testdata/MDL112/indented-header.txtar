@@ -1,0 +1,7 @@
+# An indented header is a leak origin.
+-- input.cnf --
+  [mydumper]
+threads=4
+-- diagnostics --
+1:1-1:13 info MDL112[bracket-leak-risk] line contains `[` after other text: an empty line placed right after line 1 would make mydumper's pre-processor produce `= 1`, which GLib rejects
+  = Adding an empty line after line 1 would make mydumper ignore the entire file.

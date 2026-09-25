@@ -1,0 +1,7 @@
+# A '[' inside the name (case 52).
+-- input.cnf --
+[a[b]
+k=1
+-- diagnostics --
+1:1-1:6 error MDL106[invalid-group-line] group name `a[b` contains `[` (GLib: Invalid group name: a[b)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

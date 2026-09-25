@@ -1,0 +1,10 @@
+# UTF-8 BOM before the first header (case 06).
+-- input.cnf.esc --
+\ufeff[mydumper]\nthreads=4\n
+-- fixed.cnf --
+[mydumper]
+threads=4
+-- diagnostics --
+1:1-1:2 error MDL101[utf8-bom] file starts with a UTF-8 byte order mark (BOM)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
+  fix (safe): Remove the byte order mark

@@ -1,0 +1,7 @@
+# Negative case: comments may precede the first header.
+-- input.cnf --
+# comment
+[mydumper]
+threads=4
+-- diagnostics --
+(none)

@@ -1,0 +1,5 @@
+# Negative case: an empty file.
+-- input.cnf.esc --
+
+-- diagnostics --
+(none)

@@ -1,0 +1,6 @@
+# A NUL inside a header (case 67).
+-- input.cnf.esc --
+[my\x00dumper]\nk=1\n
+-- diagnostics --
+1:4-1:5 error MDL111[nul-byte] NUL byte: GLib stops reading the line here and only sees `[my` (GLib: Key file contains line “[my�dumper]” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
