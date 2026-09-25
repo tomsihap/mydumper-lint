@@ -1,0 +1,467 @@
+# The GOption probes of design Appendix B (gopt:01-18). argv is built like
+# mydumper builds it: [group, --key, value, ...]. Option table: routines (none),
+# threads (int, short t; int64 in the *-int64 variants of 01-10), outputdir
+# (filename), compress (callback, optional_arg), nodata (none, reverse).
+# nodata starts true and stands for "dump data": reverse sets it to false.
+# strict = no set_ignore_unknown_options (v0.19.3-3); lenient = with it
+# (v1.0.8-1, master). Format: tools/oracle/README.md.
+
+case gopt:01-int
+# --threads '10': 10
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 10
+
+case gopt:01-int64
+# --threads '10': 10
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 10
+
+case gopt:02-int
+# --threads '010': octal: 8
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 010
+
+case gopt:02-int64
+# --threads '010': octal: 8
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 010
+
+case gopt:03-int
+# --threads '08': invalid octal: error
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 08
+
+case gopt:03-int64
+# --threads '08': invalid octal: error
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 08
+
+case gopt:04-int
+# --threads '0x10': hexadecimal: 16
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 0x10
+
+case gopt:04-int64
+# --threads '0x10': hexadecimal: 16
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 0x10
+
+case gopt:05-int
+# --threads '+5': 5
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg +5
+
+case gopt:05-int64
+# --threads '+5': 5
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg +5
+
+case gopt:06-int
+# --threads '-1': -1
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg -1
+
+case gopt:06-int64
+# --threads '-1': -1
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg -1
+
+case gopt:07-int
+# --threads '1e3': no exponent: error
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 1e3
+
+case gopt:07-int64
+# --threads '1e3': no exponent: error
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 1e3
+
+case gopt:08-int
+# --threads '10 ': trailing space: error
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg "10 "
+
+case gopt:08-int64
+# --threads '10 ': trailing space: error
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg "10 "
+
+case gopt:09-int
+# --threads '': empty: error
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg ""
+
+case gopt:09-int64
+# --threads '': empty: error
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg ""
+
+case gopt:10-int
+# --threads '99999999999': int: out of range; int64: fits
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 99999999999
+
+case gopt:10-int64
+# --threads '99999999999': int: out of range; int64: fits
+strict false
+option routines - none -
+option threads t int64 -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 99999999999
+
+case gopt:11-strict
+# -t consumes "--threads" as its value: fatal
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --routines
+arg -t
+arg --threads
+arg 4
+
+case gopt:11-lenient
+# -t consumes "--threads" as its value: fatal
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --routines
+arg -t
+arg --threads
+arg 4
+
+case gopt:12-strict
+# -- ends option parsing: threads is not set
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --routines
+arg --
+arg --threads
+arg 4
+
+case gopt:12-lenient
+# -- ends option parsing: threads is not set
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --routines
+arg --
+arg --threads
+arg 4
+
+case gopt:13-strict
+# compress gets no value; -x is an unknown option
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --compress
+arg -x
+arg --threads
+arg 4
+
+case gopt:13-lenient
+# compress gets no value; -x is an unknown option
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --compress
+arg -x
+arg --threads
+arg 4
+
+case gopt:14-strict
+# compress gets the empty string
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --compress
+arg ""
+arg --threads
+arg 4
+
+case gopt:14-lenient
+# compress gets the empty string
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --compress
+arg ""
+arg --threads
+arg 4
+
+case gopt:15-strict
+# a required argument is taken verbatim
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --outputdir
+arg -x
+arg --threads
+arg 4
+
+case gopt:15-lenient
+# a required argument is taken verbatim
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --outputdir
+arg -x
+arg --threads
+arg 4
+
+case gopt:16-strict
+# the last value wins
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --outputdir
+arg a
+arg --outputdir
+arg b
+
+case gopt:16-lenient
+# the last value wins
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --outputdir
+arg a
+arg --outputdir
+arg b
+
+case gopt:17-strict
+# reverse: presence disables data; 1 is left over
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --nodata
+arg 1
+
+case gopt:17-lenient
+# reverse: presence disables data; 1 is left over
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --nodata
+arg 1
+
+case gopt:18-strict
+# unknown option: ignored when lenient, fatal when strict
+strict true
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 4
+arg --bogus
+arg 1
+
+case gopt:18-lenient
+# unknown option: ignored when lenient, fatal when strict
+strict false
+option routines - none -
+option threads t int -
+option outputdir - filename -
+option compress - callback optional_arg
+option nodata - none reverse true
+arg mydumper
+arg --threads
+arg 4
+arg --bogus
+arg 1

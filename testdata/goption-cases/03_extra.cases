@@ -1,0 +1,65 @@
+# Beyond design Appendix B: GOption behaviors of mydumper's real context.
+# mydumper puts most options in named groups (g_option_context_add_group),
+# sets its "main" group with g_option_context_set_main_group, and calls
+# setlocale(LC_ALL, "") first. These cases run with the locale variables
+# unset: the C locale, as in the official images. Format: tools/oracle/README.md.
+
+case x:group-alias
+# "--<group>-<option>" reaches an option of an added group. mydumper's
+# daemongroup holds snapshot-count, so daemon-snapshot-count=5 sets it.
+strict true
+option threads t int -
+group daemongroup
+option daemon D none -
+option snapshot-count X int - 2
+arg mydumper
+arg --daemon-snapshot-count
+arg 5
+
+case x:group-prefix-alias
+# The group part only has to be a prefix of the group name.
+strict true
+option threads t int -
+group daemongroup
+option daemon D none -
+option snapshot-count X int - 2
+arg mydumper
+arg --d-snapshot-count
+arg 5
+
+case x:main-group-no-alias
+# Options of the main group have no such alias.
+strict true
+option threads t int -
+group daemongroup
+option daemon D none -
+option snapshot-count X int - 2
+arg mydumper
+arg --main-threads
+arg 4
+
+case x:string-non-ascii-c-locale
+# String values are converted from the locale charset (ASCII in the C
+# locale): a non-ASCII byte is fatal. where is a string option in mydumper.
+strict false
+option where - string -
+arg mydumper
+arg --where
+arg "name='caf\xc3\xa9'"
+
+case x:callback-non-ascii-c-locale
+# Callback values without the filename flag are converted too. regex is
+# such a callback in mydumper master.
+strict false
+option regex x callback -
+arg mydumper
+arg --regex
+arg "^caf\xc3\xa9\\."
+
+case x:filename-non-ascii
+# Filename values are passed through unconverted.
+strict false
+option outputdir o filename -
+arg mydumper
+arg --outputdir
+arg "/backup/caf\xc3\xa9"

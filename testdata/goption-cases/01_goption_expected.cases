@@ -1,0 +1,78 @@
+# The scenarios of testdata/goption-expected.txt (design 3.4, G1-G6), with the
+# option table of the historical `oracle --goption` probe. Lenient, like
+# mydumper v1.0.8-1 and master. Format: tools/oracle/README.md.
+
+case G1-routines-0
+# routines=0 enables routines; "0" is left over as a stray argument.
+strict false
+option routines R none -
+option split-string-pk - none -
+option chunk-filesize F int - -1
+option compress c callback optional_arg
+arg g
+arg --routines
+arg 0
+
+case G2-routines-false
+strict false
+option routines R none -
+option split-string-pk - none -
+option chunk-filesize F int - -1
+option compress c callback optional_arg
+arg g
+arg --routines
+arg false
+
+case G3-split_string_pk
+# '_' and '-' are not interchangeable: unknown option, ignored when lenient.
+strict false
+option routines R none -
+option split-string-pk - none -
+option chunk-filesize F int - -1
+option compress c callback optional_arg
+arg g
+arg --split_string_pk
+arg 1
+
+case G3-chunk_filesize
+strict false
+option routines R none -
+option split-string-pk - none -
+option chunk-filesize F int - -1
+option compress c callback optional_arg
+arg g
+arg --chunk_filesize
+arg 10
+
+case G4-Routines
+# Option names are case-sensitive.
+strict false
+option routines R none -
+option split-string-pk - none -
+option chunk-filesize F int - -1
+option compress c callback optional_arg
+arg g
+arg --Routines
+arg 1
+
+case G5-chunk-filesize-trailing-space
+# "10 " is not an integer: fatal.
+strict false
+option routines R none -
+option split-string-pk - none -
+option chunk-filesize F int - -1
+option compress c callback optional_arg
+arg g
+arg --chunk-filesize
+arg "10 "
+
+case G6-compress
+# A callback with an optional argument receives the value.
+strict false
+option routines R none -
+option split-string-pk - none -
+option chunk-filesize F int - -1
+option compress c callback optional_arg
+arg g
+arg --compress
+arg ZSTD
