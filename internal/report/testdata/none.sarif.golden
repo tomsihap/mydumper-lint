@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "mydumper-lint",
+          "version": "1.2.3",
+          "informationUri": "https://github.com/tomsihap/mydumper-lint",
+          "rules": [
+            {
+              "id": "MDL101",
+              "name": "utf8-bom",
+              "shortDescription": {
+                "text": "BOM at the start of the file"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL101.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL102",
+              "name": "whitespace-only-line",
+              "shortDescription": {
+                "text": "Line made only of spaces and tabs"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL102.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL103",
+              "name": "carriage-return",
+              "shortDescription": {
+                "text": "Carriage return in the file"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL103.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL104",
+              "name": "missing-final-newline",
+              "shortDescription": {
+                "text": "File not ending with a newline"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL104.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL108",
+              "name": "bracket-state-leak",
+              "shortDescription": {
+                "text": "Pre-processor state leak"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL108.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL111",
+              "name": "nul-byte",
+              "shortDescription": {
+                "text": "NUL byte"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL111.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL112",
+              "name": "bracket-leak-risk",
+              "shortDescription": {
+                "text": "Line after which an empty line would break the file"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL112.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL205",
+              "name": "duplicate-group",
+              "shortDescription": {
+                "text": "Group declared twice"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL205.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "groups"
+                ]
+              }
+            },
+            {
+              "id": "MDL302",
+              "name": "trailing-whitespace-in-value",
+              "shortDescription": {
+                "text": "Value ending with whitespace"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL302.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL306",
+              "name": "leading-whitespace",
+              "shortDescription": {
+                "text": "Indented line"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL306.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL307",
+              "name": "spaces-around-equals",
+              "shortDescription": {
+                "text": "Spaces around ="
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL307.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL308",
+              "name": "flag-without-value",
+              "shortDescription": {
+                "text": "Option without ="
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL308.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL310",
+              "name": "blank-lines",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL311",
+              "name": "invalid-utf8",
+              "shortDescription": {
+                "text": "Invalid UTF-8 sequence"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL311.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL312",
+              "name": "control-character",
+              "shortDescription": {
+                "text": "Control character"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL312.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL313",
+              "name": "quoted-value",
+              "shortDescription": {
+                "text": "Value wrapped in quotes"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL313.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL999",
+              "name": "unused-rule",
+              "shortDescription": {
+                "text": "A rule nothing triggers"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL999.md",
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "properties": {
+                "tags": [
+                  "conventions"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "columnKind": "unicodeCodePoints",
+      "results": []
+    }
+  ]
+}

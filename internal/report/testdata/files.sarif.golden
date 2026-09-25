@@ -1,0 +1,1257 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "mydumper-lint",
+          "version": "1.2.3",
+          "informationUri": "https://github.com/tomsihap/mydumper-lint",
+          "rules": [
+            {
+              "id": "MDL101",
+              "name": "utf8-bom",
+              "shortDescription": {
+                "text": "BOM at the start of the file"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL101.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL102",
+              "name": "whitespace-only-line",
+              "shortDescription": {
+                "text": "Line made only of spaces and tabs"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL102.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL103",
+              "name": "carriage-return",
+              "shortDescription": {
+                "text": "Carriage return in the file"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL103.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL104",
+              "name": "missing-final-newline",
+              "shortDescription": {
+                "text": "File not ending with a newline"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL104.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL108",
+              "name": "bracket-state-leak",
+              "shortDescription": {
+                "text": "Pre-processor state leak"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL108.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL111",
+              "name": "nul-byte",
+              "shortDescription": {
+                "text": "NUL byte"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL111.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL112",
+              "name": "bracket-leak-risk",
+              "shortDescription": {
+                "text": "Line after which an empty line would break the file"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL112.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "loadability"
+                ]
+              }
+            },
+            {
+              "id": "MDL205",
+              "name": "duplicate-group",
+              "shortDescription": {
+                "text": "Group declared twice"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL205.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "groups"
+                ]
+              }
+            },
+            {
+              "id": "MDL302",
+              "name": "trailing-whitespace-in-value",
+              "shortDescription": {
+                "text": "Value ending with whitespace"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL302.md",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL306",
+              "name": "leading-whitespace",
+              "shortDescription": {
+                "text": "Indented line"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL306.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL307",
+              "name": "spaces-around-equals",
+              "shortDescription": {
+                "text": "Spaces around ="
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL307.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL308",
+              "name": "flag-without-value",
+              "shortDescription": {
+                "text": "Option without ="
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL308.md",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL310",
+              "name": "blank-lines",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL311",
+              "name": "invalid-utf8",
+              "shortDescription": {
+                "text": "Invalid UTF-8 sequence"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL311.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL312",
+              "name": "control-character",
+              "shortDescription": {
+                "text": "Control character"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL312.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL313",
+              "name": "quoted-value",
+              "shortDescription": {
+                "text": "Value wrapped in quotes"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL313.md",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "lines"
+                ]
+              }
+            },
+            {
+              "id": "MDL999",
+              "name": "unused-rule",
+              "shortDescription": {
+                "text": "A rule nothing triggers"
+              },
+              "helpUri": "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/MDL999.md",
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "properties": {
+                "tags": [
+                  "conventions"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "columnKind": "unicodeCodePoints",
+      "results": [
+        {
+          "ruleId": "MDL102",
+          "ruleIndex": 1,
+          "level": "error",
+          "message": {
+            "text": "line contains only spaces and tabs (mydumper: rejects the whole file: every option in it is ignored)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 4
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "empty the line"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 3,
+                        "startColumn": 1,
+                        "endLine": 3,
+                        "endColumn": 4,
+                        "byteOffset": 19,
+                        "byteLength": 3
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "2032b7af22700b3a8552c3a8c4173c3e5356111ce9995837375c4d59a068397c"
+          }
+        },
+        {
+          "ruleId": "MDL307",
+          "ruleIndex": 10,
+          "level": "note",
+          "message": {
+            "text": "spaces around \"=\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 4,
+                  "startColumn": 8,
+                  "endLine": 4,
+                  "endColumn": 11
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "write threads=4"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 4,
+                        "startColumn": 8,
+                        "endLine": 4,
+                        "endColumn": 11,
+                        "byteOffset": 30,
+                        "byteLength": 3
+                      },
+                      "insertedContent": {
+                        "text": "="
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "eb9db35d6d9d37cb0e7179541f75aee95bb0b695fec9d45541558340e512c559"
+          }
+        },
+        {
+          "ruleId": "MDL108",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "empty line becomes \"= 1\" because of the \"[\" on line 5 (mydumper: rejects the whole file: every option in it is ignored)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 1,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 7,
+                  "endLine": 5,
+                  "endColumn": 8
+                }
+              },
+              "message": {
+                "text": "the pre-processor state freezes at this \"[\""
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "delete the empty line"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 6,
+                        "startColumn": 1,
+                        "endLine": 7,
+                        "endColumn": 1,
+                        "byteOffset": 48,
+                        "byteLength": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "3cd9b525df3b288135d6328f4f1d3154284a49045c7d1bb422399f7852c4860d"
+          }
+        },
+        {
+          "ruleId": "MDL313",
+          "ruleIndex": 15,
+          "level": "warning",
+          "message": {
+            "text": "value is wrapped in quotes (mydumper: writes the dump into a directory named \"/backup\", quotes included)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 7,
+                  "startColumn": 11,
+                  "endLine": 7,
+                  "endColumn": 20
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "remove the quotes"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 7,
+                        "startColumn": 11,
+                        "endLine": 7,
+                        "endColumn": 12,
+                        "byteOffset": 59,
+                        "byteLength": 1
+                      }
+                    },
+                    {
+                      "deletedRegion": {
+                        "startLine": 7,
+                        "startColumn": 19,
+                        "endLine": 7,
+                        "endColumn": 20,
+                        "byteOffset": 67,
+                        "byteLength": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "unsafe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "33916fb4fa3bcbbcf99fd4b6cacb114413ab64e9124f9bb5fb912c0e0fcf8895"
+          }
+        },
+        {
+          "ruleId": "MDL302",
+          "ruleIndex": 8,
+          "level": "error",
+          "message": {
+            "text": "value ends with whitespace (mydumper: keeps the space: outputdir names another directory)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 7,
+                  "startColumn": 20,
+                  "endLine": 7,
+                  "endColumn": 21
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "trim the value"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 7,
+                        "startColumn": 20,
+                        "endLine": 7,
+                        "endColumn": 21,
+                        "byteOffset": 68,
+                        "byteLength": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "unsafe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "740e4b256259e22488ffdcbf973a8b860f488b31c5a1a78d80a76dd6861b84b6"
+          }
+        },
+        {
+          "ruleId": "MDL205",
+          "ruleIndex": 7,
+          "level": "warning",
+          "message": {
+            "text": "group [mydumper] is declared twice (mydumper: merges both groups silently)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 10
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 1,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 11
+                }
+              },
+              "message": {
+                "text": "first declared here"
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 8,
+                        "startColumn": 1,
+                        "endLine": 9,
+                        "endColumn": 1,
+                        "byteOffset": 70,
+                        "byteLength": 11
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "unsafe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "5df37e217bd614d210cd5cdc9507c1781f62cae47ef590de5260a51f600fedae"
+          }
+        },
+        {
+          "ruleId": "MDL306",
+          "ruleIndex": 9,
+          "level": "note",
+          "message": {
+            "text": "line is indented"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "remove the indentation"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 9,
+                        "startColumn": 1,
+                        "endLine": 9,
+                        "endColumn": 2,
+                        "byteOffset": 81,
+                        "byteLength": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "d2215959be9dc2a7435829234941df0245e0a6fb73a56e6f34f343059709d598"
+          }
+        },
+        {
+          "ruleId": "MDL308",
+          "ruleIndex": 11,
+          "level": "note",
+          "message": {
+            "text": "option without a value"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/app.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 2,
+                  "endLine": 9,
+                  "endColumn": 10
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "write routines=1"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/app.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 9,
+                        "startColumn": 10,
+                        "endLine": 9,
+                        "endColumn": 10,
+                        "byteOffset": 90,
+                        "byteLength": 0
+                      },
+                      "insertedContent": {
+                        "text": "=1"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "26ee0c10522a6c4ba15183ea95d5252cbd09538c872e4cbb0934bfdd56c751f6"
+          }
+        },
+        {
+          "ruleId": "MDL103",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "file uses CRLF line endings"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/crlf.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 11,
+                  "endLine": 1,
+                  "endColumn": 12
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "convert \"\\r\\n\" to \"\\n\""
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/crlf.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 1,
+                        "startColumn": 11,
+                        "endLine": 1,
+                        "endColumn": 12,
+                        "byteOffset": 10,
+                        "byteLength": 1
+                      }
+                    },
+                    {
+                      "deletedRegion": {
+                        "startLine": 2,
+                        "startColumn": 10,
+                        "endLine": 2,
+                        "endColumn": 11,
+                        "byteOffset": 21,
+                        "byteLength": 1
+                      }
+                    },
+                    {
+                      "deletedRegion": {
+                        "startLine": 3,
+                        "startColumn": 1,
+                        "endLine": 3,
+                        "endColumn": 2,
+                        "byteOffset": 23,
+                        "byteLength": 1
+                      }
+                    },
+                    {
+                      "deletedRegion": {
+                        "startLine": 4,
+                        "startColumn": 1,
+                        "endLine": 4,
+                        "endColumn": 2,
+                        "byteOffset": 25,
+                        "byteLength": 1
+                      }
+                    },
+                    {
+                      "deletedRegion": {
+                        "startLine": 5,
+                        "startColumn": 1,
+                        "endLine": 5,
+                        "endColumn": 2,
+                        "byteOffset": 27,
+                        "byteLength": 1
+                      }
+                    },
+                    {
+                      "deletedRegion": {
+                        "startLine": 6,
+                        "startColumn": 17,
+                        "endLine": 6,
+                        "endColumn": 18,
+                        "byteOffset": 45,
+                        "byteLength": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "b4ebb38c9fa0ef9cad582f7cf99398af003ed491e3e502bdb22029066775b94b"
+          }
+        },
+        {
+          "ruleId": "MDL103",
+          "ruleIndex": 2,
+          "level": "error",
+          "message": {
+            "text": "empty line made of a carriage return (mydumper: the line becomes \"\\r= 1\", which rejects the whole file)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/crlf.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "fcd9fe97a8db63dd21f54eab15364d2a586a8cc1de1d42645813907d4278c245"
+          }
+        },
+        {
+          "ruleId": "MDL310",
+          "ruleIndex": 12,
+          "level": "note",
+          "message": {
+            "text": "3 consecutive blank lines"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/crlf.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "keep one blank line"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/crlf.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 4,
+                        "startColumn": 1,
+                        "endLine": 6,
+                        "endColumn": 1,
+                        "byteOffset": 25,
+                        "byteLength": 4
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "7f81b85f6658b67b7380252dbac1dc12831f00825e4f93a5d897f189fd3bf5ef"
+          }
+        },
+        {
+          "ruleId": "MDL101",
+          "ruleIndex": 0,
+          "level": "error",
+          "message": {
+            "text": "file starts with a UTF-8 byte order mark (mydumper: rejects the whole file: every option in it is ignored)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/odd.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 2
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "remove the byte order mark"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/odd.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 1,
+                        "startColumn": 1,
+                        "endLine": 1,
+                        "endColumn": 2,
+                        "byteOffset": 0,
+                        "byteLength": 3
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "47de69277f43b1d38e024613611c30507ff812f7fb18ab547cecf1e62cca8fb7"
+          }
+        },
+        {
+          "ruleId": "MDL311",
+          "ruleIndex": 13,
+          "level": "warning",
+          "message": {
+            "text": "invalid UTF-8 byte 0xff"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/odd.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 2,
+                  "startColumn": 12,
+                  "endLine": 2,
+                  "endColumn": 13
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "c65505c7b00f0dc8cae93d1f30340e70bae186fe27a83969f6ee2005e0c53a96"
+          }
+        },
+        {
+          "ruleId": "MDL312",
+          "ruleIndex": 14,
+          "level": "warning",
+          "message": {
+            "text": "value contains the control character \u001b (ESC)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/odd.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 2,
+                  "startColumn": 13,
+                  "endLine": 2,
+                  "endColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "6d896c06744f09df42ebbb4ef38ec706edc90867388e16cca536242f843e7185"
+          }
+        },
+        {
+          "ruleId": "MDL111",
+          "ruleIndex": 5,
+          "level": "error",
+          "message": {
+            "text": "NUL byte in a key (mydumper: rejects the whole file: every option in it is ignored)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/odd.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 5,
+                  "endLine": 3,
+                  "endColumn": 6
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "0271f22f60f4dcc54d9477cae73da1bdd22bf2c4f86597f7e4a5a838d8f4a60c"
+          }
+        },
+        {
+          "ruleId": "MDL312",
+          "ruleIndex": 14,
+          "level": "warning",
+          "message": {
+            "text": "value contains the control character \"\\v\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/odd.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 4,
+                  "startColumn": 9,
+                  "endLine": 4,
+                  "endColumn": 10
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "a645d361787ef122fcc4ec5cba7b5ddef1d54d1bc63e9e45d11eb8c9450f161d"
+          }
+        },
+        {
+          "ruleId": "MDL104",
+          "ruleIndex": 3,
+          "level": "error",
+          "message": {
+            "text": "the last line is a flag without a final newline (mydumper: rejects the whole file: every option in it is ignored)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/odd.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 9,
+                  "endLine": 5,
+                  "endColumn": 9
+                }
+              }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "append a newline"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "conf/odd.cnf",
+                    "uriBaseId": "%SRCROOT%"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 5,
+                        "startColumn": 9,
+                        "endLine": 5,
+                        "endColumn": 9,
+                        "byteOffset": 70,
+                        "byteLength": 0
+                      },
+                      "insertedContent": {
+                        "text": "\n"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "properties": {
+                "applicability": "safe"
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "ccf6d8018e58a57805b1c7040665555cde7d323e4c133e91e42df7d2d016bda1"
+          }
+        },
+        {
+          "ruleId": "MDL112",
+          "ruleIndex": 6,
+          "level": "warning",
+          "message": {
+            "text": "an empty line appended here would break the file"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/tail.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 1
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 1,
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "conf/tail.cnf",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 2,
+                  "startColumn": 7,
+                  "endLine": 2,
+                  "endColumn": 8
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "a5ca0b363e34e8efc173b903d8e85c06bfdeae72119034db739e180397ed39fe"
+          }
+        }
+      ]
+    }
+  ]
+}
