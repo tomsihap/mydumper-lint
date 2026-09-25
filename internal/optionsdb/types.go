@@ -6,7 +6,9 @@ package optionsdb
 // SchemaVersion is the version of the JSON layout below.
 const SchemaVersion = 1
 
-// DB is the whole knowledge base, as stored in data/optionsdb.json.
+// DB is the whole knowledge base, as stored in data/optionsdb.json. Obtain it
+// from Load or Parse: its methods rely on the index Parse builds after
+// validating the content.
 type DB struct {
 	Schema              int       `json:"schema"`
 	Versions            []Version `json:"versions"`             // ascending order
