@@ -1,0 +1,150 @@
+# golangci-lint v2 configuration (design §11.9).
+#
+# The golangci-lint version is pinned in mk/lint.mk (`make lint`, official Docker
+# image) and in .github/workflows/ci.yml (official action); CI fails when the two
+# differ. Check this file with `golangci-lint config verify`: CI does it on every
+# run, `make lint` does it first. v2 silently ignores keys it does not know, such
+# as the v1 top-level `linters-settings`; linter settings live under
+# `linters.settings`, formatter settings under `formatters.settings`.
+#
+# Gate on the exit code only, never on an issue count: a run that fails part-way
+# (compilation error, timeout) reports fewer issues, not more.
+version: "2"
+
+run:
+  # Fail instead of silently updating go.mod or go.sum.
+  modules-download-mode: readonly
+  # Paths in exclusion rules are relative to go.mod, wherever the linter is started.
+  relative-path-mode: gomod
+  # Suites gated by build tags (design §11.4, §11.6, §11.7). Without these tags
+  # their files are silently left out of the analysis.
+  build-tags:
+    - e2e
+    - integration
+    - oracle
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  enable:
+    - copyloopvar
+    - errorlint
+    - exhaustive
+    - gocritic
+    - gosec
+    - misspell
+    - nolintlint
+    - revive
+    - unconvert
+
+  settings:
+    errcheck:
+      # An unchecked type assertion panics on unexpected input.
+      check-type-assertions: true
+
+    exhaustive:
+      # Keep this strict: the emulators rely on exhaustive switches over their
+      # enums (line kinds, rejection causes, reasons). A `default` case does not
+      # make a switch exhaustive; every member must be listed. Map literals keyed
+      # by an enum must be complete too; mark an intentionally partial one with
+      # `//exhaustive:ignore` and say why.
+      check:
+        - switch
+        - map
+      default-signifies-exhaustive: false
+
+    gocritic:
+      # Stable and experimental checks. The opinionated ones are left out:
+      # they mostly produce style churn, not bugs.
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - performance
+        - style
+      disabled-tags:
+        - opinionated
+      disabled-checks:
+        - whyNoLint # nolintlint already requires an explanation on every //nolint
+
+    gosec:
+      excludes:
+        # G104 (errors unhandled) duplicates errcheck, which owns that class.
+        - G104
+        # G304 (file path provided as taint input): mydumper-lint opens the files
+        # its user names on the command line and in .mydumper-lint.yaml; reading
+        # them is its purpose. Paths taken from the *contents* of a linted file must
+        # never be opened, and --fix must only write the files it was given
+        # (SECURITY.md); review such code explicitly, gosec cannot tell the two
+        # cases apart.
+        - G304
+
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment # memory layout over readability; revisit with benchmarks
+        - shadow # too noisy for the `err` idiom
+
+    misspell:
+      locale: US
+
+    nolintlint:
+      # Every //nolint names its linter, says why, and is removed once unused.
+      require-explanation: true
+      require-specific: true
+      allow-unused: false
+
+    revive:
+      # revive's recommended rules, plus rules that catch bugs or keep the code
+      # uniform at no noise cost.
+      enable-default-rules: true
+      rules:
+        - name: atomic
+        - name: bool-literal-in-expr
+        - name: constant-logical-expr
+        - name: datarace
+        - name: deep-exit # only main() may exit; cli.Run returns an exit code
+        - name: defer
+        - name: duplicated-imports
+        - name: identical-branches
+        - name: identical-ifelseif-branches
+        - name: identical-ifelseif-conditions
+        - name: identical-switch-branches
+        - name: identical-switch-conditions
+        - name: modifies-value-receiver
+        - name: redundant-import-alias
+        - name: string-of-int
+        - name: struct-tag
+        - name: unconditional-recursion
+        - name: unnecessary-stmt
+        - name: use-any
+        - name: useless-break
+        - name: waitgroup-by-value
+
+  exclusions:
+    generated: strict
+    rules:
+      # Tests may ignore errors, and use fixed paths, temporary files and
+      # subprocesses freely.
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      module-path: github.com/tomsihap/mydumper-lint
+    goimports:
+      local-prefixes:
+        - github.com/tomsihap/mydumper-lint
+
+issues:
+  # Report every finding. The defaults hide everything after the 50th issue of a
+  # linter and the 3rd issue with the same text.
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  # Keep every finding on a line. The v2 default keeps only the first one, so a
+  # second linter's finding on the same line disappears without a trace.
+  uniq-by-line: false
