@@ -1,0 +1,24 @@
+MDL602, C3 (hypothesis): in [client], mydumper ignores the "!include" line
+(it never passes [client] to GOption), and the MySQL client library processes
+it: the credentials only the included file holds make the connection work on
+every version.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/main.cnf --database app
+lint-files: main.cnf
+lint: MDL602
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+-- main.cnf --
+[client]
+!include /work/credentials.cnf
+
+[mydumper]
+threads=2
+-- credentials.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password

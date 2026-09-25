@@ -1,0 +1,25 @@
+MDL603, C2 (hypothesis), F14: the defaults file holds the credentials in
+[client]. The extra file only sets an option in [mydumper], which makes it the
+client library's defaults file (with the group "mydumper"). The client library
+reads that one file only, so the credentials of the defaults file are ignored
+and mydumper cannot connect (no host: it tries the local socket).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --defaults-extra-file /work/extra.cnf --database app
+lint: MDL405, MDL603
+expect config-loaded: true
+expect exit: nonzero
+expect connected: false
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+-- extra.cnf --
+[mydumper]
+threads=2
+-- .mydumper-lint.yaml --
+load-sets:
+  - defaults-file: defaults.cnf
+    extra-files: [extra.cnf]

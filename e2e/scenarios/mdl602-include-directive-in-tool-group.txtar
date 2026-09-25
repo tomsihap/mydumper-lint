@@ -1,0 +1,31 @@
+MDL602, C3 (hypothesis): "!include" is a MySQL option-file directive. GKeyFile
+reads the line as the key "!include /work/credentials.cnf" (the pre-processor
+adds "= 1"), which mydumper passes to GOption as an unknown option: fatal
+where unknown options are fatal, ignored elsewhere. The MySQL client library
+processes the directive: the credentials, which only the included file holds,
+make the connection work where mydumper gets that far.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/main.cnf --database app
+lint-files: main.cnf
+lint: MDL602
+expect config-loaded: true
+
+when kb:!ignore-unknown-options
+expect exit: nonzero
+expect stderr-contains: Unknown option --!include
+end
+
+when kb:ignore-unknown-options
+expect exit: 0
+expect connected: true
+end
+-- main.cnf --
+[mydumper]
+!include /work/credentials.cnf
+-- credentials.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
