@@ -61,7 +61,7 @@ func TestParseFull(t *testing.T) {
 
 func TestParseErrors(t *testing.T) {
 	tests := map[string]string{
-		"mydumper-verison: x\n": `unknown key "mydumper-verison" (did you mean "mydumper-version"?)`, //nolint:misspell // deliberate typo under test
+		"mydumper-verison: x\n":                   `unknown key "mydumper-verison" (did you mean "mydumper-version"?)`, //nolint:misspell // deliberate typo under test
 		"rules:\n  selct: [ALL]\n":                `unknown key "selct" (did you mean "select"?)`,
 		"fail-on: fatal\n":                        "fail-on must be error, warning, info or none",
 		"rules:\n  select: [MDL999]\n":            `unknown rule "MDL999"`,
