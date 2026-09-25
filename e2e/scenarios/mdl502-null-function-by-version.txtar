@@ -1,0 +1,35 @@
+MDL502, F10: the "null" masking function only exists in some versions (the
+knowledge base: from v0.21.4-1). Where it exists, users.email is dumped as
+NULL; elsewhere "null" is an unknown function, so the column falls back to
+identity and is dumped in plaintext (F10). The kb blocks check the knowledge
+base for every version; the version blocks check the boundary it records.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint:
+expect config-loaded: true
+expect exit: 0
+
+when kb:masquerade=null
+expect column app.users.email: null
+end
+
+when kb:!masquerade=null
+lint: MDL502
+expect column app.users.email: plaintext
+end
+
+when >= v0.21.4-1
+expect column app.users.email: null
+end
+
+when < v0.21.4-1
+expect column app.users.email: plaintext
+end
+-- mydumper.cnf --
+[mydumper]
+threads=2
+
+[`app`.`users`]
+`email`=null

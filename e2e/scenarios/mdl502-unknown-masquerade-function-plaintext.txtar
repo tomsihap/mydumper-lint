@@ -1,0 +1,19 @@
+MDL502, F10: a misspelled masking function ("radnom_string") matches no known
+function prefix; mydumper logs "Function not found: Using default" (only at
+--verbose 3) and falls back to identity: users.email is dumped in plaintext,
+exit 0.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app --verbose 3
+lint: MDL502
+expect config-loaded: true
+expect exit: 0
+expect stderr-contains: Function not found: Using default
+expect column app.users.email: plaintext
+-- mydumper.cnf --
+[mydumper]
+threads=2
+
+[`app`.`users`]
+`email`=radnom_string

@@ -1,0 +1,17 @@
+W1 finding 2 (hypothesis): snapshot-interval (an integer option) belongs to
+the group "daemongroup"; "d-snapshot-interval" is the shortest alias. GOption
+resolves it and fails to parse "abc" as an integer ("Cannot parse integer
+value"), where an unresolved name would be reported as an unknown option.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL403
+expect config-loaded: true
+expect exit: nonzero
+expect stderr-contains: Cannot parse integer value
+expect stderr-lacks: Unknown option
+expect connected: false
+-- mydumper.cnf --
+[mydumper]
+d-snapshot-interval=abc

@@ -1,0 +1,36 @@
+MDL401, F6, G13: an unknown option in [mydumper] aborts mydumper at startup
+where unknown options are fatal, and is silently ignored where the loader
+calls g_option_context_set_ignore_unknown_options. The first two blocks check
+the knowledge base's ignore_unknown_options for every version; the last two
+check the boundary the design states (fatal before v1.0.1-1). If they
+disagree on a version, planning that version fails.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL401
+expect config-loaded: true
+
+when kb:!ignore-unknown-options
+expect exit: nonzero
+expect stderr-contains: Unknown option --bogus-option
+expect connected: false
+end
+
+when kb:ignore-unknown-options
+expect exit: 0
+expect stderr-lacks: Unknown option
+expect connected: true
+end
+
+when < v1.0.1-1
+expect exit: nonzero
+end
+
+when >= v1.0.1-1
+expect exit: 0
+end
+-- mydumper.cnf --
+[mydumper]
+threads=2
+bogus-option=1

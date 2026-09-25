@@ -1,0 +1,16 @@
+MDL402, G1: no-data is an option without argument. "no-data=0" becomes
+"--no-data 0": the flag is set, so NO data is dumped, only the schema
+(compare mdl402-control-defaults).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL402
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect data-dumped: false
+expect dump-contains: CREATE TABLE `users`
+-- mydumper.cnf --
+[mydumper]
+no-data=0

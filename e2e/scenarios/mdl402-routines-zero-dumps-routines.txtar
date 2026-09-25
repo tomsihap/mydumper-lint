@@ -1,0 +1,14 @@
+MDL402, G1: routines is an option without argument. mydumper turns
+"routines=0" into "--routines 0": the flag is set and "0" is a stray
+argument, so routines ARE dumped (compare mdl402-control-defaults).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL402
+expect config-loaded: true
+expect exit: 0
+expect routines-dumped: true
+-- mydumper.cnf --
+[mydumper]
+routines=0

@@ -1,0 +1,17 @@
+Control of mdl409-non-ascii-value-c-locale: outputdir is a FILENAME option,
+which GOption passes through without charset conversion on Unix. In the same
+C locale, a non-ASCII directory works: no conversion error, and the dump is
+written into /work/café.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint:
+expect config-loaded: true
+expect exit: 0
+expect stderr-lacks: Invalid byte sequence
+expect connected: true
+expect dump-dir: café
+-- mydumper.cnf --
+[mydumper]
+outputdir=/work/café

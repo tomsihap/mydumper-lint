@@ -1,0 +1,19 @@
+W1 finding 2 (hypothesis): GLib also accepts an option of a named
+GOptionGroup as --<prefix>-<option>, where <prefix> is any prefix of the group
+name. port belongs to the group "connectiongroup", so "conn-port=3307" in a
+config file sets the port: mydumper tries port 3307, where nothing listens,
+and fails to connect. Without the alias it would be an unknown option (fatal
+or ignored, F6), never a connection to 3307.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint:
+expect config-loaded: true
+expect exit: nonzero
+expect stderr-lacks: Unknown option
+expect stderr-contains: 3307
+expect connected: false
+-- mydumper.cnf --
+[mydumper]
+conn-port=3307

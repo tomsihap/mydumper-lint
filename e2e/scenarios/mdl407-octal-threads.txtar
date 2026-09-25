@@ -1,0 +1,13 @@
+MDL407, G7: GOption parses integers like strtol in base 0, so "threads=010"
+is octal: mydumper runs 8 threads, not 10.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app --verbose 3
+lint: MDL407
+expect config-loaded: true
+expect exit: 0
+expect threads: 8
+-- mydumper.cnf --
+[mydumper]
+threads=010

@@ -1,0 +1,14 @@
+W1 finding 2 (hypothesis): routines belongs to the group "objects", so
+"objects-routines=1" enables it: the routines are dumped.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint:
+expect config-loaded: true
+expect exit: 0
+expect stderr-lacks: Unknown option
+expect routines-dumped: true
+-- mydumper.cnf --
+[mydumper]
+objects-routines=1

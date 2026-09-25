@@ -1,0 +1,17 @@
+Control of mdl409-non-ascii-value-c-locale: the same file with LANG=C.UTF-8,
+the usual fix. No conversion error: the dump runs and the where clause is
+applied (the row of 'Zoé' is left out).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+env: LANG=C.UTF-8
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app --tables-list app.users
+lint: MDL409
+expect config-loaded: true
+expect exit: 0
+expect stderr-lacks: Invalid byte sequence
+expect dump-contains: alice@e2e.example
+expect dump-lacks: zoe@e2e.example
+-- mydumper.cnf --
+[mydumper]
+where=name <> 'Zoé'

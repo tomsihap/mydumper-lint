@@ -1,0 +1,15 @@
+Control of the MDL402 scenarios: without routines or no-data, mydumper dumps
+the data and no routine, so routines-dumped and data-dumped do tell the
+options' effects apart.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint:
+expect config-loaded: true
+expect exit: 0
+expect routines-dumped: false
+expect data-dumped: true
+-- mydumper.cnf --
+[mydumper]
+threads=2
