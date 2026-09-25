@@ -14,6 +14,8 @@ type DB struct {
 	TableKeys           []Fact    `json:"table_keys"`           // keys of table sections (F8)
 	MasqueradeFunctions []Fact    `json:"masquerade_functions"` // masking functions (F10)
 	Products            []Fact    `json:"products"`             // lowercase product names (§3.6)
+
+	idx *index // built by Parse; nil for a DB that was not parsed
 }
 
 // Version describes one embedded mydumper release.
@@ -45,14 +47,20 @@ type Option struct {
 // definition did not change.
 type OptionSpan struct {
 	Range
-	Short       string   `json:"short,omitempty"`     // one character, or empty
-	Arg         string   `json:"arg"`                 // none, string, filename, int, int64, double, callback, string_array, filename_array
-	Flags       []string `json:"flags,omitempty"`     // optional_arg, reverse, no_arg, hidden, filename, noalias, in_main
-	Condition   string   `json:"condition,omitempty"` // build condition, e.g. "WITH_SSL" or "WITH_SSL && !LIBMARIADB"
-	IsRegex     bool     `json:"is_regex,omitempty"`  // value is a regular expression (MDL406)
-	Values      []string `json:"values,omitempty"`    // accepted values when enumerable (callbacks)
-	Description string   `json:"description,omitempty"`
-	Source      string   `json:"source,omitempty"` // upstream file:line of the definition, for audits
+	Short string   `json:"short,omitempty"` // one character, or empty
+	Arg   string   `json:"arg"`             // none, string, filename, int, int64, double, callback, string_array, filename_array
+	Flags []string `json:"flags,omitempty"` // sorted: deprecated, filename, hidden, in_main, no_arg, noalias, optional_arg, reverse
+	// Group is the GOptionGroup the option belongs to; empty for the main
+	// group. GLib also accepts an option of a non-main group as
+	// --<group>-<name>, where <group> may be any prefix of the group name
+	// (--conn-port is --port), unless the option is flagged noalias.
+	Group            string   `json:"group,omitempty"`
+	Condition        string   `json:"condition,omitempty"`          // build condition, e.g. "WITH_SSL" or "WITH_SSL && !LIBMARIADB"
+	IsRegex          bool     `json:"is_regex,omitempty"`           // value is a regular expression (MDL406)
+	Values           []string `json:"values,omitempty"`             // accepted values when enumerable (callbacks)
+	ValuesIgnoreCase bool     `json:"values_ignore_case,omitempty"` // Values are compared ignoring ASCII case
+	Description      string   `json:"description,omitempty"`        // always empty: upstream help texts are GPL
+	Source           string   `json:"source,omitempty"`             // upstream file:line of the definition in From, for audits
 }
 
 // Fact is a named fact that holds over ranges of versions.
