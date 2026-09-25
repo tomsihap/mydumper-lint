@@ -1,0 +1,18 @@
+\x1b[36mconf/app.cnf:3:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL102[whitespace-only-line]\x1b[0m line contains only spaces and tabs
+\x1b[36mconf/app.cnf:4:8\x1b[0m: \x1b[1;34minfo\x1b[0m \x1b[1mMDL307[spaces-around-equals]\x1b[0m spaces around "="
+\x1b[36mconf/app.cnf:6:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL108[bracket-state-leak]\x1b[0m empty line becomes "= 1" because of the "[" on line 5
+\x1b[36mconf/app.cnf:7:11\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL313[quoted-value]\x1b[0m value is wrapped in quotes
+\x1b[36mconf/app.cnf:7:20\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL302[trailing-whitespace-in-value]\x1b[0m value ends with whitespace
+\x1b[36mconf/app.cnf:8:1\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL205[duplicate-group]\x1b[0m group [mydumper] is declared twice
+\x1b[36mconf/app.cnf:9:1\x1b[0m: \x1b[1;34minfo\x1b[0m \x1b[1mMDL306[leading-whitespace]\x1b[0m line is indented
+\x1b[36mconf/app.cnf:9:2\x1b[0m: \x1b[1;34minfo\x1b[0m \x1b[1mMDL308[flag-without-value]\x1b[0m option without a value
+\x1b[36mconf/crlf.cnf:1:11\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL103[carriage-return]\x1b[0m file uses CRLF line endings
+\x1b[36mconf/crlf.cnf:3:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL103[carriage-return]\x1b[0m empty line made of a carriage return
+\x1b[36mconf/crlf.cnf:3:1\x1b[0m: \x1b[1;34minfo\x1b[0m \x1b[1mMDL310[blank-lines]\x1b[0m 3 consecutive blank lines
+\x1b[36mconf/odd.cnf:1:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL101[utf8-bom]\x1b[0m file starts with a UTF-8 byte order mark
+\x1b[36mconf/odd.cnf:2:12\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL311[invalid-utf8]\x1b[0m invalid UTF-8 byte 0xff
+\x1b[36mconf/odd.cnf:2:13\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL312[control-character]\x1b[0m value contains the control character ␛ (ESC)
+\x1b[36mconf/odd.cnf:3:5\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL111[nul-byte]\x1b[0m NUL byte in a key
+\x1b[36mconf/odd.cnf:4:9\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL312[control-character]\x1b[0m value contains the control character "\v"
+\x1b[36mconf/odd.cnf:5:9\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL104[missing-final-newline]\x1b[0m the last line is a flag without a final newline
+\x1b[36mconf/tail.cnf:3:1\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL112[bracket-leak-risk]\x1b[0m an empty line appended here would break the file

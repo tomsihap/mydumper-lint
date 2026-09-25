@@ -1,0 +1,2 @@
+# Golden files are byte-exact expected outputs: never convert line endings.
+* -text

@@ -1,0 +1,18 @@
+conf/app.cnf:3:1: error MDL102[whitespace-only-line] line contains only spaces and tabs
+conf/app.cnf:4:8: info MDL307[spaces-around-equals] spaces around "="
+conf/app.cnf:6:1: error MDL108[bracket-state-leak] empty line becomes "= 1" because of the "[" on line 5
+conf/app.cnf:7:11: warning MDL313[quoted-value] value is wrapped in quotes
+conf/app.cnf:7:20: error MDL302[trailing-whitespace-in-value] value ends with whitespace
+conf/app.cnf:8:1: warning MDL205[duplicate-group] group [mydumper] is declared twice
+conf/app.cnf:9:1: info MDL306[leading-whitespace] line is indented
+conf/app.cnf:9:2: info MDL308[flag-without-value] option without a value
+conf/crlf.cnf:1:11: error MDL103[carriage-return] file uses CRLF line endings
+conf/crlf.cnf:3:1: error MDL103[carriage-return] empty line made of a carriage return
+conf/crlf.cnf:3:1: info MDL310[blank-lines] 3 consecutive blank lines
+conf/odd.cnf:1:1: error MDL101[utf8-bom] file starts with a UTF-8 byte order mark
+conf/odd.cnf:2:12: warning MDL311[invalid-utf8] invalid UTF-8 byte 0xff
+conf/odd.cnf:2:13: warning MDL312[control-character] value contains the control character ␛ (ESC)
+conf/odd.cnf:3:5: error MDL111[nul-byte] NUL byte in a key
+conf/odd.cnf:4:9: warning MDL312[control-character] value contains the control character "\v"
+conf/odd.cnf:5:9: error MDL104[missing-final-newline] the last line is a flag without a final newline
+conf/tail.cnf:3:1: warning MDL112[bracket-leak-risk] an empty line appended here would break the file

@@ -1,0 +1,129 @@
+conf/app.cnf:3:1: error MDL102[whitespace-only-line] line contains only spaces and tabs
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+3 |
+  | ^^^^^^
+  |
+  = help: fixable with --fix: empty the line
+
+conf/app.cnf:4:8: info MDL307[spaces-around-equals] spaces around "="
+  |
+4 | threads = 4
+  |        ^^^
+  |
+  = help: fixable with --fix: write threads=4
+
+conf/app.cnf:6:1: error MDL108[bracket-state-leak] empty line becomes "= 1" because of the "[" on line 5
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+6 |
+  | ^
+  |
+  = note: conf/app.cnf:5:7: the pre-processor state freezes at this "["
+  = help: fixable with --fix: delete the empty line
+
+conf/app.cnf:7:11: warning MDL313[quoted-value] value is wrapped in quotes
+  = mydumper: writes the dump into a directory named "/backup", quotes included
+  |
+7 | outputdir="/backup"
+  |           ^^^^^^^^^
+  |
+  = help: fixable with --fix --unsafe-fixes: remove the quotes
+
+conf/app.cnf:7:20: error MDL302[trailing-whitespace-in-value] value ends with whitespace
+  = mydumper: keeps the space: outputdir names another directory
+  |
+7 | outputdir="/backup"
+  |                    ^
+  |
+  = help: fixable with --fix --unsafe-fixes: trim the value
+
+conf/app.cnf:8:1: warning MDL205[duplicate-group] group [mydumper] is declared twice
+  = mydumper: merges both groups silently
+  |
+8 | [mydumper]
+  | ^^^^^^^^^^ (and 1 more line)
+  |
+  = note: conf/app.cnf:1:1: first declared here
+  = help: fixable with --fix --unsafe-fixes
+
+conf/app.cnf:9:1: info MDL306[leading-whitespace] line is indented
+  |
+9 |     routines
+  | ^^^^
+  |
+  = help: fixable with --fix: remove the indentation
+
+conf/app.cnf:9:2: info MDL308[flag-without-value] option without a value
+  |
+9 |     routines
+  |     ^^^^^^^^
+  |
+  = help: fixable with --fix: write routines=1
+
+conf/crlf.cnf:1:11: error MDL103[carriage-return] file uses CRLF line endings
+  |
+1 | [myloader]␍
+  |           ^
+  |
+  = help: fixable with --fix: convert "\r\n" to "\n"
+
+conf/crlf.cnf:3:1: error MDL103[carriage-return] empty line made of a carriage return
+  = mydumper: the line becomes "\r= 1", which rejects the whole file
+  |
+3 | ␍
+  | ^
+
+conf/crlf.cnf:3:1: info MDL310[blank-lines] 3 consecutive blank lines
+  |
+3 | ␍
+  | ^ (and 2 more lines)
+  |
+  = help: fixable with --fix: keep one blank line
+
+conf/odd.cnf:1:1: error MDL101[utf8-bom] file starts with a UTF-8 byte order mark
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+1 | \u{feff}[mydumper]
+  | ^^^^^^^^
+  |
+  = help: fixable with --fix: remove the byte order mark
+
+conf/odd.cnf:2:12: warning MDL311[invalid-utf8] invalid UTF-8 byte 0xff
+  |
+2 | where=café \xff␛[31m
+  |            ^^^^
+
+conf/odd.cnf:2:13: warning MDL312[control-character] value contains the control character ␛ (ESC)
+  |
+2 | where=café \xff␛[31m
+  |                ^
+
+conf/odd.cnf:3:5: error MDL111[nul-byte] NUL byte in a key
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+3 | rout␀ines=1
+  |     ^
+
+conf/odd.cnf:4:9: warning MDL312[control-character] value contains the control character "\v"
+  |
+4 | name=    日本␋語
+  |              ^
+
+conf/odd.cnf:5:9: error MDL104[missing-final-newline] the last line is a flag without a final newline
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+5 | routines
+  |         ^
+  |
+  = help: fixable with --fix: append a newline
+
+conf/tail.cnf:3:1: warning MDL112[bracket-leak-risk] an empty line appended here would break the file
+  |
+3 |
+  | ^
+  |
+  = note: conf/tail.cnf:2:7
+
+Fixed 2 problems.
+Found 8 errors, 6 warnings, 4 infos in 4 files (9 fixable with --fix, 3 more with --unsafe-fixes).
