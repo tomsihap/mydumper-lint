@@ -1,0 +1,50 @@
+# Dependabot version updates (design §12.2): Go modules, GitHub Actions (SHA pins
+# and their version comments) and Docker base images, weekly. Minor and patch
+# updates are grouped into one pull request per ecosystem; major updates come
+# alone. The cooldown lets a new release age a week before it is proposed;
+# security updates ignore it.
+#
+# Not covered, bump by hand: the golangci-lint version (ci.yml and mk/lint.mk,
+# kept equal by CI), the govulncheck version and the tool images in mk/lint.mk.
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      go-minor-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: chore(deps)
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions-minor-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: ci(deps)
+
+  - package-ecosystem: docker
+    directories:
+      - / # the future release Dockerfile
+      # Oracle images, one per GLib version (design §11.4). Dependabot only reads
+      # the directory it is given, so the glob covers per-version subdirectories.
+      - /tools/oracle/docker
+      - /tools/oracle/docker/*
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      docker-minor-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: chore(deps)
