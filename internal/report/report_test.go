@@ -84,9 +84,11 @@ func TestWriteErrorsPropagate(t *testing.T) {
 // spans and a missing source never make a format panic.
 func TestBogusSpansAreClamped(t *testing.T) {
 	bogus := []diag.Diagnostic{
-		{RuleID: "MDL900", Severity: diag.Error, Span: diag.Span{Start: -5, End: 2},
+		{
+			RuleID: "MDL900", Severity: diag.Error, Span: diag.Span{Start: -5, End: 2},
 			Related: []diag.Related{{Span: diag.Span{Start: 100, End: 200}}},
-			Fix:     &diag.Fix{Applicability: diag.Safe, Edits: []diag.Edit{{Start: 50, End: -1}}}},
+			Fix:     &diag.Fix{Applicability: diag.Safe, Edits: []diag.Edit{{Start: 50, End: -1}}},
+		},
 		{RuleID: "MDL901", Severity: diag.Off, Span: diag.Span{Start: 9, End: 3}},
 		{RuleID: "MDL902", Severity: diag.Warning, Span: diag.Span{Start: 1000, End: 1000}},
 	}
@@ -126,7 +128,7 @@ func TestPathsAndMessagesAreSanitized(t *testing.T) {
 	out := render(t, "text", []FileResult{r}, Options{Quiet: true})
 	for _, want := range []string{
 		"evil\U0000240a\U0000241b[2Jdir/a.cnf:1:1: warning MDL312[control\U00002409character] line one\U0000240aline two\U0000240d\n",
-		"= mydumper: bell\U00002407\n",
+		"= impact: bell\U00002407\n",
 		"= note: evil\U0000240a\U0000241b[2Jdir/a.cnf:1:3: x\U00002400y\n",
 		"= help: fixable with --fix --unsafe-fixes: del\U00002421\n",
 	} {

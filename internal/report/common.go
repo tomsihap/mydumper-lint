@@ -64,13 +64,13 @@ func ruleLabel(d diag.Diagnostic) string {
 	return d.RuleID + "[" + d.RuleName + "]"
 }
 
-// fullMessage is the message followed by the mydumper consequence, for the
+// fullMessage is the message followed by its impact on mydumper, for the
 // formats that carry a single text per diagnostic.
 func fullMessage(d diag.Diagnostic) string {
 	if d.Consequence == "" {
 		return d.Message
 	}
-	return d.Message + " (mydumper: " + d.Consequence + ")"
+	return d.Message + ". Impact: " + d.Consequence
 }
 
 // applicability is "safe" or "unsafe". Like Summarize, it treats anything

@@ -8,20 +8,32 @@ import "github.com/tomsihap/mydumper-lint/internal/diag"
 func oddResult() FileResult {
 	const src = "\xef\xbb\xbf[mydumper]\nwhere=caf\xc3\xa9 \xff\x1b[31m\nrout\x00ines=1\nname=\t\U000065e5\U0000672c\v\U00008a9e\nroutines"
 	ds := []diag.Diagnostic{
-		{RuleID: "MDL101", RuleName: "utf8-bom", Severity: diag.Error, Span: find(src, "\xef\xbb\xbf", 0),
+		{
+			RuleID: "MDL101", RuleName: "utf8-bom", Severity: diag.Error, Span: find(src, "\xef\xbb\xbf", 0),
 			Message: "file starts with a UTF-8 byte order mark", Consequence: fatal,
-			Fix: fix(diag.Safe, "remove the byte order mark", edit(find(src, "\xef\xbb\xbf", 0), ""))},
-		{RuleID: "MDL311", RuleName: "invalid-utf8", Severity: diag.Warning, Span: find(src, "\xff", 0),
-			Message: "invalid UTF-8 byte 0xff"},
-		{RuleID: "MDL312", RuleName: "control-character", Severity: diag.Warning, Span: find(src, "\x1b", 0),
-			Message: "value contains the control character \x1b (ESC)"},
-		{RuleID: "MDL111", RuleName: "nul-byte", Severity: diag.Error, Span: find(src, "\x00", 0),
-			Message: "NUL byte in a key", Consequence: fatal},
-		{RuleID: "MDL312", RuleName: "control-character", Severity: diag.Warning, Span: find(src, "\v", 0),
-			Message: `value contains the control character "\v"`},
-		{RuleID: "MDL104", RuleName: "missing-final-newline", Severity: diag.Error, Span: point(len(src)),
+			Fix: fix(diag.Safe, "remove the byte order mark", edit(find(src, "\xef\xbb\xbf", 0), "")),
+		},
+		{
+			RuleID: "MDL311", RuleName: "invalid-utf8", Severity: diag.Warning, Span: find(src, "\xff", 0),
+			Message: "invalid UTF-8 byte 0xff",
+		},
+		{
+			RuleID: "MDL312", RuleName: "control-character", Severity: diag.Warning, Span: find(src, "\x1b", 0),
+			Message: "value contains the control character \x1b (ESC)",
+		},
+		{
+			RuleID: "MDL111", RuleName: "nul-byte", Severity: diag.Error, Span: find(src, "\x00", 0),
+			Message: "NUL byte in a key", Consequence: fatal,
+		},
+		{
+			RuleID: "MDL312", RuleName: "control-character", Severity: diag.Warning, Span: find(src, "\v", 0),
+			Message: `value contains the control character "\v"`,
+		},
+		{
+			RuleID: "MDL104", RuleName: "missing-final-newline", Severity: diag.Error, Span: point(len(src)),
 			Message: "the last line is a flag without a final newline", Consequence: fatal,
-			Fix: fix(diag.Safe, "append a newline", edit(point(len(src)), "\n"))},
+			Fix: fix(diag.Safe, "append a newline", edit(point(len(src)), "\n")),
+		},
 	}
 	diag.Sort(ds)
 	return FileResult{Path: "conf/odd.cnf", Source: []byte(src), Version: "v0.19.3-3", Diagnostics: ds}
@@ -31,9 +43,11 @@ func oddResult() FileResult {
 func tailResult() FileResult {
 	const src = "[mydumper]\n# see [docs]\n"
 	ds := []diag.Diagnostic{
-		{RuleID: "MDL112", RuleName: "bracket-leak-risk", Severity: diag.Warning, Span: point(len(src)),
+		{
+			RuleID: "MDL112", RuleName: "bracket-leak-risk", Severity: diag.Warning, Span: point(len(src)),
 			Message: "an empty line appended here would break the file",
-			Related: []diag.Related{{Span: find(src, "[", 1)}}},
+			Related: []diag.Related{{Span: find(src, "[", 1)}},
+		},
 	}
 	return FileResult{Path: "conf/tail.cnf", Source: []byte(src), Loadable: true, Version: "v1.0.8-1", Diagnostics: ds}
 }

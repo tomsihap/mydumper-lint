@@ -1,6 +1,6 @@
 [
   {
-    "description": "MDL102[whitespace-only-line] line contains only spaces and tabs (mydumper: rejects the whole file: every option in it is ignored)",
+    "description": "MDL102[whitespace-only-line] line contains only spaces and tabs. Impact: rejects the whole file: every option in it is ignored",
     "check_name": "MDL102",
     "fingerprint": "2032b7af22700b3a8552c3a8c4173c3e5356111ce9995837375c4d59a068397c",
     "severity": "critical",
@@ -24,7 +24,7 @@
     }
   },
   {
-    "description": "MDL108[bracket-state-leak] empty line becomes \"= 1\" because of the \"[\" on line 5 (mydumper: rejects the whole file: every option in it is ignored)",
+    "description": "MDL108[bracket-state-leak] empty line becomes \"= 1\" because of the \"[\" on line 5. Impact: rejects the whole file: every option in it is ignored",
     "check_name": "MDL108",
     "fingerprint": "3cd9b525df3b288135d6328f4f1d3154284a49045c7d1bb422399f7852c4860d",
     "severity": "critical",
@@ -36,7 +36,7 @@
     }
   },
   {
-    "description": "MDL313[quoted-value] value is wrapped in quotes (mydumper: writes the dump into a directory named \"/backup\", quotes included)",
+    "description": "MDL313[quoted-value] value is wrapped in quotes. Impact: writes the dump into a directory named \"/backup\", quotes included",
     "check_name": "MDL313",
     "fingerprint": "33916fb4fa3bcbbcf99fd4b6cacb114413ab64e9124f9bb5fb912c0e0fcf8895",
     "severity": "minor",
@@ -48,7 +48,7 @@
     }
   },
   {
-    "description": "MDL302[trailing-whitespace-in-value] value ends with whitespace (mydumper: keeps the space: outputdir names another directory)",
+    "description": "MDL302[trailing-whitespace-in-value] value ends with whitespace. Impact: keeps the space: outputdir names another directory",
     "check_name": "MDL302",
     "fingerprint": "740e4b256259e22488ffdcbf973a8b860f488b31c5a1a78d80a76dd6861b84b6",
     "severity": "critical",
@@ -60,7 +60,7 @@
     }
   },
   {
-    "description": "MDL205[duplicate-group] group [mydumper] is declared twice (mydumper: merges both groups silently)",
+    "description": "MDL205[duplicate-group] group [mydumper] is declared twice. Impact: merges both groups silently",
     "check_name": "MDL205",
     "fingerprint": "5df37e217bd614d210cd5cdc9507c1781f62cae47ef590de5260a51f600fedae",
     "severity": "minor",
@@ -108,7 +108,7 @@
     }
   },
   {
-    "description": "MDL103[carriage-return] empty line made of a carriage return (mydumper: the line becomes \"\\r= 1\", which rejects the whole file)",
+    "description": "MDL103[carriage-return] empty line made of a carriage return. Impact: the line becomes \"\\r= 1\", which rejects the whole file",
     "check_name": "MDL103",
     "fingerprint": "fcd9fe97a8db63dd21f54eab15364d2a586a8cc1de1d42645813907d4278c245",
     "severity": "critical",
@@ -132,7 +132,7 @@
     }
   },
   {
-    "description": "MDL101[utf8-bom] file starts with a UTF-8 byte order mark (mydumper: rejects the whole file: every option in it is ignored)",
+    "description": "MDL101[utf8-bom] file starts with a UTF-8 byte order mark. Impact: rejects the whole file: every option in it is ignored",
     "check_name": "MDL101",
     "fingerprint": "47de69277f43b1d38e024613611c30507ff812f7fb18ab547cecf1e62cca8fb7",
     "severity": "critical",
@@ -168,7 +168,7 @@
     }
   },
   {
-    "description": "MDL111[nul-byte] NUL byte in a key (mydumper: rejects the whole file: every option in it is ignored)",
+    "description": "MDL111[nul-byte] NUL byte in a key. Impact: rejects the whole file: every option in it is ignored",
     "check_name": "MDL111",
     "fingerprint": "0271f22f60f4dcc54d9477cae73da1bdd22bf2c4f86597f7e4a5a838d8f4a60c",
     "severity": "critical",
@@ -192,7 +192,7 @@
     }
   },
   {
-    "description": "MDL104[missing-final-newline] the last line is a flag without a final newline (mydumper: rejects the whole file: every option in it is ignored)",
+    "description": "MDL104[missing-final-newline] the last line is a flag without a final newline. Impact: rejects the whole file: every option in it is ignored",
     "check_name": "MDL104",
     "fingerprint": "ccf6d8018e58a57805b1c7040665555cde7d323e4c133e91e42df7d2d016bda1",
     "severity": "critical",

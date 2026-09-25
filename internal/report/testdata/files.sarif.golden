@@ -287,7 +287,7 @@
           "ruleIndex": 1,
           "level": "error",
           "message": {
-            "text": "line contains only spaces and tabs (mydumper: rejects the whole file: every option in it is ignored)"
+            "text": "line contains only spaces and tabs. Impact: rejects the whole file: every option in it is ignored"
           },
           "locations": [
             {
@@ -404,7 +404,7 @@
           "ruleIndex": 4,
           "level": "error",
           "message": {
-            "text": "empty line becomes \"= 1\" because of the \"[\" on line 5 (mydumper: rejects the whole file: every option in it is ignored)"
+            "text": "empty line becomes \"= 1\" because of the \"[\" on line 5. Impact: rejects the whole file: every option in it is ignored"
           },
           "locations": [
             {
@@ -481,7 +481,7 @@
           "ruleIndex": 15,
           "level": "warning",
           "message": {
-            "text": "value is wrapped in quotes (mydumper: writes the dump into a directory named \"/backup\", quotes included)"
+            "text": "value is wrapped in quotes. Impact: writes the dump into a directory named \"/backup\", quotes included"
           },
           "locations": [
             {
@@ -548,7 +548,7 @@
           "ruleIndex": 8,
           "level": "error",
           "message": {
-            "text": "value ends with whitespace (mydumper: keeps the space: outputdir names another directory)"
+            "text": "value ends with whitespace. Impact: keeps the space: outputdir names another directory"
           },
           "locations": [
             {
@@ -605,7 +605,7 @@
           "ruleIndex": 7,
           "level": "warning",
           "message": {
-            "text": "group [mydumper] is declared twice (mydumper: merges both groups silently)"
+            "text": "group [mydumper] is declared twice. Impact: merges both groups silently"
           },
           "locations": [
             {
@@ -903,7 +903,7 @@
           "ruleIndex": 2,
           "level": "error",
           "message": {
-            "text": "empty line made of a carriage return (mydumper: the line becomes \"\\r= 1\", which rejects the whole file)"
+            "text": "empty line made of a carriage return. Impact: the line becomes \"\\r= 1\", which rejects the whole file"
           },
           "locations": [
             {
@@ -987,7 +987,7 @@
           "ruleIndex": 0,
           "level": "error",
           "message": {
-            "text": "file starts with a UTF-8 byte order mark (mydumper: rejects the whole file: every option in it is ignored)"
+            "text": "file starts with a UTF-8 byte order mark. Impact: rejects the whole file: every option in it is ignored"
           },
           "locations": [
             {
@@ -1098,7 +1098,7 @@
           "ruleIndex": 5,
           "level": "error",
           "message": {
-            "text": "NUL byte in a key (mydumper: rejects the whole file: every option in it is ignored)"
+            "text": "NUL byte in a key. Impact: rejects the whole file: every option in it is ignored"
           },
           "locations": [
             {
@@ -1152,7 +1152,7 @@
           "ruleIndex": 3,
           "level": "error",
           "message": {
-            "text": "the last line is a flag without a final newline (mydumper: rejects the whole file: every option in it is ignored)"
+            "text": "the last line is a flag without a final newline. Impact: rejects the whole file: every option in it is ignored"
           },
           "locations": [
             {

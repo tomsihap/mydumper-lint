@@ -40,8 +40,10 @@ func TestGitHubEscaping(t *testing.T) {
 func TestGitHubCommands(t *testing.T) {
 	src := "[g]\nk=1\n\n"
 	r := FileResult{Path: "dir,x/a:b.cnf", Source: []byte(src), Diagnostics: []diag.Diagnostic{
-		{RuleID: "MDL310", RuleName: "blank-lines", Severity: diag.Info, Span: lineSpan(src, 3, true),
-			Message: "50% blank\nline"},
+		{
+			RuleID: "MDL310", RuleName: "blank-lines", Severity: diag.Info, Span: lineSpan(src, 3, true),
+			Message: "50% blank\nline",
+		},
 		{RuleID: "MDL999", Severity: diag.Warning, Span: diag.Span{Start: 0, End: len(src)}, Message: "m"},
 		{Severity: diag.Error, Span: lineSpan(src, 2, true), Message: "no rule"},
 	}}

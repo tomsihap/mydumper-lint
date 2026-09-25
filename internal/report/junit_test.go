@@ -71,7 +71,7 @@ func TestJUnitEscaping(t *testing.T) {
 	if want := sanitize(fullMessage(r.Diagnostics[0])); c.Failure.Message != want {
 		t.Errorf("failure message = %q, want %q", c.Failure.Message, want)
 	}
-	if !strings.Contains(c.Failure.Details, sanitize(msg)) || !strings.Contains(c.Failure.Details, "= mydumper: x]]>y") {
+	if !strings.Contains(c.Failure.Details, sanitize(msg)) || !strings.Contains(c.Failure.Details, "= impact: x]]>y") {
 		t.Errorf("failure details = %q", c.Failure.Details)
 	}
 }

@@ -1,5 +1,5 @@
 \x1b[36mconf/app.cnf:3:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL102[whitespace-only-line]\x1b[0m line contains only spaces and tabs
-  = \x1b[1mmydumper:\x1b[0m rejects the whole file: every option in it is ignored
+  = \x1b[1mimpact:\x1b[0m rejects the whole file: every option in it is ignored
   |
 3 |
   | \x1b[1;31m^^^^^^\x1b[0m
@@ -14,7 +14,7 @@
   = \x1b[1mhelp:\x1b[0m fixable with --fix: write threads=4
 
 \x1b[36mconf/app.cnf:6:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL108[bracket-state-leak]\x1b[0m empty line becomes "= 1" because of the "[" on line 5
-  = \x1b[1mmydumper:\x1b[0m rejects the whole file: every option in it is ignored
+  = \x1b[1mimpact:\x1b[0m rejects the whole file: every option in it is ignored
   |
 6 |
   | \x1b[1;31m^\x1b[0m
@@ -23,7 +23,7 @@
   = \x1b[1mhelp:\x1b[0m fixable with --fix: delete the empty line
 
 \x1b[36mconf/app.cnf:7:11\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL313[quoted-value]\x1b[0m value is wrapped in quotes
-  = \x1b[1mmydumper:\x1b[0m writes the dump into a directory named "/backup", quotes included
+  = \x1b[1mimpact:\x1b[0m writes the dump into a directory named "/backup", quotes included
   |
 7 | outputdir="/backup"
   |           \x1b[1;33m^^^^^^^^^\x1b[0m
@@ -31,7 +31,7 @@
   = \x1b[1mhelp:\x1b[0m fixable with --fix --unsafe-fixes: remove the quotes
 
 \x1b[36mconf/app.cnf:7:20\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL302[trailing-whitespace-in-value]\x1b[0m value ends with whitespace
-  = \x1b[1mmydumper:\x1b[0m keeps the space: outputdir names another directory
+  = \x1b[1mimpact:\x1b[0m keeps the space: outputdir names another directory
   |
 7 | outputdir="/backup"
   |                    \x1b[1;31m^\x1b[0m
@@ -39,7 +39,7 @@
   = \x1b[1mhelp:\x1b[0m fixable with --fix --unsafe-fixes: trim the value
 
 \x1b[36mconf/app.cnf:8:1\x1b[0m: \x1b[1;33mwarning\x1b[0m \x1b[1mMDL205[duplicate-group]\x1b[0m group [mydumper] is declared twice
-  = \x1b[1mmydumper:\x1b[0m merges both groups silently
+  = \x1b[1mimpact:\x1b[0m merges both groups silently
   |
 8 | [mydumper]
   | \x1b[1;33m^^^^^^^^^^\x1b[0m (and 1 more line)
@@ -69,7 +69,7 @@
   = \x1b[1mhelp:\x1b[0m fixable with --fix: convert "\r\n" to "\n"
 
 \x1b[36mconf/crlf.cnf:3:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL103[carriage-return]\x1b[0m empty line made of a carriage return
-  = \x1b[1mmydumper:\x1b[0m the line becomes "\r= 1", which rejects the whole file
+  = \x1b[1mimpact:\x1b[0m the line becomes "\r= 1", which rejects the whole file
   |
 3 | ␍
   | \x1b[1;31m^\x1b[0m
@@ -82,7 +82,7 @@
   = \x1b[1mhelp:\x1b[0m fixable with --fix: keep one blank line
 
 \x1b[36mconf/odd.cnf:1:1\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL101[utf8-bom]\x1b[0m file starts with a UTF-8 byte order mark
-  = \x1b[1mmydumper:\x1b[0m rejects the whole file: every option in it is ignored
+  = \x1b[1mimpact:\x1b[0m rejects the whole file: every option in it is ignored
   |
 1 | \u{feff}[mydumper]
   | \x1b[1;31m^^^^^^^^\x1b[0m
@@ -100,7 +100,7 @@
   |                \x1b[1;33m^\x1b[0m
 
 \x1b[36mconf/odd.cnf:3:5\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL111[nul-byte]\x1b[0m NUL byte in a key
-  = \x1b[1mmydumper:\x1b[0m rejects the whole file: every option in it is ignored
+  = \x1b[1mimpact:\x1b[0m rejects the whole file: every option in it is ignored
   |
 3 | rout␀ines=1
   |     \x1b[1;31m^\x1b[0m
@@ -111,7 +111,7 @@
   |              \x1b[1;33m^\x1b[0m
 
 \x1b[36mconf/odd.cnf:5:9\x1b[0m: \x1b[1;31merror\x1b[0m \x1b[1mMDL104[missing-final-newline]\x1b[0m the last line is a flag without a final newline
-  = \x1b[1mmydumper:\x1b[0m rejects the whole file: every option in it is ignored
+  = \x1b[1mimpact:\x1b[0m rejects the whole file: every option in it is ignored
   |
 5 | routines
   |         \x1b[1;31m^\x1b[0m

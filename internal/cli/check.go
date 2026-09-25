@@ -435,8 +435,7 @@ func (c *checkCmd) write(stdout io.Writer, results []report.FileResult) error {
 			Rules:       ruleMetas(),
 		}
 		if err := f.Write(w, results, sum, opt); err != nil {
-			closeFn()
-			return err
+			return errors.Join(err, closeFn())
 		}
 		if err := closeFn(); err != nil {
 			return err

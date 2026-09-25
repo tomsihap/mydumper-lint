@@ -156,8 +156,10 @@ func sarifRules(meta []RuleMeta, results []FileResult) ([]sarifRule, map[string]
 	rules := make([]sarifRule, 0, len(meta))
 	index := make(map[string]int, len(meta))
 	for _, m := range meta {
-		rule := sarifRule{ID: m.ID, Name: m.Name, HelpURI: m.DocsURL,
-			DefaultConfiguration: &sarifRuleConfig{Level: sarifLevel(m.Severity)}}
+		rule := sarifRule{
+			ID: m.ID, Name: m.Name, HelpURI: m.DocsURL,
+			DefaultConfiguration: &sarifRuleConfig{Level: sarifLevel(m.Severity)},
+		}
 		if m.Summary != "" {
 			rule.ShortDescription = &sarifText{Text: m.Summary}
 		}
@@ -197,6 +199,7 @@ func sarifLevel(s diag.Severity) string {
 		return "warning"
 	case diag.Info:
 		return "note"
+	case diag.Off:
 	}
 	return "none"
 }

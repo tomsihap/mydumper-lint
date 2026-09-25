@@ -59,6 +59,7 @@ func githubCommand(s diag.Severity) string {
 		return "error"
 	case diag.Warning:
 		return "warning"
+	case diag.Info, diag.Off:
 	}
 	return "notice"
 }

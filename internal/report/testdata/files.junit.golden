@@ -2,8 +2,8 @@
 <testsuites name="mydumper-lint" tests="19" failures="18" errors="0">
   <testsuite name="conf/app.cnf" tests="8" failures="8" errors="0">
     <testcase name="conf/app.cnf:3:1 whitespace-only-line" classname="MDL102" file="conf/app.cnf">
-      <failure message="line contains only spaces and tabs (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/app.cnf:3:1: error MDL102[whitespace-only-line] line contains only spaces and tabs
-  = mydumper: rejects the whole file: every option in it is ignored
+      <failure message="line contains only spaces and tabs. Impact: rejects the whole file: every option in it is ignored" type="error"><![CDATA[conf/app.cnf:3:1: error MDL102[whitespace-only-line] line contains only spaces and tabs
+  = impact: rejects the whole file: every option in it is ignored
   |
 3 |
   | ^^^^^^
@@ -19,8 +19,8 @@
   = help: fixable with --fix: write threads=4]]></failure>
     </testcase>
     <testcase name="conf/app.cnf:6:1 bracket-state-leak" classname="MDL108" file="conf/app.cnf">
-      <failure message="empty line becomes &#34;= 1&#34; because of the &#34;[&#34; on line 5 (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/app.cnf:6:1: error MDL108[bracket-state-leak] empty line becomes "= 1" because of the "[" on line 5
-  = mydumper: rejects the whole file: every option in it is ignored
+      <failure message="empty line becomes &#34;= 1&#34; because of the &#34;[&#34; on line 5. Impact: rejects the whole file: every option in it is ignored" type="error"><![CDATA[conf/app.cnf:6:1: error MDL108[bracket-state-leak] empty line becomes "= 1" because of the "[" on line 5
+  = impact: rejects the whole file: every option in it is ignored
   |
 6 |
   | ^
@@ -29,8 +29,8 @@
   = help: fixable with --fix: delete the empty line]]></failure>
     </testcase>
     <testcase name="conf/app.cnf:7:11 quoted-value" classname="MDL313" file="conf/app.cnf">
-      <failure message="value is wrapped in quotes (mydumper: writes the dump into a directory named &#34;/backup&#34;, quotes included)" type="warning"><![CDATA[conf/app.cnf:7:11: warning MDL313[quoted-value] value is wrapped in quotes
-  = mydumper: writes the dump into a directory named "/backup", quotes included
+      <failure message="value is wrapped in quotes. Impact: writes the dump into a directory named &#34;/backup&#34;, quotes included" type="warning"><![CDATA[conf/app.cnf:7:11: warning MDL313[quoted-value] value is wrapped in quotes
+  = impact: writes the dump into a directory named "/backup", quotes included
   |
 7 | outputdir="/backup"
   |           ^^^^^^^^^
@@ -38,8 +38,8 @@
   = help: fixable with --fix --unsafe-fixes: remove the quotes]]></failure>
     </testcase>
     <testcase name="conf/app.cnf:7:20 trailing-whitespace-in-value" classname="MDL302" file="conf/app.cnf">
-      <failure message="value ends with whitespace (mydumper: keeps the space: outputdir names another directory)" type="error"><![CDATA[conf/app.cnf:7:20: error MDL302[trailing-whitespace-in-value] value ends with whitespace
-  = mydumper: keeps the space: outputdir names another directory
+      <failure message="value ends with whitespace. Impact: keeps the space: outputdir names another directory" type="error"><![CDATA[conf/app.cnf:7:20: error MDL302[trailing-whitespace-in-value] value ends with whitespace
+  = impact: keeps the space: outputdir names another directory
   |
 7 | outputdir="/backup"
   |                    ^
@@ -47,8 +47,8 @@
   = help: fixable with --fix --unsafe-fixes: trim the value]]></failure>
     </testcase>
     <testcase name="conf/app.cnf:8:1 duplicate-group" classname="MDL205" file="conf/app.cnf">
-      <failure message="group [mydumper] is declared twice (mydumper: merges both groups silently)" type="warning"><![CDATA[conf/app.cnf:8:1: warning MDL205[duplicate-group] group [mydumper] is declared twice
-  = mydumper: merges both groups silently
+      <failure message="group [mydumper] is declared twice. Impact: merges both groups silently" type="warning"><![CDATA[conf/app.cnf:8:1: warning MDL205[duplicate-group] group [mydumper] is declared twice
+  = impact: merges both groups silently
   |
 8 | [mydumper]
   | ^^^^^^^^^^ (and 1 more line)
@@ -83,8 +83,8 @@
   = help: fixable with --fix: convert "\r\n" to "\n"]]></failure>
     </testcase>
     <testcase name="conf/crlf.cnf:3:1 carriage-return" classname="MDL103" file="conf/crlf.cnf">
-      <failure message="empty line made of a carriage return (mydumper: the line becomes &#34;\r= 1&#34;, which rejects the whole file)" type="error"><![CDATA[conf/crlf.cnf:3:1: error MDL103[carriage-return] empty line made of a carriage return
-  = mydumper: the line becomes "\r= 1", which rejects the whole file
+      <failure message="empty line made of a carriage return. Impact: the line becomes &#34;\r= 1&#34;, which rejects the whole file" type="error"><![CDATA[conf/crlf.cnf:3:1: error MDL103[carriage-return] empty line made of a carriage return
+  = impact: the line becomes "\r= 1", which rejects the whole file
   |
 3 | ␍
   | ^]]></failure>
@@ -100,8 +100,8 @@
   </testsuite>
   <testsuite name="conf/odd.cnf" tests="6" failures="6" errors="0">
     <testcase name="conf/odd.cnf:1:1 utf8-bom" classname="MDL101" file="conf/odd.cnf">
-      <failure message="file starts with a UTF-8 byte order mark (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/odd.cnf:1:1: error MDL101[utf8-bom] file starts with a UTF-8 byte order mark
-  = mydumper: rejects the whole file: every option in it is ignored
+      <failure message="file starts with a UTF-8 byte order mark. Impact: rejects the whole file: every option in it is ignored" type="error"><![CDATA[conf/odd.cnf:1:1: error MDL101[utf8-bom] file starts with a UTF-8 byte order mark
+  = impact: rejects the whole file: every option in it is ignored
   |
 1 | \u{feff}[mydumper]
   | ^^^^^^^^
@@ -121,8 +121,8 @@
   |                ^]]></failure>
     </testcase>
     <testcase name="conf/odd.cnf:3:5 nul-byte" classname="MDL111" file="conf/odd.cnf">
-      <failure message="NUL byte in a key (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/odd.cnf:3:5: error MDL111[nul-byte] NUL byte in a key
-  = mydumper: rejects the whole file: every option in it is ignored
+      <failure message="NUL byte in a key. Impact: rejects the whole file: every option in it is ignored" type="error"><![CDATA[conf/odd.cnf:3:5: error MDL111[nul-byte] NUL byte in a key
+  = impact: rejects the whole file: every option in it is ignored
   |
 3 | rout␀ines=1
   |     ^]]></failure>
@@ -134,8 +134,8 @@
   |              ^]]></failure>
     </testcase>
     <testcase name="conf/odd.cnf:5:9 missing-final-newline" classname="MDL104" file="conf/odd.cnf">
-      <failure message="the last line is a flag without a final newline (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/odd.cnf:5:9: error MDL104[missing-final-newline] the last line is a flag without a final newline
-  = mydumper: rejects the whole file: every option in it is ignored
+      <failure message="the last line is a flag without a final newline. Impact: rejects the whole file: every option in it is ignored" type="error"><![CDATA[conf/odd.cnf:5:9: error MDL104[missing-final-newline] the last line is a flag without a final newline
+  = impact: rejects the whole file: every option in it is ignored
   |
 5 | routines
   |         ^

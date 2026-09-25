@@ -51,30 +51,46 @@ const fatal = "rejects the whole file: every option in it is ignored"
 func appResult() FileResult {
 	const src = "[mydumper]\nhost=db\n  \t\nthreads = 4\n# see [docs]\n\noutputdir=\"/backup\" \n[mydumper]\n\troutines\n"
 	ds := []diag.Diagnostic{
-		{RuleID: "MDL102", RuleName: "whitespace-only-line", Severity: diag.Error, Span: find(src, "  \t", 0),
+		{
+			RuleID: "MDL102", RuleName: "whitespace-only-line", Severity: diag.Error, Span: find(src, "  \t", 0),
 			Message: "line contains only spaces and tabs", Consequence: fatal,
-			Fix: fix(diag.Safe, "empty the line", edit(find(src, "  \t", 0), ""))},
-		{RuleID: "MDL307", RuleName: "spaces-around-equals", Severity: diag.Info, Span: find(src, " = ", 0),
-			Message: `spaces around "="`, Fix: fix(diag.Safe, "write threads=4", edit(find(src, " = ", 0), "="))},
-		{RuleID: "MDL108", RuleName: "bracket-state-leak", Severity: diag.Error, Span: point(lineSpan(src, 6, false).Start),
+			Fix: fix(diag.Safe, "empty the line", edit(find(src, "  \t", 0), "")),
+		},
+		{
+			RuleID: "MDL307", RuleName: "spaces-around-equals", Severity: diag.Info, Span: find(src, " = ", 0),
+			Message: `spaces around "="`, Fix: fix(diag.Safe, "write threads=4", edit(find(src, " = ", 0), "=")),
+		},
+		{
+			RuleID: "MDL108", RuleName: "bracket-state-leak", Severity: diag.Error, Span: point(lineSpan(src, 6, false).Start),
 			Message: `empty line becomes "= 1" because of the "[" on line 5`, Consequence: fatal,
 			Related: []diag.Related{{Span: find(src, "[", 1), Message: `the pre-processor state freezes at this "["`}},
-			Fix:     fix(diag.Safe, "delete the empty line", edit(lineSpan(src, 6, true), ""))},
-		{RuleID: "MDL313", RuleName: "quoted-value", Severity: diag.Warning, Span: find(src, `"/backup"`, 0),
+			Fix:     fix(diag.Safe, "delete the empty line", edit(lineSpan(src, 6, true), "")),
+		},
+		{
+			RuleID: "MDL313", RuleName: "quoted-value", Severity: diag.Warning, Span: find(src, `"/backup"`, 0),
 			Message: "value is wrapped in quotes", Consequence: `writes the dump into a directory named "/backup", quotes included`,
-			Fix: fix(diag.Unsafe, "remove the quotes", edit(find(src, `"`, 0), ""), edit(find(src, `"`, 1), ""))},
-		{RuleID: "MDL302", RuleName: "trailing-whitespace-in-value", Severity: diag.Error, Span: head(find(src, " \n[", 0)),
+			Fix: fix(diag.Unsafe, "remove the quotes", edit(find(src, `"`, 0), ""), edit(find(src, `"`, 1), "")),
+		},
+		{
+			RuleID: "MDL302", RuleName: "trailing-whitespace-in-value", Severity: diag.Error, Span: head(find(src, " \n[", 0)),
 			Message: "value ends with whitespace", Consequence: "keeps the space: outputdir names another directory",
-			Fix: fix(diag.Unsafe, "trim the value", edit(head(find(src, " \n[", 0)), ""))},
-		{RuleID: "MDL205", RuleName: "duplicate-group", Severity: diag.Warning,
+			Fix: fix(diag.Unsafe, "trim the value", edit(head(find(src, " \n[", 0)), "")),
+		},
+		{
+			RuleID: "MDL205", RuleName: "duplicate-group", Severity: diag.Warning,
 			Span:    diag.Span{Start: lineSpan(src, 8, false).Start, End: lineSpan(src, 9, false).End},
 			Message: "group [mydumper] is declared twice", Consequence: "merges both groups silently",
 			Related: []diag.Related{{Span: lineSpan(src, 1, false), Message: "first declared here"}},
-			Fix:     fix(diag.Unsafe, "", edit(lineSpan(src, 8, true), ""))},
-		{RuleID: "MDL306", RuleName: "leading-whitespace", Severity: diag.Info, Span: find(src, "\t", 1),
-			Message: "line is indented", Fix: fix(diag.Safe, "remove the indentation", edit(find(src, "\t", 1), ""))},
-		{RuleID: "MDL308", RuleName: "flag-without-value", Severity: diag.Info, Span: find(src, "routines", 0),
-			Message: "option without a value", Fix: fix(diag.Safe, "write routines=1", edit(point(find(src, "routines", 0).End), "=1"))},
+			Fix:     fix(diag.Unsafe, "", edit(lineSpan(src, 8, true), "")),
+		},
+		{
+			RuleID: "MDL306", RuleName: "leading-whitespace", Severity: diag.Info, Span: find(src, "\t", 1),
+			Message: "line is indented", Fix: fix(diag.Safe, "remove the indentation", edit(find(src, "\t", 1), "")),
+		},
+		{
+			RuleID: "MDL308", RuleName: "flag-without-value", Severity: diag.Info, Span: find(src, "routines", 0),
+			Message: "option without a value", Fix: fix(diag.Safe, "write routines=1", edit(point(find(src, "routines", 0).End), "=1")),
+		},
 	}
 	diag.Sort(ds)
 	return FileResult{Path: "conf/app.cnf", Source: []byte(src), Version: "v0.19.3-3", Diagnostics: ds}
@@ -92,15 +108,21 @@ func crlfResult() FileResult {
 		crs = append(crs, edit(find(src, "\r", i), ""))
 	}
 	ds := []diag.Diagnostic{
-		{RuleID: "MDL103", RuleName: "carriage-return", Severity: diag.Error, Span: find(src, "\r", 0),
-			Message: "file uses CRLF line endings", Fix: fix(diag.Safe, `convert "\r\n" to "\n"`, crs...)},
-		{RuleID: "MDL103", RuleName: "carriage-return", Severity: diag.Error, Span: find(src, "\r", 2),
+		{
+			RuleID: "MDL103", RuleName: "carriage-return", Severity: diag.Error, Span: find(src, "\r", 0),
+			Message: "file uses CRLF line endings", Fix: fix(diag.Safe, `convert "\r\n" to "\n"`, crs...),
+		},
+		{
+			RuleID: "MDL103", RuleName: "carriage-return", Severity: diag.Error, Span: find(src, "\r", 2),
 			Message:     "empty line made of a carriage return",
-			Consequence: `the line becomes "\r= 1", which rejects the whole file`},
-		{RuleID: "MDL310", RuleName: "blank-lines", Severity: diag.Info,
+			Consequence: `the line becomes "\r= 1", which rejects the whole file`,
+		},
+		{
+			RuleID: "MDL310", RuleName: "blank-lines", Severity: diag.Info,
 			Span:    diag.Span{Start: lineSpan(src, 3, false).Start, End: lineSpan(src, 5, true).End},
 			Message: "3 consecutive blank lines",
-			Fix:     fix(diag.Safe, "keep one blank line", edit(diag.Span{Start: lineSpan(src, 4, false).Start, End: lineSpan(src, 5, true).End}, ""))},
+			Fix:     fix(diag.Safe, "keep one blank line", edit(diag.Span{Start: lineSpan(src, 4, false).Start, End: lineSpan(src, 5, true).End}, "")),
+		},
 	}
 	diag.Sort(ds)
 	return FileResult{Path: "conf/crlf.cnf", Source: []byte(src), Version: "v0.19.3-3", Diagnostics: ds}

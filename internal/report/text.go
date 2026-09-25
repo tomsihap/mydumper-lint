@@ -65,9 +65,9 @@ func severityStyle(s diag.Severity) string {
 		return "\x1b[1;31m"
 	case diag.Warning:
 		return "\x1b[1;33m"
-	default:
-		return "\x1b[1;34m"
+	case diag.Info, diag.Off:
 	}
+	return "\x1b[1;34m"
 }
 
 // location formats "path:line:col" in cyan.
@@ -94,7 +94,7 @@ func writeBlock(b *strings.Builder, v fileView, d diag.Diagnostic, p painter) {
 	gutter := strings.Repeat(" ", len(strconv.Itoa(start.Line)))
 	b.WriteString(header(v, d, p) + "\n")
 	if d.Consequence != "" {
-		fmt.Fprintf(b, "%s = %s %s\n", gutter, p.paint(styleBold, "mydumper:"), sanitize(d.Consequence))
+		fmt.Fprintf(b, "%s = %s %s\n", gutter, p.paint(styleBold, "impact:"), sanitize(d.Consequence))
 	}
 
 	ls := v.lineStart(start.Line)

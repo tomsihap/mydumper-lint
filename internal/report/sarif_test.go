@@ -92,8 +92,10 @@ func TestSARIFRulesMissingFromMetadata(t *testing.T) {
 }
 
 func TestRuleFamily(t *testing.T) {
-	tests := map[string]string{"MDL001": "suppressions", "MDL112": "loadability", "MDL205": "groups", "MDL313": "lines",
-		"MDL401": "options", "MDL502": "masking", "MDL601": "connection", "MDL905": "conventions", "MDL701": "", "MDL": "", "ABC123": ""}
+	tests := map[string]string{
+		"MDL001": "suppressions", "MDL112": "loadability", "MDL205": "groups", "MDL313": "lines",
+		"MDL401": "options", "MDL502": "masking", "MDL601": "connection", "MDL905": "conventions", "MDL701": "", "MDL": "", "ABC123": "",
+	}
 	for id, want := range tests {
 		if got := ruleFamily(id); got != want {
 			t.Errorf("ruleFamily(%q) = %q, want %q", id, got, want)
@@ -127,8 +129,10 @@ func TestSARIFArtifactURIs(t *testing.T) {
 func TestSARIFFixes(t *testing.T) {
 	src := "k = v\n"
 	r := FileResult{Path: "a.cnf", Source: []byte(src), Diagnostics: []diag.Diagnostic{
-		{RuleID: "MDL307", Severity: diag.Info, Span: find(src, " = ", 0),
-			Fix: &diag.Fix{Applicability: diag.Safe, Edits: []diag.Edit{{Start: 1, End: 4, New: "="}, {Start: 6, End: 6}}}},
+		{
+			RuleID: "MDL307", Severity: diag.Info, Span: find(src, " = ", 0),
+			Fix: &diag.Fix{Applicability: diag.Safe, Edits: []diag.Edit{{Start: 1, End: 4, New: "="}, {Start: 6, End: 6}}},
+		},
 		{RuleID: "MDL301", Severity: diag.Warning, Fix: &diag.Fix{Applicability: diag.Unsafe, Description: "nothing to do"}},
 	}}
 	res := decodeSARIF(t, []FileResult{r}, Options{}).Runs[0].Results

@@ -60,6 +60,7 @@ func gitlabSeverity(s diag.Severity) string {
 		return "critical"
 	case diag.Warning:
 		return "minor"
+	case diag.Info, diag.Off:
 	}
 	return "info"
 }

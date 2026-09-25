@@ -1,18 +1,18 @@
-::error file=conf/app.cnf,line=3,col=1,endLine=3,endColumn=4,title=MDL102 whitespace-only-line::line contains only spaces and tabs (mydumper: rejects the whole file: every option in it is ignored)
+::error file=conf/app.cnf,line=3,col=1,endLine=3,endColumn=4,title=MDL102 whitespace-only-line::line contains only spaces and tabs. Impact: rejects the whole file: every option in it is ignored
 ::notice file=conf/app.cnf,line=4,col=8,endLine=4,endColumn=11,title=MDL307 spaces-around-equals::spaces around "="
-::error file=conf/app.cnf,line=6,col=1,endLine=6,endColumn=1,title=MDL108 bracket-state-leak::empty line becomes "= 1" because of the "[" on line 5 (mydumper: rejects the whole file: every option in it is ignored)
-::warning file=conf/app.cnf,line=7,col=11,endLine=7,endColumn=20,title=MDL313 quoted-value::value is wrapped in quotes (mydumper: writes the dump into a directory named "/backup", quotes included)
-::error file=conf/app.cnf,line=7,col=20,endLine=7,endColumn=21,title=MDL302 trailing-whitespace-in-value::value ends with whitespace (mydumper: keeps the space: outputdir names another directory)
-::warning file=conf/app.cnf,line=8,endLine=9,title=MDL205 duplicate-group::group [mydumper] is declared twice (mydumper: merges both groups silently)
+::error file=conf/app.cnf,line=6,col=1,endLine=6,endColumn=1,title=MDL108 bracket-state-leak::empty line becomes "= 1" because of the "[" on line 5. Impact: rejects the whole file: every option in it is ignored
+::warning file=conf/app.cnf,line=7,col=11,endLine=7,endColumn=20,title=MDL313 quoted-value::value is wrapped in quotes. Impact: writes the dump into a directory named "/backup", quotes included
+::error file=conf/app.cnf,line=7,col=20,endLine=7,endColumn=21,title=MDL302 trailing-whitespace-in-value::value ends with whitespace. Impact: keeps the space: outputdir names another directory
+::warning file=conf/app.cnf,line=8,endLine=9,title=MDL205 duplicate-group::group [mydumper] is declared twice. Impact: merges both groups silently
 ::notice file=conf/app.cnf,line=9,col=1,endLine=9,endColumn=2,title=MDL306 leading-whitespace::line is indented
 ::notice file=conf/app.cnf,line=9,col=2,endLine=9,endColumn=10,title=MDL308 flag-without-value::option without a value
 ::error file=conf/crlf.cnf,line=1,col=11,endLine=1,endColumn=12,title=MDL103 carriage-return::file uses CRLF line endings
-::error file=conf/crlf.cnf,line=3,col=1,endLine=3,endColumn=2,title=MDL103 carriage-return::empty line made of a carriage return (mydumper: the line becomes "\r= 1", which rejects the whole file)
+::error file=conf/crlf.cnf,line=3,col=1,endLine=3,endColumn=2,title=MDL103 carriage-return::empty line made of a carriage return. Impact: the line becomes "\r= 1", which rejects the whole file
 ::notice file=conf/crlf.cnf,line=3,endLine=5,title=MDL310 blank-lines::3 consecutive blank lines
-::error file=conf/odd.cnf,line=1,col=1,endLine=1,endColumn=2,title=MDL101 utf8-bom::file starts with a UTF-8 byte order mark (mydumper: rejects the whole file: every option in it is ignored)
+::error file=conf/odd.cnf,line=1,col=1,endLine=1,endColumn=2,title=MDL101 utf8-bom::file starts with a UTF-8 byte order mark. Impact: rejects the whole file: every option in it is ignored
 ::warning file=conf/odd.cnf,line=2,col=12,endLine=2,endColumn=13,title=MDL311 invalid-utf8::invalid UTF-8 byte 0xff
 ::warning file=conf/odd.cnf,line=2,col=13,endLine=2,endColumn=14,title=MDL312 control-character::value contains the control character ␛ (ESC)
-::error file=conf/odd.cnf,line=3,col=5,endLine=3,endColumn=6,title=MDL111 nul-byte::NUL byte in a key (mydumper: rejects the whole file: every option in it is ignored)
+::error file=conf/odd.cnf,line=3,col=5,endLine=3,endColumn=6,title=MDL111 nul-byte::NUL byte in a key. Impact: rejects the whole file: every option in it is ignored
 ::warning file=conf/odd.cnf,line=4,col=9,endLine=4,endColumn=10,title=MDL312 control-character::value contains the control character "\v"
-::error file=conf/odd.cnf,line=5,col=9,endLine=5,endColumn=9,title=MDL104 missing-final-newline::the last line is a flag without a final newline (mydumper: rejects the whole file: every option in it is ignored)
+::error file=conf/odd.cnf,line=5,col=9,endLine=5,endColumn=9,title=MDL104 missing-final-newline::the last line is a flag without a final newline. Impact: rejects the whole file: every option in it is ignored
 ::warning file=conf/tail.cnf,line=3,col=1,endLine=3,endColumn=1,title=MDL112 bracket-leak-risk::an empty line appended here would break the file
