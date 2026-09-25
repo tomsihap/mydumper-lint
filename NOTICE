@@ -1,0 +1,21 @@
+mydumper-lint
+Copyright 2026 The mydumper-lint authors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Third-party notices
+===================
+
+tools/oracle/
+-------------
+
+The test oracle in tools/oracle/ is licensed separately, under the GNU General
+Public License, version 3 or (at your option) any later version
+(GPL-3.0-or-later), as stated by the SPDX-License-Identifier header of each of
+its files. It contains a behavioral copy of the configuration loader of
+mydumper (https://github.com/mydumper/mydumper, GPL-3.0).
+
+The oracle is a test-only tool: the test suite runs it to check the Go
+emulation against GLib. It is never compiled into or linked into the
+mydumper-lint binary, and it is not part of the binary releases or of the
+Docker image. The Apache License, Version 2.0 does not apply to it.
