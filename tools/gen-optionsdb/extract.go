@@ -513,6 +513,7 @@ func (p *program) groupOf(f *funcDef, v string, depth int) (groupInfo, error) {
 // analyseConfig extracts the facts of one build configuration.
 func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]string) (*cfgFacts, error) {
 	facts := &cfgFacts{options: map[string]map[string]regOption{}}
+	registered := map[*arrayDef]bool{}
 	macros, err := stringMacros(cus, cfg)
 	if err != nil {
 		return nil, err
@@ -575,6 +576,7 @@ func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]str
 			}
 		}
 		for _, r := range regs {
+			registered[r.array] = true
 			entries, err := r.array.entries(macros)
 			if err != nil {
 				return nil, err
@@ -610,6 +612,13 @@ func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]str
 					return nil, fmt.Errorf("%s: g_option_context_set_ignore_unknown_options with an unexpected value in %s", tool, f)
 				}
 				ignore[tool] = true
+			}
+		}
+	}
+	for _, path := range sortedKeys(cus) {
+		for _, a := range cus[path].arrays {
+			if !registered[a] {
+				facts.notes = append(facts.notes, fmt.Sprintf("GOptionEntry array %s is never registered by mydumper or myloader: ignored", a))
 			}
 		}
 	}
