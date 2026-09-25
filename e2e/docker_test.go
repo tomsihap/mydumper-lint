@@ -389,9 +389,20 @@ func (s *suite) countRows(db, table string) (string, error) {
 	return n, nil
 }
 
-// dropDatabase removes a restore database.
+// dropDatabase removes a restore database. Concurrent dumps hold backup
+// locks, so a DROP can hit a deadlock or a lock wait timeout: it is retried.
 func (s *suite) dropDatabase(db string) error {
-	_, err := s.sql(context.Background(), "DROP DATABASE IF EXISTS "+quoteIdent(db))
+	var err error
+	for attempt := range 5 {
+		var r cmdResult
+		if r, err = s.sql(context.Background(), "DROP DATABASE IF EXISTS "+quoteIdent(db)); err == nil {
+			return nil
+		}
+		if !strings.Contains(r.Stderr, "ERROR 1213") && !strings.Contains(r.Stderr, "ERROR 1205") {
+			return err
+		}
+		time.Sleep(time.Duration(attempt+1) * time.Second)
+	}
 	return err
 }
 

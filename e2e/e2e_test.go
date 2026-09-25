@@ -260,8 +260,11 @@ func (s *suite) runAndObserve(rs *runState, sc *Scenario, ref, dir string, p pla
 			args[i] = strings.ReplaceAll(args[i], restoreDBPlaceholder, restoreDB)
 		}
 		defer func() {
+			// A leftover restore database does not change the observations
+			// (every scenario selects the databases it dumps): warn only.
 			if err := s.dropDatabase(restoreDB); err != nil {
-				t.Errorf("dropping %s: %v", restoreDB, err)
+				fmt.Fprintf(&rs.log, "\nWARNING: dropping %s: %v\n", restoreDB, err)
+				t.Logf("WARNING: dropping %s: %v", restoreDB, err)
 			}
 		}()
 	}
