@@ -178,11 +178,7 @@ func variantKey(v optVariant) string {
 // final newline. Field order is the struct order; every list is sorted by
 // buildDB, so the output is deterministic.
 func encodeDB(db *optionsdb.DB) ([]byte, error) {
-	b, err := json.MarshalIndent(db, "", "  ")
-	if err != nil {
-		return nil, err
-	}
-	return append(b, '\n'), nil
+	return encodeJSON(db)
 }
 
 // changes describes, version by version, what differs from the previous

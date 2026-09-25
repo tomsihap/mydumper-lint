@@ -280,11 +280,11 @@ func readJSON(path string, v any) error {
 }
 
 func writeJSON(path string, v any) error {
-	b, err := json.MarshalIndent(v, "", "  ")
+	b, err := encodeJSON(v)
 	if err != nil {
 		return err
 	}
-	return writeFileAtomic(path, append(b, '\n'))
+	return writeFileAtomic(path, b)
 }
 
 // writeFileAtomic writes through a temporary file in the same directory.
