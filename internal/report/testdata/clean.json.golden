@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "tool": {
+    "name": "mydumper-lint",
+    "version": "1.2.3"
+  },
+  "files": [
+    {
+      "path": "conf/clean.cnf",
+      "loadable": true,
+      "mydumper_version": "v0.19.3-3",
+      "fixed": 2,
+      "diagnostics": []
+    }
+  ],
+  "summary": {
+    "files": 1,
+    "errors": 0,
+    "warnings": 0,
+    "infos": 0,
+    "fixable": 0,
+    "unsafe_fixable": 0,
+    "fixed": 2
+  }
+}

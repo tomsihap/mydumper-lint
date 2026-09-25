@@ -10,7 +10,7 @@ import (
 )
 
 func TestNamesListsEveryFormat(t *testing.T) {
-	want := []string{"concise", "text"}
+	want := []string{"concise", "json", "text"}
 	if got := Names(); !reflect.DeepEqual(got, want) {
 		t.Errorf("Names() = %v, want %v", got, want)
 	}

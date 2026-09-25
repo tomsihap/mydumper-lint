@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/tomsihap/mydumper-lint/main/schemas/output.v1.json",
+  "title": "mydumper-lint JSON output, version 1",
+  "description": "Output of `mydumper-lint check --format json`. Version 1 evolves additively only: consumers must ignore properties they do not know. A breaking change introduces version 2.",
+  "type": "object",
+  "required": ["version", "tool", "files", "summary"],
+  "properties": {
+    "version": {
+      "description": "Version of this output layout.",
+      "const": 1
+    },
+    "tool": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "mydumper-lint" },
+        "version": { "type": "string", "description": "Version of mydumper-lint." }
+      }
+    },
+    "files": {
+      "description": "Every checked file, in report order.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/file" }
+    },
+    "summary": { "$ref": "#/$defs/summary" }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "required": ["path", "loadable", "mydumper_version", "fixed", "diagnostics"],
+      "properties": {
+        "path": { "type": "string", "description": "Path of the file as given on the command line, or --stdin-filename." },
+        "loadable": { "type": "boolean", "description": "Whether mydumper would load the file. When false, mydumper ignores the whole file." },
+        "mydumper_version": { "type": "string", "description": "mydumper version the file was checked against, e.g. v0.19.3-3." },
+        "fixed": { "type": "integer", "minimum": 0, "description": "Number of fixes applied by --fix." },
+        "diagnostics": {
+          "description": "Remaining diagnostics, sorted by start offset, end offset, then rule ID.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/diagnostic" }
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "required": ["id", "name", "severity", "message", "consequence", "range", "related", "fix"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^MDL[0-9]{3}$", "description": "Rule ID, e.g. MDL102." },
+        "name": { "type": "string", "description": "Rule name, e.g. whitespace-only-line." },
+        "severity": { "enum": ["error", "warning", "info"] },
+        "message": { "type": "string" },
+        "consequence": { "type": "string", "description": "What mydumper does, for the target version, in one sentence. Empty when the rule states none." },
+        "range": { "$ref": "#/$defs/range" },
+        "related": {
+          "description": "Other locations that explain the diagnostic, such as the origin of a bracket state leak.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/related" }
+        },
+        "fix": {
+          "description": "The fix, or null when the rule offers none.",
+          "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/fix" }]
+        }
+      }
+    },
+    "range": {
+      "description": "Half-open range [start, end) of the original file. start equals end for an insertion point.",
+      "type": "object",
+      "required": ["start", "end"],
+      "properties": {
+        "start": { "$ref": "#/$defs/position" },
+        "end": { "$ref": "#/$defs/position" }
+      }
+    },
+    "position": {
+      "type": "object",
+      "required": ["line", "col", "offset"],
+      "properties": {
+        "line": { "type": "integer", "minimum": 1, "description": "1-based line number. Lines end at '\\n' only; the offset after a final '\\n' is on the (virtual) line after the last one." },
+        "col": { "type": "integer", "minimum": 1, "description": "1-based column counted in Unicode code points; an invalid UTF-8 byte counts as one column." },
+        "offset": { "type": "integer", "minimum": 0, "description": "0-based byte offset in the original file." }
+      }
+    },
+    "related": {
+      "type": "object",
+      "required": ["range", "message"],
+      "properties": {
+        "range": { "$ref": "#/$defs/range" },
+        "message": { "type": "string", "description": "May be empty." }
+      }
+    },
+    "fix": {
+      "type": "object",
+      "required": ["applicability", "description", "edits"],
+      "properties": {
+        "applicability": { "enum": ["safe", "unsafe"], "description": "safe fixes are applied by --fix; unsafe ones need --unsafe-fixes as well." },
+        "description": { "type": "string", "description": "May be empty." },
+        "edits": {
+          "description": "Edits applied together, on the original file.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/edit" }
+        }
+      }
+    },
+    "edit": {
+      "type": "object",
+      "required": ["range", "new_text"],
+      "properties": {
+        "range": { "$ref": "#/$defs/range" },
+        "new_text": { "type": "string", "description": "Text that replaces the bytes of range." }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["files", "errors", "warnings", "infos", "fixable", "unsafe_fixable", "fixed"],
+      "properties": {
+        "files": { "type": "integer", "minimum": 0, "description": "Number of files checked." },
+        "errors": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 },
+        "infos": { "type": "integer", "minimum": 0 },
+        "fixable": { "type": "integer", "minimum": 0, "description": "Diagnostics with a safe fix." },
+        "unsafe_fixable": { "type": "integer", "minimum": 0, "description": "Diagnostics with an unsafe fix." },
+        "fixed": { "type": "integer", "minimum": 0, "description": "Fixes applied by --fix." }
+      }
+    }
+  }
+}

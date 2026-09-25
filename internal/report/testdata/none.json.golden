@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "tool": {
+    "name": "mydumper-lint",
+    "version": "1.2.3"
+  },
+  "files": [],
+  "summary": {
+    "files": 0,
+    "errors": 0,
+    "warnings": 0,
+    "infos": 0,
+    "fixable": 0,
+    "unsafe_fixable": 0,
+    "fixed": 0
+  }
+}

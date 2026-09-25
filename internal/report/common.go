@@ -73,6 +73,15 @@ func fullMessage(d diag.Diagnostic) string {
 	return d.Message + " (mydumper: " + d.Consequence + ")"
 }
 
+// applicability is "safe" or "unsafe". Like Summarize, it treats anything
+// but diag.Safe as unsafe.
+func applicability(f *diag.Fix) string {
+	if f.Applicability == diag.Safe {
+		return "safe"
+	}
+	return "unsafe"
+}
+
 // fixCommand is the command line that applies f.
 func fixCommand(f *diag.Fix) string {
 	if f.Applicability == diag.Safe {
