@@ -136,6 +136,14 @@ func (c *checkCmd) validate() error {
 			return err
 		}
 	}
+	// Reject unknown rules up front, even when no file ends up being linted.
+	sel := rules.Selection{Select: c.selectRules.values, ExtendSelect: c.extendSelect.values, Ignore: c.ignore.values, Preview: true}
+	if len(sel.Select) == 0 {
+		sel.Select = []string{"ALL"}
+	}
+	if _, err := sel.Resolve(); err != nil {
+		return err
+	}
 	return nil
 }
 
