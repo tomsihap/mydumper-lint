@@ -1,0 +1,191 @@
+# Continuous integration (design §12.2): build and tests on Linux, macOS and
+# Windows, golangci-lint, govulncheck, actionlint and oracle conformance.
+#
+# Hardening: every action is pinned by commit SHA (Dependabot keeps the pins and
+# their version comments current), the token has no permission unless a job asks
+# for one, and checkouts do not keep the token in .git/config.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            race: true
+            coverage: true
+          - os: macos-latest
+            race: true
+          # windows-latest runs without -race: the race detector needs cgo and a
+          # working C toolchain, which hosted Windows runners do not guarantee.
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        env:
+          RACE: ${{ matrix.race }}
+          COVERAGE: ${{ matrix.coverage }}
+        run: |
+          flags=(-count=1)
+          if [[ "$RACE" == true ]]; then flags+=(-race); fi
+          if [[ "$COVERAGE" == true ]]; then flags+=(-covermode=atomic -coverprofile=coverage.out); fi
+          go test "${flags[@]}" ./...
+
+      - name: Summarize coverage
+        if: matrix.coverage
+        run: |
+          {
+            echo '### Coverage'
+            echo '```'
+            go tool cover -func=coverage.out | tail -n 1
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage profile
+        if: matrix.coverage
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage
+          path: coverage.out
+          if-no-files-found: error
+          retention-days: 14
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      # Same version as GOLANGCI_LINT_VERSION in mk/lint.mk; the first step checks it.
+      GOLANGCI_LINT_VERSION: v2.13.2
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Check that mk/lint.mk pins the same golangci-lint version
+        run: |
+          pinned=$(make --no-print-directory -s golangci-lint-version)
+          if [[ "$pinned" != "$GOLANGCI_LINT_VERSION" ]]; then
+            echo "::error file=mk/lint.mk::golangci-lint is pinned to $pinned in mk/lint.mk but to $GOLANGCI_LINT_VERSION in .github/workflows/ci.yml"
+            exit 1
+          fi
+
+      - name: Check that go.mod and go.sum are tidy
+        run: go mod tidy -diff
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+          # Validate .golangci.yml against the JSON schema: golangci-lint v2
+          # silently ignores keys it does not know.
+          verify: true
+
+  vuln:
+    name: govulncheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # govulncheck is pinned in mk/lint.mk (GOVULNCHECK_VERSION). Standard
+      # library findings depend on the Go version installed above.
+      - name: govulncheck
+        run: make vuln
+
+  actionlint:
+    name: actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # actionlint runs from its official image, pinned in mk/lint.mk; the image
+      # includes shellcheck, which checks every run: script.
+      - name: actionlint
+        run: make actionlint
+
+  oracle:
+    name: oracle conformance
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # Targets from mk/oracle.mk (design §11.2): build the oracle images, then
+      # check that they reproduce testdata/oracle-cases/expected.txt.
+      - name: Build the oracle images
+        run: make oracle-images
+
+      - name: Check oracle conformance
+        run: make oracle-conformance
