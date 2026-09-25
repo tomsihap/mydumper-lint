@@ -1,0 +1,3 @@
+# Build context of the oracle images: only the source is needed.
+*
+!oracle.c
