@@ -10,7 +10,7 @@ import (
 )
 
 func TestNamesListsEveryFormat(t *testing.T) {
-	want := []string{"concise", "github", "json", "junit", "sarif", "text"}
+	want := []string{"concise", "github", "gitlab", "json", "junit", "sarif", "text"}
 	if got := Names(); !reflect.DeepEqual(got, want) {
 		t.Errorf("Names() = %v, want %v", got, want)
 	}
@@ -24,7 +24,7 @@ func TestNamesListsEveryFormat(t *testing.T) {
 
 func TestGetUnknownFormat(t *testing.T) {
 	_, err := Get("xml")
-	if err == nil || !strings.Contains(err.Error(), `unknown format "xml"`) || !strings.Contains(err.Error(), "concise") {
+	if err == nil || !strings.Contains(err.Error(), `unknown format "xml"`) || !strings.Contains(err.Error(), "[concise github gitlab json junit sarif text]") {
 		t.Errorf("Get(xml) error = %v", err)
 	}
 }

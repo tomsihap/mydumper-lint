@@ -1,0 +1,218 @@
+[
+  {
+    "description": "MDL102[whitespace-only-line] line contains only spaces and tabs (mydumper: rejects the whole file: every option in it is ignored)",
+    "check_name": "MDL102",
+    "fingerprint": "2032b7af22700b3a8552c3a8c4173c3e5356111ce9995837375c4d59a068397c",
+    "severity": "critical",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 3
+      }
+    }
+  },
+  {
+    "description": "MDL307[spaces-around-equals] spaces around \"=\"",
+    "check_name": "MDL307",
+    "fingerprint": "eb9db35d6d9d37cb0e7179541f75aee95bb0b695fec9d45541558340e512c559",
+    "severity": "info",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 4
+      }
+    }
+  },
+  {
+    "description": "MDL108[bracket-state-leak] empty line becomes \"= 1\" because of the \"[\" on line 5 (mydumper: rejects the whole file: every option in it is ignored)",
+    "check_name": "MDL108",
+    "fingerprint": "3cd9b525df3b288135d6328f4f1d3154284a49045c7d1bb422399f7852c4860d",
+    "severity": "critical",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 6
+      }
+    }
+  },
+  {
+    "description": "MDL313[quoted-value] value is wrapped in quotes (mydumper: writes the dump into a directory named \"/backup\", quotes included)",
+    "check_name": "MDL313",
+    "fingerprint": "33916fb4fa3bcbbcf99fd4b6cacb114413ab64e9124f9bb5fb912c0e0fcf8895",
+    "severity": "minor",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 7
+      }
+    }
+  },
+  {
+    "description": "MDL302[trailing-whitespace-in-value] value ends with whitespace (mydumper: keeps the space: outputdir names another directory)",
+    "check_name": "MDL302",
+    "fingerprint": "740e4b256259e22488ffdcbf973a8b860f488b31c5a1a78d80a76dd6861b84b6",
+    "severity": "critical",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 7
+      }
+    }
+  },
+  {
+    "description": "MDL205[duplicate-group] group [mydumper] is declared twice (mydumper: merges both groups silently)",
+    "check_name": "MDL205",
+    "fingerprint": "5df37e217bd614d210cd5cdc9507c1781f62cae47ef590de5260a51f600fedae",
+    "severity": "minor",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 8
+      }
+    }
+  },
+  {
+    "description": "MDL306[leading-whitespace] line is indented",
+    "check_name": "MDL306",
+    "fingerprint": "d2215959be9dc2a7435829234941df0245e0a6fb73a56e6f34f343059709d598",
+    "severity": "info",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 9
+      }
+    }
+  },
+  {
+    "description": "MDL308[flag-without-value] option without a value",
+    "check_name": "MDL308",
+    "fingerprint": "26ee0c10522a6c4ba15183ea95d5252cbd09538c872e4cbb0934bfdd56c751f6",
+    "severity": "info",
+    "location": {
+      "path": "conf/app.cnf",
+      "lines": {
+        "begin": 9
+      }
+    }
+  },
+  {
+    "description": "MDL103[carriage-return] file uses CRLF line endings",
+    "check_name": "MDL103",
+    "fingerprint": "b4ebb38c9fa0ef9cad582f7cf99398af003ed491e3e502bdb22029066775b94b",
+    "severity": "critical",
+    "location": {
+      "path": "conf/crlf.cnf",
+      "lines": {
+        "begin": 1
+      }
+    }
+  },
+  {
+    "description": "MDL103[carriage-return] empty line made of a carriage return (mydumper: the line becomes \"\\r= 1\", which rejects the whole file)",
+    "check_name": "MDL103",
+    "fingerprint": "fcd9fe97a8db63dd21f54eab15364d2a586a8cc1de1d42645813907d4278c245",
+    "severity": "critical",
+    "location": {
+      "path": "conf/crlf.cnf",
+      "lines": {
+        "begin": 3
+      }
+    }
+  },
+  {
+    "description": "MDL310[blank-lines] 3 consecutive blank lines",
+    "check_name": "MDL310",
+    "fingerprint": "7f81b85f6658b67b7380252dbac1dc12831f00825e4f93a5d897f189fd3bf5ef",
+    "severity": "info",
+    "location": {
+      "path": "conf/crlf.cnf",
+      "lines": {
+        "begin": 3
+      }
+    }
+  },
+  {
+    "description": "MDL101[utf8-bom] file starts with a UTF-8 byte order mark (mydumper: rejects the whole file: every option in it is ignored)",
+    "check_name": "MDL101",
+    "fingerprint": "47de69277f43b1d38e024613611c30507ff812f7fb18ab547cecf1e62cca8fb7",
+    "severity": "critical",
+    "location": {
+      "path": "conf/odd.cnf",
+      "lines": {
+        "begin": 1
+      }
+    }
+  },
+  {
+    "description": "MDL311[invalid-utf8] invalid UTF-8 byte 0xff",
+    "check_name": "MDL311",
+    "fingerprint": "c65505c7b00f0dc8cae93d1f30340e70bae186fe27a83969f6ee2005e0c53a96",
+    "severity": "minor",
+    "location": {
+      "path": "conf/odd.cnf",
+      "lines": {
+        "begin": 2
+      }
+    }
+  },
+  {
+    "description": "MDL312[control-character] value contains the control character \u001b (ESC)",
+    "check_name": "MDL312",
+    "fingerprint": "6d896c06744f09df42ebbb4ef38ec706edc90867388e16cca536242f843e7185",
+    "severity": "minor",
+    "location": {
+      "path": "conf/odd.cnf",
+      "lines": {
+        "begin": 2
+      }
+    }
+  },
+  {
+    "description": "MDL111[nul-byte] NUL byte in a key (mydumper: rejects the whole file: every option in it is ignored)",
+    "check_name": "MDL111",
+    "fingerprint": "0271f22f60f4dcc54d9477cae73da1bdd22bf2c4f86597f7e4a5a838d8f4a60c",
+    "severity": "critical",
+    "location": {
+      "path": "conf/odd.cnf",
+      "lines": {
+        "begin": 3
+      }
+    }
+  },
+  {
+    "description": "MDL312[control-character] value contains the control character \"\\v\"",
+    "check_name": "MDL312",
+    "fingerprint": "a645d361787ef122fcc4ec5cba7b5ddef1d54d1bc63e9e45d11eb8c9450f161d",
+    "severity": "minor",
+    "location": {
+      "path": "conf/odd.cnf",
+      "lines": {
+        "begin": 4
+      }
+    }
+  },
+  {
+    "description": "MDL104[missing-final-newline] the last line is a flag without a final newline (mydumper: rejects the whole file: every option in it is ignored)",
+    "check_name": "MDL104",
+    "fingerprint": "ccf6d8018e58a57805b1c7040665555cde7d323e4c133e91e42df7d2d016bda1",
+    "severity": "critical",
+    "location": {
+      "path": "conf/odd.cnf",
+      "lines": {
+        "begin": 5
+      }
+    }
+  },
+  {
+    "description": "MDL112[bracket-leak-risk] an empty line appended here would break the file",
+    "check_name": "MDL112",
+    "fingerprint": "a5ca0b363e34e8efc173b903d8e85c06bfdeae72119034db739e180397ed39fe",
+    "severity": "minor",
+    "location": {
+      "path": "conf/tail.cnf",
+      "lines": {
+        "begin": 3
+      }
+    }
+  }
+]
