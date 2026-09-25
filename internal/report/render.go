@@ -40,8 +40,8 @@ func cells(b []byte, inline bool) []cell {
 		case !unicode.IsGraphic(r):
 			c.text = fmt.Sprintf(`\u{%x}`, r)
 			c.width = len(c.text)
-		default:
-			c.text, c.width = string(r), runeWidth(r)
+		default: // a valid, graphic code point: print its bytes
+			c.text, c.width = string(b[off:off+size]), runeWidth(r)
 		}
 		out = append(out, c)
 		off += size
@@ -95,6 +95,8 @@ func makeExcerpt(line []byte, from, to int) excerpt {
 // combining marks, 2 for East Asian wide and fullwidth characters, 1 otherwise.
 func runeWidth(r rune) int {
 	switch {
+	case r < 0x300: // before the first combining mark and the first wide block
+		return 1
 	case unicode.In(r, unicode.Mn, unicode.Me):
 		return 0
 	case isWide(r):
