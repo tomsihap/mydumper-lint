@@ -1,8 +1,3723 @@
 {
   "schema": 1,
-  "versions": [],
-  "options": [],
-  "table_keys": [],
-  "masquerade_functions": [],
-  "products": []
+  "versions": [
+    {
+      "tag": "v0.19.1-1",
+      "commit": "e3ffc3765d86522b4448661c6e1fa30b4306ff83",
+      "date": "2025-04-12",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "e4fb37ba6af6bfdabd366b8566de784d1f85255d0cdea62a16613fbc2bcf1462",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.19.1-2",
+      "commit": "8fc0115e232ed77447bdb6db5481a8411aa73ab0",
+      "date": "2025-04-24",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "e4fb37ba6af6bfdabd366b8566de784d1f85255d0cdea62a16613fbc2bcf1462",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.19.1-3",
+      "commit": "308e82b9e11d965080d2f4f134f4d5eaed2c3ee3",
+      "date": "2025-04-25",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "e4fb37ba6af6bfdabd366b8566de784d1f85255d0cdea62a16613fbc2bcf1462",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.19.3-1",
+      "commit": "22a3346b70820dbd1f2a911257621e266752fa44",
+      "date": "2025-06-13",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.19.3-2",
+      "commit": "7633d23ed8f9ba627915c0b22c3feb4c9e989982",
+      "date": "2025-06-24",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.19.3-3",
+      "commit": "175f928aed269bc589ce2deed002f4ce7421ce9a",
+      "date": "2025-07-08",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.20.1-1",
+      "commit": "5646d8c962cecac043b9d0c428f8c6ec3ea1fc73",
+      "date": "2025-09-19",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.20.1-2",
+      "commit": "aff7dc55bef53a099a955dab1888af5e629ab636",
+      "date": "2025-09-25",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.20.2-2",
+      "commit": "0af68a9f74c20fc0702528833598064fb2deeba0",
+      "date": "2025-10-19",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.20.2-3",
+      "commit": "e66f1377e979c6b5c550ac8d5184faede114f380",
+      "date": "2025-11-14",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.20.2-4",
+      "commit": "4fb5455700466e61f3efcac16344d2ea5282371e",
+      "date": "2025-11-19",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.20.2-5",
+      "commit": "0f0793e5bddfc1a7b98d9c49fd09631662d48da4",
+      "date": "2025-11-21",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.1-1",
+      "commit": "3c3e17590688c636f8f9b691aa30bb609f165d4a",
+      "date": "2025-11-21",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.2-1",
+      "commit": "1f5c78972cf1b4bb8b185ea067dc17cfad3201c3",
+      "date": "2025-11-29",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.2-2",
+      "commit": "536643a439e1006e14b1dd667492544b1f25f681",
+      "date": "2025-12-04",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.2-3",
+      "commit": "8f1f1663811d9a43b28bfc121d3648988518ec22",
+      "date": "2025-12-10",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.2-4",
+      "commit": "d66c523b4cda990f2f41b7aba4b2ab7b937b260e",
+      "date": "2026-01-27",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.3-1",
+      "commit": "e6a3b9b8ab05e1a7dc1730ec15db173dd63440c0",
+      "date": "2026-02-03",
+      "prerelease": false,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.3-2",
+      "commit": "207a6a6d2a589c9870edfeb4ad60dedd2f96c731",
+      "date": "2026-03-13",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "image_verified": false
+    },
+    {
+      "tag": "v0.21.4-1",
+      "commit": "2b4fc4a226ebd02b070e26b87a2d19d4765c691d",
+      "date": "2026-03-30",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.0-1",
+      "commit": "eaaf45966929329ce5feeab17f46ec213b54a0a2",
+      "date": "2026-04-28",
+      "prerelease": true,
+      "ignore_unknown_options": false,
+      "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.1-1",
+      "commit": "2a34b97ad48c4044c2eb99befa027abb2a91a8d1",
+      "date": "2026-05-17",
+      "prerelease": false,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.1-3",
+      "commit": "c3e50116f5da3441f82e7425b6979f73a27b3343",
+      "prerelease": true,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.3-1",
+      "commit": "d6e18398e3a1cc1e049ef73b9a5e300ff01e873e",
+      "date": "2026-06-03",
+      "prerelease": false,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.4-1",
+      "commit": "19a04e2f518aaf475a2bc9bc9fae8b011b532a1f",
+      "date": "2026-06-19",
+      "prerelease": true,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.5-1",
+      "commit": "b980c003dec95799f636a4aef7f4335c8e891ff2",
+      "date": "2026-08-18",
+      "prerelease": false,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.6-1",
+      "commit": "446dc3d9e8e20d2574678e6c6fca03e698b63237",
+      "date": "2026-08-26",
+      "prerelease": true,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "image_verified": false
+    },
+    {
+      "tag": "v1.0.8-1",
+      "commit": "a079e05cda877cc691956e14aa855bf1c306b9e6",
+      "date": "2026-09-15",
+      "prerelease": true,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "image_verified": false
+    }
+  ],
+  "options": [
+    {
+      "name": "all-tablespaces",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "Y",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:290"
+        }
+      ]
+    },
+    {
+      "name": "ask-password",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "a",
+          "arg": "none",
+          "group": "connectiongroup",
+          "source": "src/connection.c:73"
+        }
+      ]
+    },
+    {
+      "name": "build-empty-files",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "e",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:169"
+        }
+      ]
+    },
+    {
+      "name": "bulk-metadata-prefetch",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.2-2",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:233"
+        }
+      ]
+    },
+    {
+      "name": "ca",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:95"
+        }
+      ]
+    },
+    {
+      "name": "capath",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:97"
+        }
+      ]
+    },
+    {
+      "name": "cert",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:93"
+        }
+      ]
+    },
+    {
+      "name": "check-row-count",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:182"
+        }
+      ]
+    },
+    {
+      "name": "checksum-all",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "M",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/mydumper/mydumper_arguments.c:264"
+        }
+      ]
+    },
+    {
+      "name": "chunk-filesize",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "F",
+          "arg": "int",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:160"
+        }
+      ]
+    },
+    {
+      "name": "cipher",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:101"
+        }
+      ]
+    },
+    {
+      "name": "clear",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/mydumper/mydumper_arguments.c:143"
+        }
+      ]
+    },
+    {
+      "name": "compact",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:177"
+        }
+      ]
+    },
+    {
+      "name": "complete-insert",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:336"
+        }
+      ]
+    },
+    {
+      "name": "compress",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "c",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:178"
+        }
+      ]
+    },
+    {
+      "name": "compress-protocol",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "C",
+          "arg": "none",
+          "group": "connectiongroup",
+          "source": "src/connection.c:81"
+        }
+      ]
+    },
+    {
+      "name": "csv",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:313"
+        }
+      ]
+    },
+    {
+      "name": "daemon",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "D",
+          "arg": "none",
+          "group": "daemongroup",
+          "source": "src/mydumper/mydumper_arguments.c:241"
+        }
+      ]
+    },
+    {
+      "name": "data-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/mydumper/mydumper_arguments.c:266"
+        }
+      ]
+    },
+    {
+      "name": "database",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "B",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/mydumper/mydumper_arguments.c:275"
+        }
+      ]
+    },
+    {
+      "name": "debug",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/common_options.c:75"
+        }
+      ]
+    },
+    {
+      "name": "default-character-set",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "callback",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:410"
+        }
+      ]
+    },
+    {
+      "name": "default-connection-database",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.3-2",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:75"
+        }
+      ]
+    },
+    {
+      "name": "defaults-extra-file",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "filename",
+          "source": "src/common_options.c:81"
+        }
+      ]
+    },
+    {
+      "name": "defaults-file",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "filename",
+          "source": "src/common_options.c:79"
+        }
+      ]
+    },
+    {
+      "name": "dirty",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/mydumper/mydumper_arguments.c:145"
+        }
+      ]
+    },
+    {
+      "name": "disk-limits",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "source": "src/mydumper/mydumper_arguments.c:151"
+        }
+      ]
+    },
+    {
+      "name": "dry-run",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.3-2",
+          "arg": "none",
+          "source": "src/common_options.c:185"
+        }
+      ]
+    },
+    {
+      "name": "enable-cleartext-plugin",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "none",
+          "group": "connectiongroup",
+          "source": "src/connection.c:117"
+        }
+      ]
+    },
+    {
+      "name": "events",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "E",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:296"
+        }
+      ]
+    },
+    {
+      "name": "exec",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "exec",
+          "source": "src/mydumper/mydumper_arguments.c:225"
+        }
+      ]
+    },
+    {
+      "name": "exec-per-thread",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "exec",
+          "source": "src/mydumper/mydumper_arguments.c:227"
+        }
+      ]
+    },
+    {
+      "name": "exec-per-thread-extension",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "exec",
+          "source": "src/mydumper/mydumper_arguments.c:229"
+        }
+      ]
+    },
+    {
+      "name": "exec-threads",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "exec",
+          "source": "src/mydumper/mydumper_arguments.c:223"
+        }
+      ]
+    },
+    {
+      "name": "exit-if-broken-table-found",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:163"
+        }
+      ]
+    },
+    {
+      "name": "fields-enclosed-by",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:318"
+        }
+      ]
+    },
+    {
+      "name": "fields-escaped-by",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:319"
+        }
+      ]
+    },
+    {
+      "name": "fields-terminated-by",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:317"
+        }
+      ]
+    },
+    {
+      "name": "format",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:315"
+        }
+      ]
+    },
+    {
+      "name": "ftwrl-max-wait-time",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.3-1",
+          "arg": "int",
+          "source": "src/mydumper/mydumper_arguments.c:174"
+        }
+      ]
+    },
+    {
+      "name": "ftwrl-timeout-retries",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.3-1",
+          "arg": "int",
+          "source": "src/mydumper/mydumper_arguments.c:176"
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "?",
+          "arg": "none",
+          "source": "src/mydumper/mydumper_arguments.c:140"
+        }
+      ]
+    },
+    {
+      "name": "hex-blob",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:338"
+        }
+      ]
+    },
+    {
+      "name": "host",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "h",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:68"
+        }
+      ]
+    },
+    {
+      "name": "ignore-engines",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "i",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/mydumper/mydumper_arguments.c:277"
+        }
+      ]
+    },
+    {
+      "name": "ignore-errors",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "source": "src/common_options.c:77"
+        }
+      ]
+    },
+    {
+      "name": "include-header",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:316"
+        }
+      ]
+    },
+    {
+      "name": "insert-ignore",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "N",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:332"
+        }
+      ]
+    },
+    {
+      "name": "isuccess-on-1146",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.19.1-3",
+          "arg": "callback",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:165"
+        }
+      ]
+    },
+    {
+      "name": "key",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:91"
+        }
+      ]
+    },
+    {
+      "name": "kill-long-queries",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "K",
+          "arg": "none",
+          "group": "query_running",
+          "source": "src/mydumper/mydumper_arguments.c:218"
+        }
+      ]
+    },
+    {
+      "name": "less-locking",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:202"
+        }
+      ]
+    },
+    {
+      "name": "lines-starting-by",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:322"
+        }
+      ]
+    },
+    {
+      "name": "lines-terminated-by",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:326"
+        }
+      ]
+    },
+    {
+      "name": "load-data",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:311"
+        }
+      ]
+    },
+    {
+      "name": "load-data-character-set",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.2-2",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:428"
+        }
+      ]
+    },
+    {
+      "name": "lock-all-tables",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:192"
+        }
+      ]
+    },
+    {
+      "name": "logfile",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "L",
+          "arg": "filename",
+          "source": "src/mydumper/mydumper_arguments.c:149"
+        }
+      ]
+    },
+    {
+      "name": "long-query-guard",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "l",
+          "arg": "int",
+          "group": "query_running",
+          "source": "src/mydumper/mydumper_arguments.c:216"
+        }
+      ]
+    },
+    {
+      "name": "long-query-retries",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "query_running",
+          "source": "src/mydumper/mydumper_arguments.c:212"
+        }
+      ]
+    },
+    {
+      "name": "long-query-retry-interval",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "query_running",
+          "source": "src/mydumper/mydumper_arguments.c:214"
+        }
+      ]
+    },
+    {
+      "name": "machine-log-json",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "source": "src/common_options.c:174"
+        }
+      ]
+    },
+    {
+      "name": "masquerade-filename",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/mydumper/mydumper_arguments.c:156"
+        }
+      ]
+    },
+    {
+      "name": "max-char-size",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.3-2",
+          "arg": "int",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:323"
+        }
+      ]
+    },
+    {
+      "name": "max-items-per-string-chunk",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.3-2",
+          "arg": "int",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:325"
+        }
+      ]
+    },
+    {
+      "name": "max-split-of-step-in-integer-chunk",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v1.0.0-1",
+          "arg": "int",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:300"
+        }
+      ]
+    },
+    {
+      "name": "max-threads-per-table",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:251"
+        }
+      ]
+    },
+    {
+      "name": "max-time-per-select",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "int",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:298"
+        }
+      ]
+    },
+    {
+      "name": "merge",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.3-1",
+          "arg": "none",
+          "source": "src/mydumper/mydumper_arguments.c:159"
+        }
+      ]
+    },
+    {
+      "name": "no-backup-locks",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:200"
+        }
+      ]
+    },
+    {
+      "name": "no-check-generated-fields",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:171"
+        }
+      ]
+    },
+    {
+      "name": "no-data",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "d",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:292"
+        }
+      ]
+    },
+    {
+      "name": "no-locks",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "short": "k",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:189"
+        }
+      ]
+    },
+    {
+      "name": "no-schema-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.2-2",
+          "arg": "none",
+          "flags": [
+            "reverse"
+          ],
+          "group": "checksum",
+          "source": "src/mydumper/mydumper_arguments.c:330"
+        }
+      ]
+    },
+    {
+      "name": "no-schemas",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "m",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:288"
+        }
+      ]
+    },
+    {
+      "name": "no-trx-tables",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.20.2-2",
+          "to": "v0.21.4-1",
+          "arg": "callback",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:266"
+        },
+        {
+          "from": "v1.0.0-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:249"
+        }
+      ]
+    },
+    {
+      "name": "no-views",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "W",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:305"
+        }
+      ]
+    },
+    {
+      "name": "omit-from-file",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "O",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/common_options.c:92"
+        }
+      ]
+    },
+    {
+      "name": "optimize-keys-engines",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "source": "src/common_options.c:85"
+        }
+      ]
+    },
+    {
+      "name": "order-by-primary",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:174"
+        }
+      ]
+    },
+    {
+      "name": "outputdir",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "o",
+          "arg": "filename",
+          "source": "src/mydumper/mydumper_arguments.c:141"
+        }
+      ]
+    },
+    {
+      "name": "partition-regex",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/mydumper/mydumper_arguments.c:283"
+        }
+      ]
+    },
+    {
+      "name": "password",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "p",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:72"
+        }
+      ]
+    },
+    {
+      "name": "pmm-path",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "pmm",
+          "source": "src/mydumper/mydumper_arguments.c:234"
+        }
+      ]
+    },
+    {
+      "name": "pmm-resolution",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "pmm",
+          "source": "src/mydumper/mydumper_arguments.c:236"
+        }
+      ]
+    },
+    {
+      "name": "port",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "P",
+          "arg": "int",
+          "group": "connectiongroup",
+          "source": "src/connection.c:75"
+        }
+      ]
+    },
+    {
+      "name": "protocol",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "group": "connectiongroup",
+          "source": "src/connection.c:79"
+        }
+      ]
+    },
+    {
+      "name": "regex",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "x",
+          "arg": "callback",
+          "group": "filter",
+          "source": "src/regex.c:45"
+        }
+      ]
+    },
+    {
+      "name": "replace",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:334"
+        }
+      ]
+    },
+    {
+      "name": "replace-definer",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.3-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:415"
+        }
+      ]
+    },
+    {
+      "name": "replica-data",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "source": "src/mydumper/mydumper_arguments.c:212"
+        }
+      ]
+    },
+    {
+      "name": "routine-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/mydumper/mydumper_arguments.c:270"
+        }
+      ]
+    },
+    {
+      "name": "routines",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "R",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:297"
+        }
+      ]
+    },
+    {
+      "name": "rows",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "r",
+          "arg": "callback",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:255"
+        }
+      ]
+    },
+    {
+      "name": "rows-hard",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:258"
+        }
+      ]
+    },
+    {
+      "name": "schema-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/mydumper/mydumper_arguments.c:268"
+        }
+      ]
+    },
+    {
+      "name": "server-version",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "string",
+          "source": "src/common_options.c:178"
+        }
+      ]
+    },
+    {
+      "name": "set-names",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.19.3-3",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:351"
+        },
+        {
+          "from": "v0.20.1-1",
+          "arg": "callback",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:408"
+        }
+      ]
+    },
+    {
+      "name": "skip-constraints",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:299"
+        }
+      ]
+    },
+    {
+      "name": "skip-data-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:51"
+        }
+      ]
+    },
+    {
+      "name": "skip-database-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:49"
+        }
+      ]
+    },
+    {
+      "name": "skip-ddl-locks",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:208"
+        }
+      ]
+    },
+    {
+      "name": "skip-definer",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:340"
+        }
+      ]
+    },
+    {
+      "name": "skip-event-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:63"
+        }
+      ]
+    },
+    {
+      "name": "skip-index-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:55"
+        }
+      ]
+    },
+    {
+      "name": "skip-indexes",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:301"
+        }
+      ]
+    },
+    {
+      "name": "skip-metadata-sorting",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.2-2",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:366"
+        }
+      ]
+    },
+    {
+      "name": "skip-routine-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:61"
+        }
+      ]
+    },
+    {
+      "name": "skip-table-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:53"
+        }
+      ]
+    },
+    {
+      "name": "skip-trigger-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:59"
+        }
+      ]
+    },
+    {
+      "name": "skip-tz-utc",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:350"
+        }
+      ]
+    },
+    {
+      "name": "skip-view-checksums",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:57"
+        }
+      ]
+    },
+    {
+      "name": "snapshot-count",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "X",
+          "arg": "int",
+          "group": "daemongroup",
+          "source": "src/mydumper/mydumper_arguments.c:247"
+        }
+      ]
+    },
+    {
+      "name": "snapshot-interval",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "I",
+          "arg": "int",
+          "group": "daemongroup",
+          "source": "src/mydumper/mydumper_arguments.c:243"
+        }
+      ]
+    },
+    {
+      "name": "socket",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "S",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:77"
+        }
+      ]
+    },
+    {
+      "name": "source-control-command",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "source": "src/common_options.c:83"
+        }
+      ]
+    },
+    {
+      "name": "source-data",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.19.3-3",
+          "arg": "int",
+          "source": "src/common_options.c:87"
+        },
+        {
+          "from": "v0.20.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "source": "src/common_options.c:157"
+        }
+      ]
+    },
+    {
+      "name": "split-partitions",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:259"
+        }
+      ]
+    },
+    {
+      "name": "split-string-pk",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.21.3-2",
+          "arg": "none",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:317"
+        }
+      ]
+    },
+    {
+      "name": "ssl",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:84"
+        }
+      ]
+    },
+    {
+      "name": "ssl-mode",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:85"
+        }
+      ]
+    },
+    {
+      "name": "statement-size",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "s",
+          "arg": "int",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:342"
+        }
+      ]
+    },
+    {
+      "name": "statement-terminated-by",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:330"
+        }
+      ]
+    },
+    {
+      "name": "stream",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "source": "src/mydumper/mydumper_arguments.c:147"
+        }
+      ]
+    },
+    {
+      "name": "success-on-1146",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.3-1",
+          "to": "v0.19.3-3",
+          "arg": "callback",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:185"
+        },
+        {
+          "from": "v0.20.1-1",
+          "to": "v0.21.4-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:221"
+        }
+      ]
+    },
+    {
+      "name": "sync-thread-lock-mode",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:194"
+        }
+      ]
+    },
+    {
+      "name": "table-engine-for-view-dependency",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:353"
+        }
+      ]
+    },
+    {
+      "name": "tables-list",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "T",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/common_options.c:96"
+        }
+      ]
+    },
+    {
+      "name": "threads",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "t",
+          "arg": "int",
+          "source": "src/common_options.c:69"
+        }
+      ]
+    },
+    {
+      "name": "throttle",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.3-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "source": "src/common_options.c:91"
+        }
+      ]
+    },
+    {
+      "name": "tidb-snapshot",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "z",
+          "arg": "string",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:187"
+        }
+      ]
+    },
+    {
+      "name": "tls-version",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:103"
+        }
+      ]
+    },
+    {
+      "name": "triggers",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "G",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:294"
+        }
+      ]
+    },
+    {
+      "name": "trx-consistency-only",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:204"
+        }
+      ]
+    },
+    {
+      "name": "trx-tables",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.19.3-3",
+          "arg": "none",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:206"
+        },
+        {
+          "from": "v0.20.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:260"
+        }
+      ]
+    },
+    {
+      "name": "tz-utc",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "flags": [
+            "reverse"
+          ],
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:344"
+        }
+      ]
+    },
+    {
+      "name": "updated-since",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "U",
+          "arg": "int",
+          "group": "filter",
+          "source": "src/mydumper/mydumper_arguments.c:281"
+        }
+      ]
+    },
+    {
+      "name": "use-defer",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:180"
+        }
+      ]
+    },
+    {
+      "name": "use-savepoints",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:197"
+        }
+      ]
+    },
+    {
+      "name": "use-single-column",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "job",
+          "source": "src/mydumper/mydumper_arguments.c:253"
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "u",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:70"
+        }
+      ]
+    },
+    {
+      "name": "verbose",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "v",
+          "arg": "int",
+          "source": "src/common_options.c:73"
+        }
+      ]
+    },
+    {
+      "name": "version",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "V",
+          "arg": "none",
+          "source": "src/common_options.c:71"
+        }
+      ]
+    },
+    {
+      "name": "views-as-tables",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "objects",
+          "source": "src/mydumper/mydumper_arguments.c:303"
+        }
+      ]
+    },
+    {
+      "name": "where",
+      "tool": "mydumper",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/mydumper/mydumper_arguments.c:279"
+        }
+      ]
+    },
+    {
+      "name": "append-if-not-exist",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:225"
+        }
+      ]
+    },
+    {
+      "name": "ask-password",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "a",
+          "arg": "none",
+          "group": "connectiongroup",
+          "source": "src/connection.c:73"
+        }
+      ]
+    },
+    {
+      "name": "ca",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:95"
+        }
+      ]
+    },
+    {
+      "name": "capath",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:97"
+        }
+      ]
+    },
+    {
+      "name": "cert",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:93"
+        }
+      ]
+    },
+    {
+      "name": "checksum",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:177"
+        }
+      ]
+    },
+    {
+      "name": "checksum-all",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "short": "M",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:38"
+        }
+      ]
+    },
+    {
+      "name": "cipher",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:101"
+        }
+      ]
+    },
+    {
+      "name": "compress-protocol",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "C",
+          "arg": "none",
+          "group": "connectiongroup",
+          "source": "src/connection.c:81"
+        }
+      ]
+    },
+    {
+      "name": "data-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:40"
+        }
+      ]
+    },
+    {
+      "name": "database",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "B",
+          "arg": "string",
+          "source": "src/myloader/myloader_arguments.c:130"
+        }
+      ]
+    },
+    {
+      "name": "debug",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/common_options.c:75"
+        }
+      ]
+    },
+    {
+      "name": "default-connection-database",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.3-2",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:75"
+        }
+      ]
+    },
+    {
+      "name": "defaults-extra-file",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "filename",
+          "source": "src/common_options.c:81"
+        }
+      ]
+    },
+    {
+      "name": "defaults-file",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "filename",
+          "source": "src/common_options.c:79"
+        }
+      ]
+    },
+    {
+      "name": "directory",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "d",
+          "arg": "string",
+          "source": "src/myloader/myloader_arguments.c:124"
+        }
+      ]
+    },
+    {
+      "name": "disable-redo-log",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:175"
+        }
+      ]
+    },
+    {
+      "name": "drop-database",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:197"
+        }
+      ]
+    },
+    {
+      "name": "drop-table",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "short": "o",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:199"
+        }
+      ]
+    },
+    {
+      "name": "dry-run",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.3-2",
+          "arg": "none",
+          "source": "src/common_options.c:185"
+        }
+      ]
+    },
+    {
+      "name": "enable-binlog",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "e",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:166"
+        }
+      ]
+    },
+    {
+      "name": "enable-cleartext-plugin",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "none",
+          "group": "connectiongroup",
+          "source": "src/connection.c:117"
+        }
+      ]
+    },
+    {
+      "name": "exec-per-thread",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "threads",
+          "source": "src/myloader/myloader_arguments.c:159"
+        }
+      ]
+    },
+    {
+      "name": "exec-per-thread-extension",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "threads",
+          "source": "src/myloader/myloader_arguments.c:161"
+        }
+      ]
+    },
+    {
+      "name": "fifodir",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "filename",
+          "source": "src/myloader/myloader_arguments.c:128"
+        }
+      ]
+    },
+    {
+      "name": "help",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "?",
+          "arg": "none",
+          "source": "src/myloader/myloader_arguments.c:123"
+        }
+      ]
+    },
+    {
+      "name": "host",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "h",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:68"
+        }
+      ]
+    },
+    {
+      "name": "ignore-errors",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "source": "src/common_options.c:77"
+        }
+      ]
+    },
+    {
+      "name": "ignore-set",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:231"
+        }
+      ]
+    },
+    {
+      "name": "innodb-optimize-keys",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-3",
+          "to": "v0.21.4-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:170"
+        }
+      ]
+    },
+    {
+      "name": "key",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:91"
+        }
+      ]
+    },
+    {
+      "name": "kill-at-once",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "k",
+          "arg": "none",
+          "source": "src/myloader/myloader_arguments.c:136"
+        }
+      ]
+    },
+    {
+      "name": "load-data-tmp-dir",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.3-2",
+          "arg": "filename",
+          "source": "src/myloader/myloader_arguments.c:148"
+        }
+      ]
+    },
+    {
+      "name": "local-infile",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "load_from_metadata",
+          "source": "src/myloader/myloader_arguments.c:145"
+        }
+      ]
+    },
+    {
+      "name": "logfile",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "L",
+          "arg": "filename",
+          "source": "src/myloader/myloader_arguments.c:126"
+        }
+      ]
+    },
+    {
+      "name": "machine-log-json",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "source": "src/common_options.c:174"
+        }
+      ]
+    },
+    {
+      "name": "max-statement-size",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "int",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:244"
+        }
+      ]
+    },
+    {
+      "name": "max-threads-for-index-creation",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "threads",
+          "source": "src/myloader/myloader_arguments.c:153"
+        }
+      ]
+    },
+    {
+      "name": "max-threads-for-post-actions",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "threads",
+          "source": "src/myloader/myloader_arguments.c:155"
+        }
+      ]
+    },
+    {
+      "name": "max-threads-for-schema-creation",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "threads",
+          "source": "src/myloader/myloader_arguments.c:157"
+        }
+      ]
+    },
+    {
+      "name": "max-threads-per-table",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "threads",
+          "source": "src/myloader/myloader_arguments.c:151"
+        }
+      ]
+    },
+    {
+      "name": "max-transaction-size",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "int",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:246"
+        }
+      ]
+    },
+    {
+      "name": "metadata-refresh-interval",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:191"
+        }
+      ]
+    },
+    {
+      "name": "mysqldump",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/myloader/myloader_arguments.c:137"
+        }
+      ]
+    },
+    {
+      "name": "no-data",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:216"
+        }
+      ]
+    },
+    {
+      "name": "no-schema",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v1.0.0-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:172"
+        }
+      ]
+    },
+    {
+      "name": "no-schema-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "flags": [
+            "reverse"
+          ],
+          "group": "checksum",
+          "source": "src/checksum.c:45"
+        }
+      ]
+    },
+    {
+      "name": "no-schemas",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v1.0.1-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:189"
+        }
+      ]
+    },
+    {
+      "name": "num-sequences",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.20.2-3",
+          "arg": "int",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:225"
+        }
+      ]
+    },
+    {
+      "name": "omit-from-file",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "O",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/common_options.c:92"
+        }
+      ]
+    },
+    {
+      "name": "optimize-keys",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:168"
+        }
+      ]
+    },
+    {
+      "name": "optimize-keys-batchsize",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.3-2",
+          "arg": "int",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:196"
+        }
+      ]
+    },
+    {
+      "name": "optimize-keys-engines",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "source": "src/common_options.c:85"
+        }
+      ]
+    },
+    {
+      "name": "overwrite-tables",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.19.3-3",
+          "short": "o",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:179"
+        },
+        {
+          "from": "v0.20.1-1",
+          "to": "v0.21.4-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:203"
+        }
+      ]
+    },
+    {
+      "name": "overwrite-unsafe",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:181"
+        }
+      ]
+    },
+    {
+      "name": "password",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "p",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:72"
+        }
+      ]
+    },
+    {
+      "name": "pmm-path",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "pmm",
+          "source": "src/myloader/myloader_arguments.c:198"
+        }
+      ]
+    },
+    {
+      "name": "pmm-resolution",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "pmm",
+          "source": "src/myloader/myloader_arguments.c:200"
+        }
+      ]
+    },
+    {
+      "name": "port",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "P",
+          "arg": "int",
+          "group": "connectiongroup",
+          "source": "src/connection.c:75"
+        }
+      ]
+    },
+    {
+      "name": "protocol",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "group": "connectiongroup",
+          "source": "src/connection.c:79"
+        }
+      ]
+    },
+    {
+      "name": "purge-mode",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "arg": "callback",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:173"
+        }
+      ]
+    },
+    {
+      "name": "queries-per-transaction",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "q",
+          "arg": "int",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:223"
+        }
+      ]
+    },
+    {
+      "name": "quote-character",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "Q",
+          "arg": "callback",
+          "group": "load_from_metadata",
+          "source": "src/myloader/myloader_arguments.c:141"
+        }
+      ]
+    },
+    {
+      "name": "regex",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "x",
+          "arg": "callback",
+          "group": "filter",
+          "source": "src/regex.c:45"
+        }
+      ]
+    },
+    {
+      "name": "replace-definer",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.3-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:259"
+        }
+      ]
+    },
+    {
+      "name": "resume",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/myloader/myloader_arguments.c:134"
+        }
+      ]
+    },
+    {
+      "name": "retry-count",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "int",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:183"
+        }
+      ]
+    },
+    {
+      "name": "routine-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:47"
+        }
+      ]
+    },
+    {
+      "name": "rows",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "r",
+          "arg": "int",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:221"
+        }
+      ]
+    },
+    {
+      "name": "schema-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:42"
+        }
+      ]
+    },
+    {
+      "name": "serialized-table-creation",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.21.4-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:185"
+        }
+      ]
+    },
+    {
+      "name": "server-version",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.20.1-1",
+          "arg": "string",
+          "source": "src/common_options.c:178"
+        }
+      ]
+    },
+    {
+      "name": "set-gtid-purged",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:193"
+        }
+      ]
+    },
+    {
+      "name": "set-names",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:227"
+        }
+      ]
+    },
+    {
+      "name": "show-warnings",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "source": "src/myloader/myloader_arguments.c:132"
+        }
+      ]
+    },
+    {
+      "name": "skip-constraints",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:212"
+        }
+      ]
+    },
+    {
+      "name": "skip-create-database",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v1.0.1-1",
+          "arg": "none",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:225"
+        }
+      ]
+    },
+    {
+      "name": "skip-create-table",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v1.0.1-1",
+          "arg": "none",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:223"
+        }
+      ]
+    },
+    {
+      "name": "skip-data-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:51"
+        }
+      ]
+    },
+    {
+      "name": "skip-database-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:49"
+        }
+      ]
+    },
+    {
+      "name": "skip-definer",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "statement",
+          "source": "src/myloader/myloader_arguments.c:229"
+        }
+      ]
+    },
+    {
+      "name": "skip-event-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:63"
+        }
+      ]
+    },
+    {
+      "name": "skip-index-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:55"
+        }
+      ]
+    },
+    {
+      "name": "skip-indexes",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:214"
+        }
+      ]
+    },
+    {
+      "name": "skip-post",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:210"
+        }
+      ]
+    },
+    {
+      "name": "skip-routine-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:61"
+        }
+      ]
+    },
+    {
+      "name": "skip-table-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:53"
+        }
+      ]
+    },
+    {
+      "name": "skip-table-sorting",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:192"
+        }
+      ]
+    },
+    {
+      "name": "skip-trigger-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:59"
+        }
+      ]
+    },
+    {
+      "name": "skip-triggers",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:208"
+        }
+      ]
+    },
+    {
+      "name": "skip-view-checksums",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.21.4-1",
+          "arg": "none",
+          "group": "checksum",
+          "source": "src/checksum.c:57"
+        }
+      ]
+    },
+    {
+      "name": "socket",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "S",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:77"
+        }
+      ]
+    },
+    {
+      "name": "source-control-command",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "source": "src/common_options.c:83"
+        }
+      ]
+    },
+    {
+      "name": "source-data",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "to": "v0.19.3-3",
+          "arg": "int",
+          "source": "src/common_options.c:87"
+        },
+        {
+          "from": "v0.20.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "source": "src/common_options.c:157"
+        }
+      ]
+    },
+    {
+      "name": "source-db",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "s",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/myloader/myloader_arguments.c:206"
+        }
+      ]
+    },
+    {
+      "name": "ssl",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "none",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:84"
+        }
+      ]
+    },
+    {
+      "name": "ssl-mode",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:85"
+        }
+      ]
+    },
+    {
+      "name": "stream",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:188"
+        }
+      ]
+    },
+    {
+      "name": "tables-list",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "T",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/common_options.c:96"
+        }
+      ]
+    },
+    {
+      "name": "threads",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "t",
+          "arg": "int",
+          "source": "src/common_options.c:69"
+        }
+      ]
+    },
+    {
+      "name": "throttle",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.3-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "source": "src/common_options.c:91"
+        }
+      ]
+    },
+    {
+      "name": "tls-version",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "arg": "string",
+          "group": "connectiongroup",
+          "condition": "WITH_SSL",
+          "source": "src/connection.c:103"
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "u",
+          "arg": "string",
+          "group": "connectiongroup",
+          "source": "src/connection.c:70"
+        }
+      ]
+    },
+    {
+      "name": "verbose",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "v",
+          "arg": "int",
+          "source": "src/common_options.c:73"
+        }
+      ]
+    },
+    {
+      "name": "version",
+      "tool": "myloader",
+      "spans": [
+        {
+          "from": "v0.19.1-1",
+          "short": "V",
+          "arg": "none",
+          "source": "src/common_options.c:71"
+        }
+      ]
+    }
+  ],
+  "table_keys": [
+    {
+      "name": "columns_on_insert",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "columns_on_select",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "columns_on_select_replace",
+      "spans": [
+        {
+          "from": "v0.21.3-1",
+          "to": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "columns_on_select_replace",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v1.0.0-1"
+        }
+      ]
+    },
+    {
+      "name": "limit",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "num_threads",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "object_to_export",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "object_to_import",
+      "spans": [
+        {
+          "from": "v0.21.3-2"
+        }
+      ]
+    },
+    {
+      "name": "partition_regex",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "rows",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-data-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-database-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-event-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-index-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-routine-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-table-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-trigger-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "skip-view-checksums",
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "where",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    }
+  ],
+  "masquerade_functions": [
+    {
+      "name": "apply",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "constant",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "null",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.21.4-1"
+        }
+      ]
+    },
+    {
+      "name": "random_format",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "random_int",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "random_string",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "random_uuid",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "regex",
+      "prefix": true,
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    }
+  ],
+  "products": [
+    {
+      "name": "clickhouse",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "dolt",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "google",
+      "spans": [
+        {
+          "from": "v0.21.3-2"
+        }
+      ]
+    },
+    {
+      "name": "mariadb",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "mysql",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "percona",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "rds",
+      "spans": [
+        {
+          "from": "v0.20.1-2"
+        }
+      ]
+    },
+    {
+      "name": "tidb",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    },
+    {
+      "name": "unknown",
+      "spans": [
+        {
+          "from": "v0.19.1-1"
+        }
+      ]
+    }
+  ]
 }

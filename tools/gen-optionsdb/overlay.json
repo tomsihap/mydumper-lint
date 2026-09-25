@@ -1,0 +1,4 @@
+{
+  "comment": ["Facts the extractor cannot infer. See README in the generator package doc."],
+  "options": []
+}
