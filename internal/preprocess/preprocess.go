@@ -47,6 +47,19 @@ type LineInfo struct {
 // Result holds one LineInfo per line of the file, in order.
 type Result struct {
 	Lines []LineInfo
+	// Passthrough is set for mydumper versions whose loader hands the file to
+	// GLib unchanged (v0.19.1-x): no "= 1", no state leak.
+	Passthrough bool
+}
+
+// Passthrough returns the pre-processing of a version without pre-processor:
+// every line reaches GLib unchanged.
+func Passthrough(f *source.File) *Result {
+	r := &Result{Lines: make([]LineInfo, len(f.Lines)), Passthrough: true}
+	for i := range r.Lines {
+		r.Lines[i] = LineInfo{BracketAt: -1, OutNewLine: true}
+	}
+	return r
 }
 
 // state is the pre-processor's (new_line, equal_found) pair.

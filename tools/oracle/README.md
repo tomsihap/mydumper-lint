@@ -48,6 +48,11 @@ the images cover.
 
 `oracle -- FILE` forces the text mode for a file name that looks like an option.
 
+**`--plain`.** Placed after the environment options and before `FILE`, `--json` or
+`--serve`, it loads files without mydumper's pre-processor, the way mydumper v0.19.1-x
+does (`g_key_file_load_from_file` on the file as written). The pre-processor appeared in
+v0.19.3-1; the knowledge base records it per version (`preprocessor`).
+
 **Environment options.** `--setenv NAME=VALUE` and `--unsetenv NAME` come before the mode
 and are applied in order before anything else runs. They exist because the result
 depends on the environment and a `docker run IMAGE ARGS` command cannot set it otherwise:

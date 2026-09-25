@@ -11,10 +11,15 @@ import (
 	"github.com/tomsihap/mydumper-lint/internal/source"
 )
 
-// emulate is what the Go emulation says about content, in the oracle's shape.
-func emulate(content []byte) Verdict {
+// emulate is what the Go emulation says about content, in the oracle's
+// shape. plain emulates the versions without pre-processor (v0.19.1-x).
+func emulate(content []byte, plain bool) Verdict {
 	f := source.New("fuzz.cnf", content)
-	r := keyfile.Parse(f, preprocess.Run(f))
+	pre := preprocess.Run(f)
+	if plain {
+		pre = preprocess.Passthrough(f)
+	}
+	r := keyfile.Parse(f, pre)
 	if !r.Loadable {
 		return Verdict{Error: r.FirstError.Message}
 	}
@@ -44,14 +49,21 @@ func render(v Verdict) string {
 	return b.String()
 }
 
-func compare(t *testing.T, o *Oracle, content []byte) {
+// oracle is a running oracle and the loader it emulates.
+type oracle struct {
+	*Oracle
+	plain bool
+}
+
+func compare(t *testing.T, o oracle, content []byte) {
 	t.Helper()
 	want, err := o.Load(content)
 	if err != nil {
 		t.Fatalf("oracle: %v", err)
 	}
-	if got := emulate(content); render(got) != render(want) {
-		t.Fatalf("divergence on %q (GLib %s)\nemulation:\n%s\nGLib:\n%s", content, want.GLib, render(got), render(want))
+	if got := emulate(content, o.plain); render(got) != render(want) {
+		t.Fatalf("divergence on %q (GLib %s, plain %v)\nemulation:\n%s\nGLib:\n%s",
+			content, want.GLib, o.plain, render(got), render(want))
 	}
 }
 
@@ -87,8 +99,8 @@ func build(seed []byte) []byte {
 	return b
 }
 
-func startOrSkip(t testing.TB) *Oracle {
-	o, err := Start()
+func startOrSkip(t testing.TB, plain bool) oracle {
+	o, err := start(plain)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,26 +108,36 @@ func startOrSkip(t testing.TB) *Oracle {
 		t.Skip(EnvVar + " is not set; see tools/oracle/README.md")
 	}
 	t.Cleanup(func() { o.Close() })
-	return o
+	return oracle{o, plain}
 }
 
 // FuzzStructured feeds grammar-built files to both implementations.
-func FuzzStructured(f *testing.F) {
+func FuzzStructured(f *testing.F) { fuzzStructured(f, false) }
+
+// FuzzStructuredPlain is FuzzStructured without the pre-processor (v0.19.1-x).
+func FuzzStructuredPlain(f *testing.F) { fuzzStructured(f, true) }
+
+func fuzzStructured(f *testing.F, plain bool) {
 	for _, s := range []string{"\x00\xb0\x0e\xb0", "\x2f\xb0\xc0\x10", "\x05\x05\xd0\x22", "\x40\xb5\x41"} {
 		f.Add([]byte(s))
 	}
-	o := startOrSkip(f)
+	o := startOrSkip(f, plain)
 	f.Fuzz(func(t *testing.T, seed []byte) {
 		compare(t, o, build(seed))
 	})
 }
 
 // FuzzBytes feeds raw bytes to both implementations.
-func FuzzBytes(f *testing.F) {
+func FuzzBytes(f *testing.F) { fuzzBytes(f, false) }
+
+// FuzzBytesPlain is FuzzBytes without the pre-processor (v0.19.1-x).
+func FuzzBytesPlain(f *testing.F) { fuzzBytes(f, true) }
+
+func fuzzBytes(f *testing.F, plain bool) {
 	for _, s := range []string{"[mydumper]\nroutines\n", "[g]\n  \n", "# [x]\n\n", "\xef\xbb\xbf[a]\n", "[g]\r\n\r\n"} {
 		f.Add([]byte(s))
 	}
-	o := startOrSkip(f)
+	o := startOrSkip(f, plain)
 	f.Fuzz(func(t *testing.T, content []byte) {
 		compare(t, o, content)
 	})
@@ -124,13 +146,17 @@ func FuzzBytes(f *testing.F) {
 // TestKnownCases runs a fixed corpus through both implementations, so a
 // plain `go test` exercises the harness when an oracle is available.
 func TestKnownCases(t *testing.T) {
-	o := startOrSkip(t)
-	rng := rand.New(rand.NewPCG(1, 2))
-	for range 3000 {
-		seed := make([]byte, 1+rng.IntN(24))
-		for i := range seed {
-			seed[i] = byte(rng.UintN(256))
-		}
-		compare(t, o, build(seed))
+	for _, plain := range []bool{false, true} {
+		t.Run(fmt.Sprintf("plain=%v", plain), func(t *testing.T) {
+			o := startOrSkip(t, plain)
+			rng := rand.New(rand.NewPCG(1, 2))
+			for range 3000 {
+				seed := make([]byte, 1+rng.IntN(24))
+				for i := range seed {
+					seed[i] = byte(rng.UintN(256))
+				}
+				compare(t, o, build(seed))
+			}
+		})
 	}
 }

@@ -18,6 +18,9 @@ type Config struct {
 	Target    model.Target // nil: no mydumper version (GLib-level rules only)
 	Version   string       // resolved mydumper version tag, for messages
 	Languages []string     // runtime language list of mydumper (K14); nil means ["C"]
+	// NoPreprocessor is set for mydumper versions that load the file with GLib
+	// directly (v0.19.1-x): no "= 1" rewrite, no bracket state leak.
+	NoPreprocessor bool
 }
 
 // Linter checks and fixes files with one configuration. It is safe for
@@ -52,14 +55,23 @@ func (l *Linter) modelOptions() model.Options {
 	return model.Options{Languages: l.cfg.Languages, Target: l.cfg.Target}
 }
 
+// preprocess runs mydumper's pre-processor, or not, as the target version does.
+func (l *Linter) preprocess(f *source.File) *preprocess.Result {
+	if l.cfg.NoPreprocessor {
+		return preprocess.Passthrough(f)
+	}
+	return preprocess.Run(f)
+}
+
 // Check lints src.
 func (l *Linter) Check(path string, src []byte) *Result {
 	f := source.New(path, src)
-	pre := preprocess.Run(f)
+	pre := l.preprocess(f)
 	kf := keyfile.Parse(f, pre)
 	m := model.Build(kf, l.modelOptions())
 	p := rules.NewPass(f, pre, kf, m)
 	p.Target, p.Version, p.Languages = l.cfg.Target, l.cfg.Version, l.cfg.Languages
+	p.Preprocessor = !l.cfg.NoPreprocessor
 	ds := p.Run(l.enabled)
 	return &Result{File: f, Pre: pre, KF: kf, Model: m, Diagnostics: ds}
 }
@@ -68,9 +80,9 @@ func (l *Linter) Check(path string, src []byte) *Result {
 // health of src itself, for the fixer's self-check (design §7.3).
 func (l *Linter) Measure(src []byte) (string, model.Health) {
 	f := source.New("", src)
-	health := model.Build(keyfile.Parse(f, preprocess.Run(f)), l.modelOptions()).Health
-	rf := source.New("", keyfile.Recover(src))
-	recovered := model.Build(keyfile.Parse(rf, preprocess.Run(rf)), l.modelOptions())
+	health := model.Build(keyfile.Parse(f, l.preprocess(f)), l.modelOptions()).Health
+	rf := source.New("", keyfile.RecoverWith(src, l.cfg.NoPreprocessor))
+	recovered := model.Build(keyfile.Parse(rf, l.preprocess(rf)), l.modelOptions())
 	return recovered.Projection(), health
 }
 

@@ -94,14 +94,14 @@ func TestCheckExitCodes(t *testing.T) {
 
 func TestCheckUsageErrors(t *testing.T) {
 	tests := map[string][]string{
-		"did you mean --fix":  {"check", "--fixx"},
-		"--fail-on must be":   {"check", "--fail-on", "fatal"},
-		"--color must be":     {"check", "--color", "rainbow"},
-		"needs --fix":         {"check", "--unsafe-fixes"},
-		"cannot be used":      {"check", "--fix", "--diff"},
-		"unknown format":      {"check", "--format", "xml"},
-		"needs a value":       {"check", "--select"},
-		"no such file":        {"check", "does-not-exist.cnf"},
+		"did you mean --fix": {"check", "--fixx"},
+		"--fail-on must be":  {"check", "--fail-on", "fatal"},
+		"--color must be":    {"check", "--color", "rainbow"},
+		"needs --fix":        {"check", "--unsafe-fixes"},
+		"cannot be used":     {"check", "--fix", "--diff"},
+		"unknown format":     {"check", "--format", "xml"},
+		"needs a value":      {"check", "--select"},
+		"no such file":       {"check", "does-not-exist.cnf"},
 		`did you mean "MDL1`: {"check", "--select", "MDL1O2", "."},
 	}
 	for want, args := range tests {
@@ -228,6 +228,45 @@ func TestConfigurationDiscoveryAndOverrides(t *testing.T) {
 	}
 	if r := run(t, "", "config", "nope"); r.code != ExitError {
 		t.Errorf("config nope: %+v", r)
+	}
+}
+
+func TestMydumperVersion(t *testing.T) {
+	root := workspace(t, map[string]string{"flag.cnf": "[mydumper]\nroutines\n", "clean.cnf": clean})
+	flag, cleanPath := filepath.Join(root, "flag.cnf"), filepath.Join(root, "clean.cnf")
+
+	r := run(t, "", "check", cleanPath)
+	if r.code != ExitOK || !strings.Contains(r.stderr, "no mydumper version configured") {
+		t.Errorf("unpinned: %+v", r)
+	}
+	if r := run(t, "", "check", "--mydumper-version", "0.19.3-3", cleanPath); r.stderr != "" {
+		t.Errorf("pinned: unexpected notice %q", r.stderr)
+	}
+	// v0.19.1-x has no pre-processor: a valueless flag gets the file rejected.
+	r = run(t, "", "check", "--mydumper-version", "0.19.1", "--format", "concise", flag)
+	if r.code != ExitFindings || !strings.Contains(r.stdout, "MDL113") {
+		t.Errorf("v0.19.1: %+v", r)
+	}
+	if r := run(t, "", "check", "--mydumper-version", "v0.19.3-1", flag); r.code != ExitOK {
+		t.Errorf("v0.19.3-1: %+v", r)
+	}
+	if r := run(t, "", "check", "--mydumper-version", "0.19.4-23", cleanPath); !strings.Contains(r.stderr, "nearest lower version") {
+		t.Errorf("unknown build: %+v", r)
+	}
+	if r := run(t, "", "check", "--mydumper-version", "0.18", cleanPath); r.code != ExitError || !strings.Contains(r.stderr, "older than") {
+		t.Errorf("too old: %+v", r)
+	}
+	pinned := workspace(t, map[string]string{".mydumper-lint.yaml": "mydumper-version: 0.19.1-2\n", "flag.cnf": "[mydumper]\nroutines\n"})
+	if r := run(t, "", "check", "--format", "concise", pinned); r.code != ExitFindings || r.stderr != "" || !strings.Contains(r.stdout, "MDL113") {
+		t.Errorf("configured version: %+v", r)
+	}
+	r = run(t, "", "check", "--mydumper-version", "0.19.1", "--fix", flag)
+	if got, _ := os.ReadFile(flag); r.code != ExitOK || string(got) != "[mydumper]\nroutines=1\n" {
+		t.Errorf("fix: %+v, file %q", r, got)
+	}
+	r = run(t, "[mydumper]\nevents\n", "inspect", "--mydumper-version", "0.19.1", "-")
+	if !strings.Contains(r.stdout, "no pre-processor") || !strings.Contains(r.stdout, "GLib REJECTS") {
+		t.Errorf("inspect: %s", r.stdout)
 	}
 }
 

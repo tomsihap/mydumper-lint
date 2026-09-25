@@ -1,0 +1,10 @@
+# From v0.19.3-1 the pre-processor turns `routines` into `routines= 1`.
+-- options --
+mydumper-version: v0.19.3-1
+-- input.cnf --
+[mydumper]
+host=db
+routines
+  triggers
+-- diagnostics --
+(none)

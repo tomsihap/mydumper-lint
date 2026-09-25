@@ -1,0 +1,11 @@
+# CRLF endings: the value goes before the carriage return.
+-- options --
+mydumper-version: v0.19.1-2
+-- input.cnf.esc --
+[mydumper]\r\nroutines\r\n\r\nhost=db\r\n
+-- fixed.cnf.esc --
+[mydumper]\r\nroutines=1\r\n\r\nhost=db\r\n
+-- diagnostics --
+2:1-2:9 error MDL113[unsupported-flag-without-value] `routines` has no `=`: mydumper v0.19.1-2 hands the file to GLib without rewriting valueless options into `key= 1` (GLib: Key file contains line “routines” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.
+  fix (safe): Write the value explicitly (`routines=1`)

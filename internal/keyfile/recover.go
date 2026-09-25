@@ -25,9 +25,19 @@ const (
 // that safe fixes preserve the model of the recovered file, so the two
 // implementations validate each other.
 func Recover(b []byte) []byte {
+	return RecoverWith(b, false)
+}
+
+// RecoverWith is Recover for a mydumper version with (passthrough false) or
+// without (true) the pre-processor.
+func RecoverWith(b []byte, passthrough bool) []byte {
 	for pass := 0; pass < maxRecoverPasses; pass++ {
 		f := source.New("", b)
-		r := Parse(f, preprocess.Run(f))
+		pre := preprocess.Run(f)
+		if passthrough {
+			pre = preprocess.Passthrough(f)
+		}
+		r := Parse(f, pre)
 		if r.Loadable {
 			return b
 		}
@@ -61,8 +71,11 @@ func recoveryEdit(f *source.File, l source.Line, c Cause, neutralize bool) diag.
 				end = next.End + 1
 			}
 			return diag.Edit{Start: l.Start, End: end}
-		case CauseBracketLeakFlag:
-			at := l.Start + len(content) - crLen(content)
+		case CauseBracketLeakFlag, CauseNoPreprocessor:
+			at := l.Start + len(content)
+			if l.HasNewline {
+				at -= crLen(content)
+			}
 			return diag.Edit{Start: at, End: at, New: "=1"}
 		case CauseMissingFinalNewline:
 			return diag.Edit{Start: l.End, End: l.End, New: "\n"}

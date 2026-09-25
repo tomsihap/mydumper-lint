@@ -7,7 +7,7 @@
 //	MYDUMPER_LINT_ORACLE="docker run -i --rm mydumper-lint-oracle:alma9"
 //
 // "--unsetenv" options are prepended so that the oracle runs with the same
-// C locale as the emulation, and "--serve" is appended.
+// C locale as the emulation, and "--serve" (or "--plain --serve") is appended.
 package oracletest
 
 import (
@@ -54,9 +54,16 @@ type Oracle struct {
 	out *bufio.Reader
 }
 
-// Start launches the oracle named by $MYDUMPER_LINT_ORACLE. It returns nil
-// and no error when the variable is unset, so callers can skip.
-func Start() (*Oracle, error) {
+// Start launches the oracle named by $MYDUMPER_LINT_ORACLE, loading files
+// like mydumper v0.19.3-1 and later: after mydumper's pre-processor. It
+// returns nil and no error when the variable is unset, so callers can skip.
+func Start() (*Oracle, error) { return start(false) }
+
+// StartPlain is Start for mydumper v0.19.1-x, which hands files to GLib
+// unchanged.
+func StartPlain() (*Oracle, error) { return start(true) }
+
+func start(plain bool) (*Oracle, error) {
 	spec := strings.Fields(os.Getenv(EnvVar))
 	if len(spec) == 0 {
 		return nil, nil
@@ -64,6 +71,9 @@ func Start() (*Oracle, error) {
 	var args []string
 	for _, v := range []string{"LANGUAGE", "LC_ALL", "LC_MESSAGES", "LANG", "LC_CTYPE", "CHARSET"} {
 		args = append(args, "--unsetenv", v)
+	}
+	if plain {
+		args = append(args, "--plain")
 	}
 	args = append(args, "--serve")
 	// The command comes from the developer's own environment variable.
@@ -91,8 +101,8 @@ func (o *Oracle) Close() error {
 	return errors.Join(o.in.Close(), o.cmd.Wait())
 }
 
-// Load asks the oracle what GLib does with content, after mydumper's
-// pre-processor.
+// Load asks the oracle what GLib does with content (after mydumper's
+// pre-processor, unless the oracle was started with StartPlain).
 func (o *Oracle) Load(content []byte) (Verdict, error) {
 	o.mu.Lock()
 	defer o.mu.Unlock()

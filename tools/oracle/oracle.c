@@ -66,9 +66,13 @@ static GString *mydumper_preprocess(const gchar *contents, gsize length)
 // contents[length] must be readable and hold the NUL that g_file_get_contents
 // appends: when a '[' copy reaches the end of the buffer, the pre-processor
 // copies that NUL too.
+// --plain: load the file like mydumper v0.19.1-x, which hands it to GLib
+// unchanged (g_key_file_load_from_file), without the pre-processor.
+static gboolean plain = FALSE;
+
 static GKeyFile *load_config_data(const gchar *contents, gsize length, GError **error)
 {
-  GString *pre = mydumper_preprocess(contents, length);
+  GString *pre = plain ? g_string_new_len(contents, (gssize)length) : mydumper_preprocess(contents, length);
   GKeyFile *kf = g_key_file_new();
   gboolean ok = g_key_file_load_from_data(kf, pre->str, pre->len, G_KEY_FILE_KEEP_COMMENTS, error);
   g_string_free(pre, TRUE);
@@ -980,6 +984,7 @@ static const char usage_text[] =
     "       oracle [ENV...] --goption-cases FILE... data-driven GOption cases (- reads stdin)\n"
     "       oracle --glib-version                   runtime GLib version\n"
     "ENV:   --setenv NAME=VALUE | --unsetenv NAME   applied in order, before anything runs\n"
+    "       --plain (after ENV, before FILE, --json or --serve): no pre-processor, like v0.19.1-x\n"
     "See tools/oracle/README.md.\n";
 
 static int usage(FILE *to, int status)
@@ -992,7 +997,7 @@ static gboolean is_flag(const char *arg)
 {
   static const char *const flags[] = {"--json",         "--serve", "--goption", "--goption-cases",
                                       "--glib-version", "--help",  "-h",        "--setenv",
-                                      "--unsetenv",     "--"};
+                                      "--unsetenv",     "--plain",   "--"};
   for (gsize i = 0; i < G_N_ELEMENTS(flags); i++)
     if (strcmp(arg, flags[i]) == 0)
       return TRUE;
@@ -1029,6 +1034,11 @@ int main(int argc, char **argv)
       g_unsetenv(argv[i + 1]);
     else if (!set_env(argv[i + 1]))
       return 2;
+  }
+  if (i < argc && strcmp(argv[i], "--plain") == 0)
+  {
+    plain = TRUE;
+    i++;
   }
   int rest = argc - i;
   char **args = argv + i;

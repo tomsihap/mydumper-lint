@@ -34,10 +34,11 @@ func init() {
 				d.Consequence = "Anything appended to this file (for example a [client] section added by a " +
 					"script) is glued to its last line."
 			}
-			// Adding a newline after a line of whitespace would turn it into "  = 1"
-			// (MDL102 and MDL103 fix those lines instead), and after a trailing '\r'
-			// it would make GLib strip that '\r' and change the line.
-			if last := p.File.Content(n); !isBlankish(last) && last[len(last)-1] != '\r' {
+			// With the pre-processor, adding a newline after a line of whitespace
+			// would turn it into "  = 1" (MDL102 and MDL103 fix those lines
+			// instead). After a trailing '\r' it would make GLib strip that '\r'
+			// and change the line.
+			if last := p.File.Content(n); (!isBlankish(last) || !p.Preprocessor) && last[len(last)-1] != '\r' {
 				d.Fix = &diag.Fix{
 					Applicability: diag.Safe,
 					Description:   "Add a final newline",

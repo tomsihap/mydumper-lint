@@ -35,12 +35,15 @@ func (t *targetCache) linter(s config.Settings) (*lint.Linter, string, string, e
 	if c, ok := t.linters[key]; ok {
 		return c.l, c.version, c.warning, c.err
 	}
-	target, version, warning, err := resolveTarget(s)
 	var c cachedLinter
+	tg, err := resolveTarget(s)
 	if err == nil {
-		c.l, err = lint.New(lint.Config{Selection: s.Selection, Target: target, Version: version})
+		cfg := lint.Config{Selection: s.Selection}
+		tg.Configure(&cfg)
+		c.l, err = lint.New(cfg)
+		c.version, c.warning = tg.Version(), tg.Notice
 	}
-	c.version, c.warning, c.err = version, warning, err
+	c.err = err
 	t.linters[key] = c
 	return c.l, c.version, c.warning, c.err
 }

@@ -14,6 +14,7 @@ import (
 	"github.com/tomsihap/mydumper-lint/internal/model"
 	"github.com/tomsihap/mydumper-lint/internal/preprocess"
 	"github.com/tomsihap/mydumper-lint/internal/source"
+	"github.com/tomsihap/mydumper-lint/internal/target"
 )
 
 const inspectHelp = `Usage: mydumper-lint inspect [flags] FILE
@@ -29,7 +30,8 @@ Flags:
 // inspectDoc is the JSON document printed by inspect.
 type inspectDoc struct {
 	Path            string          `json:"path"`
-	MydumperVersion string          `json:"mydumper_version,omitempty"`
+	MydumperVersion string          `json:"mydumper_version"`
+	Preprocessor    bool            `json:"preprocessor"` // the version runs mydumper's pre-processor
 	Loadable        bool            `json:"loadable"`
 	Health          string          `json:"health"`
 	Error           *inspectError   `json:"error"`
@@ -125,13 +127,13 @@ func runInspect(args []string, e *env) int {
 	if *version != "" {
 		s.MydumperVersion = *version
 	}
-	target, resolved, warning, err := resolveTarget(s)
+	t, err := resolveTarget(s)
 	if err != nil {
 		fmt.Fprintf(e.stderr, "mydumper-lint: %v\n", err)
 		return ExitError
 	}
-	if warning != "" {
-		fmt.Fprintf(e.stderr, "mydumper-lint: %s\n", warning)
+	if t.Notice != "" {
+		fmt.Fprintf(e.stderr, "mydumper-lint: %s\n", t.Notice)
 	}
 	languages := keyfile.LanguageNames(func(k string) string {
 		if k == "LANG" {
@@ -139,7 +141,7 @@ func runInspect(args []string, e *env) int {
 		}
 		return ""
 	})
-	doc := buildInspect(path, src, target, resolved, languages)
+	doc := buildInspect(path, src, t, languages)
 	if *format == "json" {
 		enc := json.NewEncoder(e.stdout)
 		enc.SetIndent("", "  ")
@@ -152,14 +154,18 @@ func runInspect(args []string, e *env) int {
 	return ExitOK
 }
 
-func buildInspect(path string, src []byte, target model.Target, version string, languages []string) inspectDoc {
+func buildInspect(path string, src []byte, t target.Target, languages []string) inspectDoc {
 	f := source.New(path, src)
+	v := t.View.Version()
 	pre := preprocess.Run(f)
+	if !v.Preprocessor {
+		pre = preprocess.Passthrough(f)
+	}
 	kf := keyfile.Parse(f, pre)
-	m := model.Build(kf, model.Options{Languages: languages, Target: target})
+	m := model.Build(kf, model.Options{Languages: languages, Target: t.View})
 	doc := inspectDoc{
-		Path: path, MydumperVersion: version, Loadable: kf.Loadable, Health: m.Health.String(),
-		Rewritten: []inspectLine{}, GLib: []inspectGroup{}, Model: []inspectMGroup{},
+		Path: path, MydumperVersion: v.Tag, Preprocessor: v.Preprocessor, Loadable: kf.Loadable,
+		Health: m.Health.String(), Rewritten: []inspectLine{}, GLib: []inspectGroup{}, Model: []inspectMGroup{},
 	}
 	if kf.FirstError != nil {
 		doc.Error = &inspectError{Line: kf.FirstError.Line, Message: kf.FirstError.Message}
@@ -195,8 +201,9 @@ func buildInspect(path string, src []byte, target model.Target, version string, 
 
 func printInspect(w io.Writer, d inspectDoc) {
 	fmt.Fprintf(w, "%s\n", d.Path)
-	if d.MydumperVersion != "" {
-		fmt.Fprintf(w, "  mydumper version: %s\n", d.MydumperVersion)
+	fmt.Fprintf(w, "  mydumper version: %s\n", d.MydumperVersion)
+	if !d.Preprocessor {
+		fmt.Fprintln(w, "  this version has no pre-processor: GLib reads the file as written")
 	}
 	if d.Loadable {
 		fmt.Fprintf(w, "  GLib loads the file (health: %s)\n", d.Health)

@@ -86,12 +86,6 @@ func lineSpan(p *Pass, n int) diag.Span {
 	return diag.Span{Start: l.Start, End: l.Start + len(content(p, n))}
 }
 
-// deleteLine is an edit removing line n and its '\n'.
-func deleteLine(p *Pass, n int) diag.Edit {
-	s, e := p.File.LineSpan(n, true)
-	return diag.Edit{Start: s, End: e}
-}
-
 // newline returns the terminator to use for a line inserted next to line n.
 func newline(p *Pass, n int) string {
 	if p.File.EndsWithCR(n) && p.File.Line(n).HasNewline {

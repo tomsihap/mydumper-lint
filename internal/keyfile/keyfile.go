@@ -62,6 +62,7 @@ const (
 	CauseInvalidKeyName            // ']' in a key, or a malformed [locale] (MDL110)
 	CauseNulByte                   // a NUL byte hides the rest of the line (MDL111)
 	CauseBracketNoValue            // no '=' before a '[': the '[' copy skips "= 1" (MDL108 c)
+	CauseNoPreprocessor            // a line without '=' in a version without pre-processor (MDL113)
 	CauseUnknown                   // none of the above (MDL109)
 )
 
@@ -79,6 +80,7 @@ var causeNames = [...]string{
 	CauseInvalidKeyName:      "invalid-key-name",
 	CauseNulByte:             "nul-byte",
 	CauseBracketNoValue:      "bracket-no-value",
+	CauseNoPreprocessor:      "no-preprocessor",
 	CauseUnknown:             "unknown",
 }
 
@@ -151,7 +153,7 @@ func notKVMessage(line []byte) string {
 
 // Parse classifies every line of f, given the pre-processor's decisions.
 func Parse(f *source.File, pre *preprocess.Result) *Result {
-	p := &parser{f: f, r: &Result{Lines: make([]LineClass, len(f.Lines))}, cur: -1}
+	p := &parser{f: f, r: &Result{Lines: make([]LineClass, len(f.Lines))}, cur: -1, passthrough: pre.Passthrough}
 	for i, l := range f.Lines {
 		p.line(l, pre.Lines[i])
 	}
@@ -160,9 +162,10 @@ func Parse(f *source.File, pre *preprocess.Result) *Result {
 }
 
 type parser struct {
-	f   *source.File
-	r   *Result
-	cur int // current group; -1 is GLib's nameless start group
+	f           *source.File
+	r           *Result
+	cur         int  // current group; -1 is GLib's nameless start group
+	passthrough bool // no pre-processor in this mydumper version
 }
 
 // glibLine returns the bytes GLib parses for line l: the content, the "= 1"
@@ -210,7 +213,7 @@ func (p *parser) line(l source.Line, info preprocess.LineInfo) {
 	case KindRejected:
 		lc.Kind = KindRejected
 		lc.Message = res.message
-		lc.Cause = cause(l, info, content, g, res)
+		lc.Cause = cause(l, info, content, g, res, p.passthrough)
 		if p.r.FirstError == nil {
 			p.r.FirstError = &LineError{Line: l.Num, Message: res.message}
 		}
@@ -491,7 +494,9 @@ func makeValid(b []byte) string {
 }
 
 // cause assigns the single, most specific cause of a rejected line.
-func cause(l source.Line, info preprocess.LineInfo, content, g []byte, res classified) Cause {
+// passthrough is set for versions without the pre-processor (v0.19.1-x),
+// where info carries no pre-processor decision: no "= 1", no '[' copy.
+func cause(l source.Line, info preprocess.LineInfo, content, g []byte, res classified, passthrough bool) Cause {
 	switch {
 	case l.Num == 1 && bytes.HasPrefix(content, bom):
 		return CauseBOM
@@ -507,7 +512,7 @@ func cause(l source.Line, info preprocess.LineInfo, content, g []byte, res class
 		return CauseWhitespaceOnly
 	case bytes.IndexByte(content, 0) >= 0:
 		return CauseNulByte
-	case !l.HasNewline && info.BracketAt < 0 && bytes.IndexByte(content, '=') < 0:
+	case !passthrough && !l.HasNewline && info.BracketAt < 0 && bytes.IndexByte(content, '=') < 0:
 		return CauseMissingFinalNewline // it would get "= 1" if it ended with '\n'
 	}
 	ls := 0
@@ -519,6 +524,8 @@ func cause(l source.Line, info preprocess.LineInfo, content, g []byte, res class
 		return CauseInvalidGroupLine
 	case ls < len(g) && g[ls] == '=':
 		return CauseEmptyKey
+	case passthrough && res.failure == failNotKV:
+		return CauseNoPreprocessor // nothing turns this line into "line= 1"
 	case info.BracketAt >= 0 && res.failure == failNotKV:
 		return CauseBracketNoValue // no '=' at all: the '[' copy skipped "= 1"
 	case res.failure == failNoGroup:

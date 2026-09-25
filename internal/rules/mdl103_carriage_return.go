@@ -67,8 +67,8 @@ func init() {
 					})
 				}
 			}
-			if len(crlf) == 0 {
-				return
+			if len(crlf) == 0 || (!rejected && !p.Preprocessor) {
+				return // without the pre-processor, CRLF endings are harmless
 			}
 			edits := make([]diag.Edit, len(crlf))
 			for i, off := range crlf {

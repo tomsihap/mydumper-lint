@@ -23,6 +23,9 @@ import (
 	"github.com/tomsihap/mydumper-lint/internal/report"
 	"github.com/tomsihap/mydumper-lint/internal/rules"
 	"github.com/tomsihap/mydumper-lint/internal/textdiff"
+
+	"github.com/tomsihap/mydumper-lint/internal/optionsdb"
+	"github.com/tomsihap/mydumper-lint/internal/target"
 )
 
 type checkCmd struct {
@@ -143,6 +146,11 @@ func (c *checkCmd) validate() error {
 	}
 	if _, err := sel.Resolve(); err != nil {
 		return err
+	}
+	if c.version != "" {
+		if _, err := target.Resolve(c.version, optionsdb.DefaultBuild); err != nil {
+			return fmt.Errorf("--mydumper-version: %w", err)
+		}
 	}
 	return nil
 }

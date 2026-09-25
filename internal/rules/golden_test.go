@@ -13,8 +13,10 @@ import (
 	"github.com/tomsihap/mydumper-lint/internal/diag"
 	"github.com/tomsihap/mydumper-lint/internal/fix"
 	"github.com/tomsihap/mydumper-lint/internal/lint"
+	"github.com/tomsihap/mydumper-lint/internal/optionsdb"
 	"github.com/tomsihap/mydumper-lint/internal/rules"
 	"github.com/tomsihap/mydumper-lint/internal/source"
+	"github.com/tomsihap/mydumper-lint/internal/target"
 	"github.com/tomsihap/mydumper-lint/internal/txtar"
 )
 
@@ -23,7 +25,8 @@ var update = flag.Bool("update", false, "rewrite the expected sections of golden
 // A golden case is testdata/<RULE ID>/<name>.txtar with sections:
 //
 //	input.cnf[.esc]        the file to lint (required)
-//	options                optional "key: value" lines: select, ignore (comma-separated)
+//	options                optional "key: value" lines: select, ignore (comma-separated),
+//	                       mydumper-version (default: none, GLib-level rules only)
 //	diagnostics            expected diagnostics (see formatDiagnostics)
 //	fixed.cnf[.esc]        expected output of --fix (absent: no change)
 //	fixed-unsafe.cnf[.esc] expected output of --fix --unsafe-fixes (absent: same as fixed)
@@ -60,6 +63,7 @@ func runGolden(t *testing.T, path string) {
 	}
 	ruleID := filepath.Base(filepath.Dir(path))
 	sel := rules.Selection{Select: []string{ruleID}}
+	cfg := lint.Config{}
 	if opts, ok, _ := a.Get("options"); ok {
 		for _, line := range strings.Split(string(opts), "\n") {
 			k, v, found := strings.Cut(line, ":")
@@ -72,12 +76,19 @@ func runGolden(t *testing.T, path string) {
 				sel.Select = list
 			case "ignore":
 				sel.Ignore = list
+			case "mydumper-version":
+				tg, err := target.Resolve(strings.TrimSpace(v), optionsdb.DefaultBuild)
+				if err != nil {
+					t.Fatal(err)
+				}
+				tg.Configure(&cfg)
 			default:
 				t.Fatalf("unknown option %q", k)
 			}
 		}
 	}
-	l, err := lint.New(lint.Config{Selection: sel})
+	cfg.Selection = sel
+	l, err := lint.New(cfg)
 	if err != nil {
 		t.Fatal(err)
 	}

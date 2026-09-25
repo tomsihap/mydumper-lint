@@ -1,0 +1,9 @@
+# Not a bare option name: no fix, the `=` is probably missing.
+-- options --
+mydumper-version: v0.19.1-1
+-- input.cnf --
+[mydumper]
+host localhost
+-- diagnostics --
+2:1-2:15 error MDL113[unsupported-flag-without-value] `host localhost` has no `=`: mydumper v0.19.1-1 hands the file to GLib without rewriting valueless options into `key= 1` (GLib: Key file contains line “host localhost” which is not a key-value pair, group, or comment)
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0.

@@ -149,6 +149,14 @@ token-identical in v0.19.3-3, v1.0.8-1 and master [verified: normalized diff]; t
 generator fingerprints it for every tag (§5.3). Behavioral description (re-implemented
 from this description, never from the GPL code):
 
+**AMENDED (2026-09-25).** The pre-processor appeared in v0.19.3-1. v0.19.1-1 to v0.19.1-3
+load the file with `g_key_file_load_from_file`, unchanged; a load failure is logged and
+ignored the same way (F1) [verified: source of each tag]. The generator records a
+`preprocessor` boolean per version (§5.3). For those versions the emulation runs in
+*passthrough* mode: no `= 1`, no state leak; a line of spaces or an empty CRLF line is
+harmless, while a valueless flag gets the file rejected (MDL113). Passthrough mode is
+checked against GLib like the rest (`oracle --plain`, differential fuzzing).
+
 ```text
 state: equal_found = false, new_line = true
 for each byte c:
@@ -465,7 +473,8 @@ For each embedded mydumper version: tag, commit, release date, stable or pre-rel
 `ignore_unknown_options` (F6), options (long name, short name, tool — mydumper, myloader
 or both —, argument type, flags, build condition, `is_regex`, callback validator), table
 keys (F8), masking functions (F10) with their grammar version (F11), products (§3.6), and
-fingerprints of the loader code the emulators depend on (§5.3).
+fingerprints of the loader code the emulators depend on, and whether the loader runs the
+pre-processor (§3.2, §5.3).
 
 ### 5.2 One consolidated history file
 
@@ -493,7 +502,8 @@ The file is sorted and fully deterministic.
    string concatenation, `|`-combined flags, and `#if`/`#ifdef` blocks (recorded as build
    conditions). Attribute the tool by path: `src/mydumper/` ⇒ mydumper, `src/myloader/` ⇒
    myloader, other `src/` files ⇒ both. Detect
-   `g_option_context_set_ignore_unknown_options(…, TRUE)`. Extract table keys (the
+   `g_option_context_set_ignore_unknown_options(…, TRUE)`, and whether `load_config_file`
+   runs the pre-processor (its `"= 1"` literal: `preprocessor`, §3.2). Extract table keys (the
    comparisons in `load_per_table_info_from_key_file` and the `#define`s they use), masking
    functions (`get_function_pointer_for`) and products (`get_product_name`). Fingerprint
    `load_config_file` and `parse_key_file_group`: a hash of their tokens with whitespace
@@ -606,6 +616,7 @@ All `error`, except MDL112.
 | MDL110 | `invalid-key-name` | **NEW.** `]` in a key, or a `[` that does not form a valid locale suffix: `foo]=1`, `foo[bar baz]=1`, `` `c[0]`=… `` | — | K19 |
 | MDL111 | `nul-byte` | **NEW.** A NUL byte that makes a line unparsable | — | K17 |
 | MDL112 | `bracket-leak-risk` | **NEW.** A line after which an empty line would become `= 1` (P1): a comment containing `[`, an indented header, a localized key. **warning** when it is the last line of the file (a script appending a block would break the file), **info** otherwise | — | P1 |
+| MDL113 | `unsupported-flag-without-value` | **NEW.** A line without `=` in a version without the pre-processor (v0.19.1-x): GLib rejects it and mydumper ignores the file. A line starting with `;` gets a message explaining that `;` is not a comment | safe, only when the line is a bare option name: `key` → `key=1` | §3.2 |
 
 #### MDL2xx — Groups
 

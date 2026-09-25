@@ -175,6 +175,49 @@ func TestClassification(t *testing.T) {
 	}
 }
 
+// TestClassificationPassthrough covers mydumper v0.19.1-x, which loads the
+// file without the pre-processor (oracle --plain).
+func TestClassificationPassthrough(t *testing.T) {
+	notKV := func(line string) string {
+		return "Key file contains line “" + line + "” which is not a key-value pair, group, or comment"
+	}
+	tests := []struct {
+		name  string
+		in    string
+		line  int
+		kind  Kind
+		cause Cause
+		msg   string
+	}{
+		{"flag", "[g]\nroutines\n", 2, KindRejected, CauseNoPreprocessor, notKV("routines")},
+		{"flag at eof", "[g]\nroutines", 2, KindRejected, CauseNoPreprocessor, notKV("routines")},
+		{"flag before group", "routines\n[g]\n", 1, KindRejected, CauseNoPreprocessor, notKV("routines")},
+		{"flag with bracket", "[g]\nroutines # [x]\n", 2, KindRejected, CauseNoPreprocessor, notKV("routines # [x]")},
+		{"semicolon comment", "[g]\n; c\n", 2, KindRejected, CauseNoPreprocessor, notKV("; c")},
+		{"whitespace-only is a comment", "[g]\n  \n", 2, KindComment, NoCause, ""},
+		{"crlf empty line is blank", "[g]\r\nk=1\r\n\r\n", 3, KindBlank, NoCause, ""},
+		{"no leak after a bracket", "[g]\n# see [docs]\n\nk=1\n", 3, KindBlank, NoCause, ""},
+		{"indented header", "  [g]\n\nk=1\n", 3, KindEntry, NoCause, ""},
+		{"bom", "\xef\xbb\xbf[g]\n", 1, KindRejected, CauseBOM, notKV("\ufeff[g]")},
+		{"empty key", "[g]\n=1\n", 2, KindRejected, CauseEmptyKey, notKV("=1")},
+		{"text after header", "[g] # main\n", 1, KindRejected, CauseInvalidGroupLine, notKV("[g] # main")},
+		{"unfinished header at eof", "[g]\f", 1, KindRejected, CauseInvalidGroupLine, notKV("[g]\f")},
+		{"indented unfinished header at eof", "  [g", 1, KindRejected, CauseInvalidGroupLine, notKV("  [g")},
+		{"nul in flag", "[g]\nrout\x00ines\n", 2, KindRejected, CauseNulByte, notKV("rout\ufffdines")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			f := source.New("t.cnf", []byte(tt.in))
+			r := Parse(f, preprocess.Passthrough(f))
+			lc := r.Lines[tt.line-1]
+			if lc.Kind != tt.kind || lc.Cause != tt.cause || lc.Message != tt.msg {
+				t.Errorf("line %d: got kind=%v cause=%v msg=%q; want kind=%v cause=%v msg=%q",
+					tt.line, lc.Kind, lc.Cause, lc.Message, tt.kind, tt.cause, tt.msg)
+			}
+		})
+	}
+}
+
 func TestFirstErrorIsWhatMydumperSees(t *testing.T) {
 	r := parse("[g]\n=1\nfoo]=1\n")
 	if r.Loadable || r.FirstError == nil || r.FirstError.Line != 2 {
@@ -270,18 +313,51 @@ func TestRecover(t *testing.T) {
 	}
 }
 
+func TestRecoverPassthrough(t *testing.T) {
+	tests := []struct {
+		name, in, want string
+	}{
+		{"loadable is unchanged", "[g]\n  \n\r\nk=v\n", "[g]\n  \n\r\nk=v\n"},
+		{"flag", "[g]\nroutines\n", "[g]\nroutines=1\n"},
+		{"flag crlf", "[g]\r\nroutines\r\n", "[g]\r\nroutines=1\r\n"},
+		{"flag at eof", "[g]\nroutines", "[g]\nroutines=1"},
+		{"flag at eof after cr", "[g]\nroutines\r", "[g]\nroutines\r=1"},
+		{"flag before group", "routines\n[g]\n", "#\n[g]\n"},
+		{"header with form feed at eof", "[g]\f", "[g]"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := string(RecoverWith([]byte(tt.in), true))
+			if got != tt.want {
+				t.Errorf("RecoverWith(%q, true)\n got %q\nwant %q", tt.in, got, tt.want)
+			}
+			f := source.New("t.cnf", []byte(got))
+			if r := Parse(f, preprocess.Passthrough(f)); !r.Loadable {
+				t.Errorf("recovered file must load, got %v", r.FirstError)
+			}
+		})
+	}
+}
+
 func FuzzRecoverAlwaysLoads(f *testing.F) {
 	for _, s := range []string{"[g]\n  \n", "\xef\xbb\xbf[a]\n\n", "# [x]\n\n[y] z\n=1\n", "k\n[g]\nr\r\n\r\n"} {
 		f.Add([]byte(s))
 	}
 	f.Fuzz(func(t *testing.T, b []byte) {
-		out := Recover(b)
-		if r := parse(string(out)); !r.Loadable {
-			t.Fatalf("Recover(%q) = %q does not load: %+v", b, out, r.FirstError)
-		}
-		// Recovering twice changes nothing.
-		if again := Recover(out); !bytes.Equal(again, out) {
-			t.Fatalf("Recover is not idempotent on %q: %q then %q", b, out, again)
+		for _, passthrough := range []bool{false, true} {
+			out := RecoverWith(b, passthrough)
+			f := source.New("t.cnf", out)
+			pre := preprocess.Run(f)
+			if passthrough {
+				pre = preprocess.Passthrough(f)
+			}
+			if r := Parse(f, pre); !r.Loadable {
+				t.Fatalf("RecoverWith(%q, %v) = %q does not load: %+v", b, passthrough, out, r.FirstError)
+			}
+			// Recovering twice changes nothing.
+			if again := RecoverWith(out, passthrough); !bytes.Equal(again, out) {
+				t.Fatalf("RecoverWith is not idempotent on %q (%v): %q then %q", b, passthrough, out, again)
+			}
 		}
 	})
 }
@@ -311,10 +387,14 @@ func FuzzNoUnknownCause(f *testing.F) {
 		f.Add([]byte(s))
 	}
 	f.Fuzz(func(t *testing.T, b []byte) {
-		r := parse(string(b))
-		for i, lc := range r.Lines {
-			if lc.Kind == KindRejected && (lc.Cause == CauseUnknown || lc.Cause == NoCause) {
-				t.Fatalf("line %d of %q has no specific cause (%v): %s", i+1, b, lc.Cause, lc.Message)
+		f := source.New("t.cnf", b)
+		for _, pre := range []*preprocess.Result{preprocess.Run(f), preprocess.Passthrough(f)} {
+			r := Parse(f, pre)
+			for i, lc := range r.Lines {
+				if lc.Kind == KindRejected && (lc.Cause == CauseUnknown || lc.Cause == NoCause) {
+					t.Fatalf("line %d of %q has no specific cause (%v, passthrough %v): %s",
+						i+1, b, lc.Cause, pre.Passthrough, lc.Message)
+				}
 			}
 		}
 	})

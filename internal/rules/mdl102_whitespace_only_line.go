@@ -29,6 +29,10 @@ func init() {
 				if len(c) == 0 || !isBlankish(c) || len(bytes.Trim(c, "\r")) == 0 {
 					continue // empty, not whitespace, or carriage returns only (MDL103)
 				}
+				lc := p.KF.Lines[i]
+				if lc.Kind != keyfile.KindRejected && !p.Preprocessor {
+					continue // a comment for GLib when nothing appends "= 1" to it
+				}
 				d := diag.Diagnostic{
 					Span: lineSpan(p, n),
 					Fix: &diag.Fix{
@@ -37,7 +41,7 @@ func init() {
 						Edits:         []diag.Edit{{Start: l.Start, End: l.End}},
 					},
 				}
-				switch lc := p.KF.Lines[i]; {
+				switch {
 				case lc.Kind == keyfile.KindRejected:
 					d.Message = "line contains only whitespace: mydumper's pre-processor turns it into " +
 						quote(append(append([]byte{}, c...), "= 1"...)) + ", a key/value pair with an empty key (" +

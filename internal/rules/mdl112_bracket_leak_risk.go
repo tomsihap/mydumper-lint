@@ -23,6 +23,9 @@ func init() {
 			Refs: []string{"P1", "case 58"},
 		},
 		Check: func(p *Pass) {
+			if !p.Preprocessor {
+				return
+			}
 			total := len(p.Pre.Lines)
 			for i, info := range p.Pre.Lines {
 				// Only lines that start a leak: text before '[' and no '=' before it.

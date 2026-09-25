@@ -94,6 +94,10 @@ type Pass struct {
 	Target    model.Target // nil when no mydumper version is known
 	Version   string       // resolved mydumper version, e.g. "v0.19.3-3"
 	Languages []string     // runtime language list (K14)
+	// Preprocessor tells whether the target version runs mydumper's
+	// pre-processor (false for v0.19.1-x). Latent pre-processor risks are
+	// only reported when it does.
+	Preprocessor bool
 
 	rule     *Rule
 	severity diag.Severity
@@ -102,7 +106,7 @@ type Pass struct {
 
 // NewPass prepares a pass over a parsed file.
 func NewPass(f *source.File, pre *preprocess.Result, kf *keyfile.Result, m *model.Model) *Pass {
-	return &Pass{File: f, Pre: pre, KF: kf, Model: m}
+	return &Pass{File: f, Pre: pre, KF: kf, Model: m, Preprocessor: !pre.Passthrough}
 }
 
 // Report records a diagnostic for the running rule. The rule ID and name are

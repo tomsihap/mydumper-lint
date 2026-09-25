@@ -11,12 +11,18 @@ import (
 	"github.com/tomsihap/mydumper-lint/internal/rules"
 )
 
-func allRules(t testing.TB) *Linter {
-	l, err := New(Config{Selection: rules.Selection{Select: []string{"ALL"}, Preview: true}})
+// allRulesWith builds a linter with every rule, for a mydumper version with
+// or without (v0.19.1-x) the pre-processor.
+func allRulesWith(t testing.TB, noPreprocessor bool) *Linter {
+	l, err := New(Config{Selection: rules.Selection{Select: []string{"ALL"}, Preview: true}, NoPreprocessor: noPreprocessor})
 	if err != nil {
 		t.Fatal(err)
 	}
 	return l
+}
+
+func bothLoaders(t testing.TB) []*Linter {
+	return []*Linter{allRulesWith(t, false), allRulesWith(t, true)}
 }
 
 var seeds = []string{
@@ -30,9 +36,17 @@ func FuzzCheck(f *testing.F) {
 	for _, s := range seeds {
 		f.Add([]byte(s))
 	}
-	l := allRules(f)
+	linters := bothLoaders(f)
 	f.Fuzz(func(t *testing.T, b []byte) {
-		res := l.Check("fuzz.cnf", b)
+		for _, l := range linters {
+			checkDiagnostics(t, b, l.Check("fuzz.cnf", b))
+		}
+	})
+}
+
+func checkDiagnostics(t *testing.T, b []byte, res *Result) {
+	t.Helper()
+	{
 		for i, d := range res.Diagnostics {
 			if d.Span.Start < 0 || d.Span.End > len(b) || d.Span.End < d.Span.Start {
 				t.Fatalf("%s: span %v out of range for %d bytes", d.RuleID, d.Span, len(b))
@@ -44,7 +58,7 @@ func FuzzCheck(f *testing.F) {
 				t.Fatalf("%s: incomplete diagnostic %+v", d.RuleID, d)
 			}
 		}
-	})
+	}
 }
 
 // FuzzFix: safe fixes never break the self-check invariant (design §7.3) and
@@ -53,8 +67,17 @@ func FuzzFix(f *testing.F) {
 	for _, s := range seeds {
 		f.Add([]byte(s))
 	}
-	l := allRules(f)
+	linters := bothLoaders(f)
 	f.Fuzz(func(t *testing.T, b []byte) {
+		for _, l := range linters {
+			fixOnce(t, l, b)
+		}
+	})
+}
+
+func fixOnce(t *testing.T, l *Linter, b []byte) {
+	t.Helper()
+	{
 		for _, unsafe := range []bool{false, true} {
 			res, err := l.Fix("fuzz.cnf", b, fix.Options{Unsafe: unsafe})
 			var sce *fix.SelfCheckError
@@ -80,5 +103,5 @@ func FuzzFix(f *testing.F) {
 				t.Fatalf("fixing a loadable file made it unloadable: %q -> %q", b, res.Output)
 			}
 		}
-	})
+	}
 }
