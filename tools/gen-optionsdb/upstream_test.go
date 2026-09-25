@@ -91,7 +91,7 @@ func newFakeUpstream(t *testing.T) *fakeUpstream {
 		}
 		_ = json.NewEncoder(w).Encode(items)
 	})
-	mux.HandleFunc("/repo/releases", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/repo/releases", func(w http.ResponseWriter, _ *http.Request) {
 		_ = json.NewEncoder(w).Encode([]map[string]any{{"tag_name": "v1.0.0-1", "prerelease": true, "draft": false, "published_at": "2026-02-03T04:05:06Z"}})
 	})
 	mux.HandleFunc("/hub/", func(w http.ResponseWriter, r *http.Request) {

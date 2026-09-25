@@ -25,7 +25,7 @@ func readTreeDir(dir string) (srcTree, error) {
 		if d.IsDir() || !keepPath(rel) {
 			return nil
 		}
-		b, err := os.ReadFile(p)
+		b, err := os.ReadFile(p) //nolint:gosec // G122: p comes from filepath.WalkDir over -debug-dir, a developer-supplied local path
 		if err != nil {
 			return err
 		}

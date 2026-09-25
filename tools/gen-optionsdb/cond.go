@@ -31,17 +31,17 @@ func minimalCondition(minterms []int, n int) string {
 				continue
 			}
 			p := imp{value, care}
-			ok, any := true, false
+			ok, anyOf := true, false
 			for c := 0; c < full; c++ {
 				if covers(p, c) {
-					any = true
+					anyOf = true
 					if !on[c] {
 						ok = false
 						break
 					}
 				}
 			}
-			if ok && any {
+			if ok && anyOf {
 				imps = append(imps, p)
 			}
 		}

@@ -126,6 +126,8 @@ func not3(t tri) tri {
 		return triFalse
 	case triFalse:
 		return triTrue
+	case triUnknown:
+		return triUnknown
 	}
 	return triUnknown
 }
@@ -177,6 +179,8 @@ func (c *cond) truth(cfg config) tri {
 			return triFalse
 		case triUnknown:
 			out = triUnknown
+		case triTrue:
+			// contributes nothing: the chain is still possibly true
 		}
 	}
 	return out

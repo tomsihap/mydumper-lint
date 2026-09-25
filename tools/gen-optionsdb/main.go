@@ -99,10 +99,10 @@ func debugTree(dir string, stdout io.Writer) error {
 func exportTree(dir string, tree srcTree) error {
 	for _, p := range sortedKeys(tree) {
 		dst := filepath.Join(dir, filepath.FromSlash(p))
-		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil { //nolint:gosec // G301/G703: dst is under -export-src (developer flag); 0o755 is correct for a directory written into the repository
 			return err
 		}
-		if err := os.WriteFile(dst, tree[p], 0o644); err != nil {
+		if err := os.WriteFile(dst, tree[p], 0o644); err != nil { //nolint:gosec // G306/G703: dst is under -export-src (developer flag); 0o644 is correct for a file written into the repository
 			return err
 		}
 	}

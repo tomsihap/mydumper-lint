@@ -111,7 +111,7 @@ type runner interface {
 type execRunner struct{ bin string }
 
 func (r execRunner) run(ctx context.Context, args ...string) (string, string, error) {
-	cmd := exec.CommandContext(ctx, r.bin, args...)
+	cmd := exec.CommandContext(ctx, r.bin, args...) //nolint:gosec // G204: r.bin is the -docker flag (default "docker"), a developer-supplied trusted command
 	var out, errb bytes.Buffer
 	cmd.Stdout, cmd.Stderr = &out, &errb
 	err := cmd.Run()

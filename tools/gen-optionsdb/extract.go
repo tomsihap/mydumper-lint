@@ -683,6 +683,8 @@ func stringMacros(cus map[string]*cfgUnit, cfg config) macroTable {
 				vals[d.name] = append(vals[d.name], d)
 			case triUnknown:
 				unsure[d.name] = d
+			case triFalse:
+				// not defined under this configuration
 			}
 		}
 	}

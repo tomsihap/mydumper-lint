@@ -217,7 +217,7 @@ func isMacroCase(s string) bool {
 // newFunc builds a function from its declaration ts[from:open] and body
 // ts[open:close+1]. It returns nil for declarators it does not understand
 // (such as functions returning function pointers).
-func (cu *cfgUnit) newFunc(from, open, close int) (*funcDef, error) {
+func (cu *cfgUnit) newFunc(from, open, closeTok int) (*funcDef, error) {
 	ts := cu.toks
 	// the name is the identifier before the first top-level '('
 	nameIdx := -1
@@ -239,7 +239,7 @@ func (cu *cfgUnit) newFunc(from, open, close int) (*funcDef, error) {
 	if nameIdx < 0 {
 		return nil, nil
 	}
-	f := &funcDef{name: ts[nameIdx].text, cu: cu, line: ts[nameIdx].line, nameIdx: nameIdx, open: open, close: close}
+	f := &funcDef{name: ts[nameIdx].text, cu: cu, line: ts[nameIdx].line, nameIdx: nameIdx, open: open, close: closeTok}
 	for j := from; j < nameIdx; j++ {
 		if ts[j].isIdent("static") {
 			f.static = true

@@ -108,11 +108,12 @@ func (c candidate) describe(verified bool) string {
 		}
 	}
 	state := "embedded"
-	if !c.embedded {
+	switch {
+	case !c.embedded:
 		state = "SKIPPED: " + c.reason
-	} else if verified {
+	case verified:
 		state += ", image verified"
-	} else {
+	default:
 		state += ", image not verified"
 	}
 	return fmt.Sprintf("%-11s %-12s %-24s %s", c.tag, status, strings.Join(src, ", "), state)

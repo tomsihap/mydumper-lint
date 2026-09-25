@@ -106,7 +106,7 @@ func (u *upstream) github() (*githubCache, error) {
 func (u *upstream) paginate(url string, out any) error {
 	var all []json.RawMessage
 	for page := 1; ; page++ {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s?per_page=100&page=%d", url, page), http.NoBody)
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s?per_page=100&page=%d", url, page), http.NoBody) //nolint:gosec // G704: url is one of upstream's constant API endpoints (githubAPI), not attacker input
 		if err != nil {
 			return err
 		}
@@ -137,11 +137,11 @@ func (u *upstream) paginate(url string, out any) error {
 }
 
 func (u *upstream) do(req *http.Request) ([]byte, error) {
-	resp, err := u.client.Do(req)
+	resp, err := u.client.Do(req) //nolint:gosec // G704: req is built from constant API endpoints and upstream tag/commit values, not attacker input
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
@@ -179,7 +179,7 @@ func (u *upstream) imageExists(tag string) (bool, error) {
 		return false, err
 	}
 	_, _ = io.Copy(io.Discard, resp.Body)
-	resp.Body.Close()
+	_ = resp.Body.Close()
 	var exists bool
 	switch resp.StatusCode {
 	case http.StatusOK:
@@ -187,7 +187,7 @@ func (u *upstream) imageExists(tag string) (bool, error) {
 	case http.StatusNotFound:
 		exists = false
 	default:
-		return false, fmt.Errorf("Docker Hub %s: %s", tag, resp.Status)
+		return false, fmt.Errorf("querying Docker Hub for %s: %s", tag, resp.Status)
 	}
 	cache[tag] = exists
 	return exists, writeJSON(path, cache)
@@ -197,13 +197,13 @@ func (u *upstream) imageExists(tag string) (bool, error) {
 // the cache the first time.
 func (u *upstream) tree(tag, commit string) (srcTree, error) {
 	path := filepath.Join(u.dir, "src", fmt.Sprintf("mydumper-%s-%s.tar.gz", tag, commit))
-	data, err := os.ReadFile(path)
+	data, err := os.ReadFile(path) //nolint:gosec // G703: path is built from the cache dir flag and upstream tag/commit, not attacker input
 	if errors.Is(err, os.ErrNotExist) {
 		if u.offline {
 			return nil, fmt.Errorf("offline: %s is not in the cache", tag)
 		}
 		fmt.Fprintf(u.log, "downloading %s (%s)\n", tag, commit[:12])
-		req, err := http.NewRequest(http.MethodGet, u.codeload+"/"+commit, http.NoBody)
+		req, err := http.NewRequest(http.MethodGet, u.codeload+"/"+commit, http.NoBody) //nolint:gosec // G704: codeload is a constant endpoint and commit comes from the upstream tag list, not attacker input
 		if err != nil {
 			return nil, err
 		}
@@ -272,7 +272,7 @@ func readArchive(data []byte, commit string) (srcTree, error) {
 }
 
 func readJSON(path string, v any) error {
-	b, err := os.ReadFile(path)
+	b, err := os.ReadFile(path) //nolint:gosec // G703: path is one of the tool's own cache/config file paths, not attacker input
 	if err != nil {
 		return err
 	}
@@ -289,24 +289,22 @@ func writeJSON(path string, v any) error {
 
 // writeFileAtomic writes through a temporary file in the same directory.
 func writeFileAtomic(path string, data []byte) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil { //nolint:gosec // G301/G703: path is one of the tool's own cache/output files; 0o755 is correct for a directory written into the repository
 		return err
 	}
 	f, err := os.CreateTemp(filepath.Dir(path), ".tmp-"+filepath.Base(path)+"-*")
 	if err != nil {
 		return err
 	}
-	defer os.Remove(f.Name())
+	defer func() { _ = os.Remove(f.Name()) }() //nolint:gosec // G703: f.Name() is the tool's own temp file created above, not attacker input
 	if _, err := f.Write(data); err != nil {
-		f.Close()
-		return err
+		return errors.Join(err, f.Close())
 	}
 	if err := f.Chmod(0o644); err != nil {
-		f.Close()
-		return err
+		return errors.Join(err, f.Close())
 	}
 	if err := f.Close(); err != nil {
 		return err
 	}
-	return os.Rename(f.Name(), path)
+	return os.Rename(f.Name(), path) //nolint:gosec // G703: path is one of the tool's own cache/output files, not attacker input
 }
