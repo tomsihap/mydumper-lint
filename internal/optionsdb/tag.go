@@ -16,10 +16,7 @@ type Tag struct {
 // ParseTag parses "v0.19.3-3" or "0.19.3-3".
 func ParseTag(s string) (Tag, error) {
 	p, err := parseParts(s)
-	if err != nil {
-		return Tag{}, err
-	}
-	if p.n != 4 {
+	if err != nil || p.n != 4 {
 		return Tag{}, fmt.Errorf("invalid mydumper version tag %q (want vMAJOR.MINOR.PATCH-REV)", s)
 	}
 	return p.tag, nil
