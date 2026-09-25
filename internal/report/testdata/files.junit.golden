@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="mydumper-lint" tests="19" failures="18" errors="0">
+  <testsuite name="conf/app.cnf" tests="8" failures="8" errors="0">
+    <testcase name="conf/app.cnf:3:1 whitespace-only-line" classname="MDL102" file="conf/app.cnf">
+      <failure message="line contains only spaces and tabs (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/app.cnf:3:1: error MDL102[whitespace-only-line] line contains only spaces and tabs
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+3 |
+  | ^^^^^^
+  |
+  = help: fixable with --fix: empty the line]]></failure>
+    </testcase>
+    <testcase name="conf/app.cnf:4:8 spaces-around-equals" classname="MDL307" file="conf/app.cnf">
+      <failure message="spaces around &#34;=&#34;" type="info"><![CDATA[conf/app.cnf:4:8: info MDL307[spaces-around-equals] spaces around "="
+  |
+4 | threads = 4
+  |        ^^^
+  |
+  = help: fixable with --fix: write threads=4]]></failure>
+    </testcase>
+    <testcase name="conf/app.cnf:6:1 bracket-state-leak" classname="MDL108" file="conf/app.cnf">
+      <failure message="empty line becomes &#34;= 1&#34; because of the &#34;[&#34; on line 5 (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/app.cnf:6:1: error MDL108[bracket-state-leak] empty line becomes "= 1" because of the "[" on line 5
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+6 |
+  | ^
+  |
+  = note: conf/app.cnf:5:7: the pre-processor state freezes at this "["
+  = help: fixable with --fix: delete the empty line]]></failure>
+    </testcase>
+    <testcase name="conf/app.cnf:7:11 quoted-value" classname="MDL313" file="conf/app.cnf">
+      <failure message="value is wrapped in quotes (mydumper: writes the dump into a directory named &#34;/backup&#34;, quotes included)" type="warning"><![CDATA[conf/app.cnf:7:11: warning MDL313[quoted-value] value is wrapped in quotes
+  = mydumper: writes the dump into a directory named "/backup", quotes included
+  |
+7 | outputdir="/backup"
+  |           ^^^^^^^^^
+  |
+  = help: fixable with --fix --unsafe-fixes: remove the quotes]]></failure>
+    </testcase>
+    <testcase name="conf/app.cnf:7:20 trailing-whitespace-in-value" classname="MDL302" file="conf/app.cnf">
+      <failure message="value ends with whitespace (mydumper: keeps the space: outputdir names another directory)" type="error"><![CDATA[conf/app.cnf:7:20: error MDL302[trailing-whitespace-in-value] value ends with whitespace
+  = mydumper: keeps the space: outputdir names another directory
+  |
+7 | outputdir="/backup"
+  |                    ^
+  |
+  = help: fixable with --fix --unsafe-fixes: trim the value]]></failure>
+    </testcase>
+    <testcase name="conf/app.cnf:8:1 duplicate-group" classname="MDL205" file="conf/app.cnf">
+      <failure message="group [mydumper] is declared twice (mydumper: merges both groups silently)" type="warning"><![CDATA[conf/app.cnf:8:1: warning MDL205[duplicate-group] group [mydumper] is declared twice
+  = mydumper: merges both groups silently
+  |
+8 | [mydumper]
+  | ^^^^^^^^^^ (and 1 more line)
+  |
+  = note: conf/app.cnf:1:1: first declared here
+  = help: fixable with --fix --unsafe-fixes]]></failure>
+    </testcase>
+    <testcase name="conf/app.cnf:9:1 leading-whitespace" classname="MDL306" file="conf/app.cnf">
+      <failure message="line is indented" type="info"><![CDATA[conf/app.cnf:9:1: info MDL306[leading-whitespace] line is indented
+  |
+9 |     routines
+  | ^^^^
+  |
+  = help: fixable with --fix: remove the indentation]]></failure>
+    </testcase>
+    <testcase name="conf/app.cnf:9:2 flag-without-value" classname="MDL308" file="conf/app.cnf">
+      <failure message="option without a value" type="info"><![CDATA[conf/app.cnf:9:2: info MDL308[flag-without-value] option without a value
+  |
+9 |     routines
+  |     ^^^^^^^^
+  |
+  = help: fixable with --fix: write routines=1]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="conf/crlf.cnf" tests="3" failures="3" errors="0">
+    <testcase name="conf/crlf.cnf:1:11 carriage-return" classname="MDL103" file="conf/crlf.cnf">
+      <failure message="file uses CRLF line endings" type="error"><![CDATA[conf/crlf.cnf:1:11: error MDL103[carriage-return] file uses CRLF line endings
+  |
+1 | [myloader]␍
+  |           ^
+  |
+  = help: fixable with --fix: convert "\r\n" to "\n"]]></failure>
+    </testcase>
+    <testcase name="conf/crlf.cnf:3:1 carriage-return" classname="MDL103" file="conf/crlf.cnf">
+      <failure message="empty line made of a carriage return (mydumper: the line becomes &#34;\r= 1&#34;, which rejects the whole file)" type="error"><![CDATA[conf/crlf.cnf:3:1: error MDL103[carriage-return] empty line made of a carriage return
+  = mydumper: the line becomes "\r= 1", which rejects the whole file
+  |
+3 | ␍
+  | ^]]></failure>
+    </testcase>
+    <testcase name="conf/crlf.cnf:3:1 blank-lines" classname="MDL310" file="conf/crlf.cnf">
+      <failure message="3 consecutive blank lines" type="info"><![CDATA[conf/crlf.cnf:3:1: info MDL310[blank-lines] 3 consecutive blank lines
+  |
+3 | ␍
+  | ^ (and 2 more lines)
+  |
+  = help: fixable with --fix: keep one blank line]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="conf/odd.cnf" tests="6" failures="6" errors="0">
+    <testcase name="conf/odd.cnf:1:1 utf8-bom" classname="MDL101" file="conf/odd.cnf">
+      <failure message="file starts with a UTF-8 byte order mark (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/odd.cnf:1:1: error MDL101[utf8-bom] file starts with a UTF-8 byte order mark
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+1 | \u{feff}[mydumper]
+  | ^^^^^^^^
+  |
+  = help: fixable with --fix: remove the byte order mark]]></failure>
+    </testcase>
+    <testcase name="conf/odd.cnf:2:12 invalid-utf8" classname="MDL311" file="conf/odd.cnf">
+      <failure message="invalid UTF-8 byte 0xff" type="warning"><![CDATA[conf/odd.cnf:2:12: warning MDL311[invalid-utf8] invalid UTF-8 byte 0xff
+  |
+2 | where=café \xff␛[31m
+  |            ^^^^]]></failure>
+    </testcase>
+    <testcase name="conf/odd.cnf:2:13 control-character" classname="MDL312" file="conf/odd.cnf">
+      <failure message="value contains the control character ␛ (ESC)" type="warning"><![CDATA[conf/odd.cnf:2:13: warning MDL312[control-character] value contains the control character ␛ (ESC)
+  |
+2 | where=café \xff␛[31m
+  |                ^]]></failure>
+    </testcase>
+    <testcase name="conf/odd.cnf:3:5 nul-byte" classname="MDL111" file="conf/odd.cnf">
+      <failure message="NUL byte in a key (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/odd.cnf:3:5: error MDL111[nul-byte] NUL byte in a key
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+3 | rout␀ines=1
+  |     ^]]></failure>
+    </testcase>
+    <testcase name="conf/odd.cnf:4:9 control-character" classname="MDL312" file="conf/odd.cnf">
+      <failure message="value contains the control character &#34;\v&#34;" type="warning"><![CDATA[conf/odd.cnf:4:9: warning MDL312[control-character] value contains the control character "\v"
+  |
+4 | name=    日本␋語
+  |              ^]]></failure>
+    </testcase>
+    <testcase name="conf/odd.cnf:5:9 missing-final-newline" classname="MDL104" file="conf/odd.cnf">
+      <failure message="the last line is a flag without a final newline (mydumper: rejects the whole file: every option in it is ignored)" type="error"><![CDATA[conf/odd.cnf:5:9: error MDL104[missing-final-newline] the last line is a flag without a final newline
+  = mydumper: rejects the whole file: every option in it is ignored
+  |
+5 | routines
+  |         ^
+  |
+  = help: fixable with --fix: append a newline]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="conf/tail.cnf" tests="1" failures="1" errors="0">
+    <testcase name="conf/tail.cnf:3:1 bracket-leak-risk" classname="MDL112" file="conf/tail.cnf">
+      <failure message="an empty line appended here would break the file" type="warning"><![CDATA[conf/tail.cnf:3:1: warning MDL112[bracket-leak-risk] an empty line appended here would break the file
+  |
+3 |
+  | ^
+  |
+  = note: conf/tail.cnf:2:7]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="conf/clean.cnf" tests="1" failures="0" errors="0">
+    <testcase name="conf/clean.cnf" classname="mydumper-lint" file="conf/clean.cnf"></testcase>
+  </testsuite>
+</testsuites>

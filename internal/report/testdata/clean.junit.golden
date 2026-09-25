@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="mydumper-lint" tests="1" failures="0" errors="0">
+  <testsuite name="conf/clean.cnf" tests="1" failures="0" errors="0">
+    <testcase name="conf/clean.cnf" classname="mydumper-lint" file="conf/clean.cnf"></testcase>
+  </testsuite>
+</testsuites>
