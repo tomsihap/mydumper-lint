@@ -26,7 +26,11 @@ type overlayEntry struct {
 	IsRegex          bool     `json:"is_regex,omitempty"`
 	Values           []string `json:"values,omitempty"`
 	ValuesIgnoreCase bool     `json:"values_ignore_case,omitempty"`
-	Evidence         string   `json:"evidence"`
+	// Reviewed records that the range was checked and has no fact to add
+	// (for example a deprecated option that rejects every value); it only
+	// silences the warning about a range that ends too early.
+	Reviewed bool   `json:"reviewed,omitempty"`
+	Evidence string `json:"evidence"`
 }
 
 func (e overlayEntry) String() string {
@@ -76,8 +80,8 @@ func (o *overlayFile) apply(tags []string, xs []*extraction) ([]string, error) {
 		if len(e.Tools) == 0 || e.Name == "" || e.Evidence == "" {
 			return nil, fmt.Errorf("overlay %s: tools, name and evidence are required", e)
 		}
-		if !e.IsRegex && len(e.Values) == 0 {
-			return nil, fmt.Errorf("overlay %s: sets neither is_regex nor values", e)
+		if e.Reviewed == (e.IsRegex || len(e.Values) > 0) {
+			return nil, fmt.Errorf("overlay %s: set is_regex or values, or only reviewed", e)
 		}
 		if e.ValuesIgnoreCase && len(e.Values) == 0 {
 			return nil, fmt.Errorf("overlay %s: values_ignore_case without values", e)
@@ -109,6 +113,9 @@ func (o *overlayFile) apply(tags []string, xs []*extraction) ([]string, error) {
 					return nil, fmt.Errorf("overlay %s overlaps %s at %s", e, prev, tags[vi])
 				}
 				covered[k] = e
+				if e.Reviewed {
+					continue
+				}
 				for i := range vars {
 					vars[i].isRegex = e.IsRegex
 					vars[i].values = slices.Clone(e.Values)

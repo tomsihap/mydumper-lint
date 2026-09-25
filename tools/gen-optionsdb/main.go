@@ -21,6 +21,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/tomsihap/mydumper-lint/internal/optionsdb"
 )
@@ -36,6 +37,8 @@ type options struct {
 	jobs                        int
 	minTag                      string
 	debugDir                    string
+	exportSrc                   string
+	funcHistory                 string
 }
 
 func runMain(args []string, stdout, stderr io.Writer) int {
@@ -58,6 +61,8 @@ func runMain(args []string, stdout, stderr io.Writer) int {
 	fl.IntVar(&o.jobs, "jobs", 4, "parallel image checks")
 	fl.StringVar(&o.minTag, "min-version", "v0.19.1-1", "oldest mydumper version to embed")
 	fl.StringVar(&o.debugDir, "debug-dir", "", "analyse an extracted source tree and print its facts (development aid)")
+	fl.StringVar(&o.exportSrc, "export-src", "", "also write the files the extractor reads to DIR/<tag>/, to review overlay evidence")
+	fl.StringVar(&o.funcHistory, "func-history", "", "comma-separated C functions: print the version ranges over which each is token-identical, then exit")
 	if err := fl.Parse(args); err != nil {
 		return 2
 	}
@@ -87,6 +92,20 @@ func debugTree(dir string, stdout io.Writer) error {
 		return err
 	}
 	dumpExtraction(stdout, x)
+	return nil
+}
+
+// exportTree writes a source tree under dir.
+func exportTree(dir string, tree srcTree) error {
+	for _, p := range sortedKeys(tree) {
+		dst := filepath.Join(dir, filepath.FromSlash(p))
+		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+			return err
+		}
+		if err := os.WriteFile(dst, tree[p], 0o644); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -135,6 +154,22 @@ func run(o options, stdout, stderr io.Writer) error {
 		return errors.New("no version to embed")
 	}
 
+	if o.funcHistory != "" {
+		names := strings.Split(o.funcHistory, ",")
+		prints := make([]map[string][]funcPrint, len(rels))
+		for i, r := range rels {
+			tree, err := up.tree(r.tag, r.commit)
+			if err != nil {
+				return err
+			}
+			if prints[i], err = functionPrints(tree, names); err != nil {
+				return fmt.Errorf("%s: %w", r.tag, err)
+			}
+		}
+		printFuncHistory(stdout, names, tags, prints)
+		return nil
+	}
+
 	xs := make([]*extraction, len(rels))
 	for i, r := range rels {
 		tree, err := up.tree(r.tag, r.commit)
@@ -143,6 +178,11 @@ func run(o options, stdout, stderr io.Writer) error {
 		}
 		if xs[i], err = extract(r.tag, tree); err != nil {
 			return err
+		}
+		if o.exportSrc != "" {
+			if err := exportTree(filepath.Join(o.exportSrc, r.tag), tree); err != nil {
+				return err
+			}
 		}
 	}
 	ov, err := loadOverlay(o.overlay)

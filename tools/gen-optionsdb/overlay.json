@@ -1,4 +1,128 @@
 {
-  "comment": ["Facts the extractor cannot infer. See README in the generator package doc."],
-  "options": []
+  "comment": [
+    "Hand-maintained facts the extractor cannot infer (design 5.3 step 4).",
+    "is_regex: the value is compiled as a regular expression. values: every value the option",
+    "accepts from a config file (a key always passes a value there); anything else makes the",
+    "callback return FALSE, which GOption turns into a fatal 'Error parsing option'.",
+    "Ranges are explicit: the generator warns when an option outlives its entry. Before",
+    "extending one, check the evidence in the newer source (-export-src, -func-history).",
+    "Callbacks deliberately left out: protocol (prefix match on tcp/socket), stream (strtol prefix),",
+    "compress before v0.19.3-1 (case-sensitive prefix of GZIP/ZSTD), drop-table (TRUNCATE is",
+    "case-sensitive, the other modes are not, and the empty value is accepted), and free-form values."
+  ],
+  "options": [
+    {
+      "tools": ["mydumper", "myloader"],
+      "name": "regex",
+      "from": "v0.19.1-1",
+      "to": "v1.0.8-1",
+      "is_regex": true,
+      "evidence": "src/regex.c: regex_arguments_callback appends each value to regex_list; initialize_regex compiles every entry with init_regex (pcre2_compile, caseless and multiline). initialize_regex is called by mydumper (mydumper_start_dump.c) and myloader (myloader.c). The three functions are token-identical v0.19.1-1..v1.0.8-1."
+    },
+    {
+      "tools": ["mydumper"],
+      "name": "partition-regex",
+      "from": "v0.19.1-1",
+      "to": "v1.0.8-1",
+      "is_regex": true,
+      "evidence": "src/mydumper/mydumper_arguments.c: the entry stores into partition_regex; mydumper_start_dump.c passes it to initialize_regex (src/regex.c), which compiles it with init_regex (pcre2_compile). Same in every version v0.19.1-1..v1.0.8-1."
+    },
+    {
+      "tools": ["mydumper"],
+      "name": "compress",
+      "from": "v0.19.3-1",
+      "to": "v1.0.8-1",
+      "values": ["gzip", "zstd"],
+      "values_ignore_case": true,
+      "evidence": "src/mydumper/mydumper_arguments.c arguments_callback: a value is compared with g_ascii_strcasecmp to GZIP and ZSTD (\"gzip\", \"zstd\" in src/common.h); otherwise control reaches common_arguments_callback (src/common.c, later src/common_options.c), which returns FALSE. No value: auto-detection. Branch unchanged v0.19.3-1..v1.0.8-1."
+    },
+    {
+      "tools": ["mydumper"],
+      "name": "format",
+      "from": "v0.19.1-1",
+      "to": "v1.0.8-1",
+      "values": ["CLICKHOUSE", "CSV", "INSERT", "LOAD_DATA"],
+      "values_ignore_case": true,
+      "evidence": "src/mydumper/mydumper_arguments.c arguments_callback: g_ascii_strcasecmp against INSERT_ARG, LOAD_DATA_ARG, CSV_ARG, CLICKHOUSE_ARG (src/mydumper/mydumper_arguments.h); otherwise common_arguments_callback returns FALSE. Branch unchanged v0.19.1-1..v1.0.8-1."
+    },
+    {
+      "tools": ["mydumper"],
+      "name": "sync-thread-lock-mode",
+      "from": "v0.19.1-1",
+      "to": "v0.19.3-3",
+      "values": ["AUTO", "FTWRL", "GTID", "LOCK_ALL", "NO_LOCK"],
+      "values_ignore_case": true,
+      "evidence": "src/mydumper/mydumper_arguments.c arguments_callback: g_ascii_strcasecmp against five literal modes; otherwise common_arguments_callback (src/common.c) returns FALSE. v0.19.1-1..v0.19.3-3."
+    },
+    {
+      "tools": ["mydumper"],
+      "name": "sync-thread-lock-mode",
+      "from": "v0.20.1-1",
+      "to": "v1.0.8-1",
+      "values": ["AUTO", "FTWRL", "GTID", "LOCK_ALL", "NO_LOCK", "SAFE_NO_LOCK"],
+      "values_ignore_case": true,
+      "evidence": "src/mydumper/mydumper_arguments.c arguments_callback: SAFE_NO_LOCK added in v0.20.1-1, same g_ascii_strcasecmp tests; otherwise common_arguments_callback (src/common_options.c) returns FALSE. Branch unchanged v0.20.1-1..v1.0.8-1."
+    },
+    {
+      "tools": ["mydumper", "myloader"],
+      "name": "source-control-command",
+      "from": "v0.19.1-1",
+      "to": "v1.0.8-1",
+      "values": ["AWS", "TRADITIONAL"],
+      "values_ignore_case": true,
+      "evidence": "common_arguments_callback (src/common.c until v0.19.3-3, src/common_options.c from v0.20.1-1): strcasecmp against TRADITIONAL and AWS, else the function returns FALSE. Checked in each of its six distinct bodies v0.19.1-1..v1.0.8-1."
+    },
+    {
+      "tools": ["myloader"],
+      "name": "optimize-keys",
+      "from": "v0.19.1-1",
+      "to": "v0.19.3-3",
+      "values": ["AFTER_IMPORT_ALL_TABLES", "AFTER_IMPORT_PER_TABLE", "SKIP"],
+      "values_ignore_case": true,
+      "evidence": "src/myloader/myloader_arguments.c arguments_callback: strcasecmp against SKIP, AFTER_IMPORT_PER_TABLE, AFTER_IMPORT_ALL_TABLES (src/myloader/myloader_arguments.h); anything else logs a critical and falls through to common_arguments_callback, which returns FALSE. \"1\" is not accepted before v0.20.1-1."
+    },
+    {
+      "tools": ["myloader"],
+      "name": "optimize-keys",
+      "from": "v0.20.1-1",
+      "to": "v1.0.8-1",
+      "values": ["1", "AFTER_IMPORT_ALL_TABLES", "AFTER_IMPORT_PER_TABLE", "SKIP"],
+      "values_ignore_case": true,
+      "evidence": "src/myloader/myloader_arguments.c arguments_callback: v0.20.1-1 also accepts \"1\" (exact; no letters); the three modes are compared case-insensitively (strcasecmp, then g_ascii_strcasecmp from v0.20.2-2); else common_arguments_callback returns FALSE. Branch otherwise unchanged v0.20.1-1..v1.0.8-1."
+    },
+    {
+      "tools": ["myloader"],
+      "name": "quote-character",
+      "from": "v0.19.1-1",
+      "to": "v1.0.8-1",
+      "values": ["\"", "BACKTICK", "BT", "DOUBLE_QUOTE", "DQ", "`"],
+      "values_ignore_case": true,
+      "evidence": "src/myloader/myloader_arguments.c arguments_callback: BACKTICK, BT, DOUBLE_QUOTE, DQ compared case-insensitively, the two quote characters exactly (they have no case); anything else logs a critical and reaches common_arguments_callback, which returns FALSE. Unchanged v0.19.1-1..v1.0.8-1 apart from strcasecmp becoming g_ascii_strcasecmp."
+    },
+    {
+      "tools": ["myloader"],
+      "name": "checksum",
+      "from": "v0.19.1-1",
+      "to": "v1.0.8-1",
+      "values": ["FAIL", "SKIP", "WARN"],
+      "values_ignore_case": true,
+      "evidence": "src/myloader/myloader_arguments.c arguments_callback: FAIL, WARN and SKIP compared case-insensitively (no value means FAIL); anything else logs a critical and reaches common_arguments_callback, which returns FALSE. Unchanged v0.19.1-1..v1.0.8-1."
+    },
+    {
+      "tools": ["myloader"],
+      "name": "purge-mode",
+      "from": "v0.19.1-1",
+      "to": "v0.19.3-3",
+      "values": ["DELETE", "DROP", "FAIL", "NONE", "TRUNCATE"],
+      "evidence": "src/myloader/myloader_arguments.c arguments_callback: strcmp (case-sensitive) against five modes, else m_error and FALSE. v0.19.1-1..v0.19.3-3."
+    },
+    {
+      "tools": ["myloader"],
+      "name": "purge-mode",
+      "from": "v0.20.1-1",
+      "to": "v0.21.4-1",
+      "reviewed": true,
+      "evidence": "src/myloader/myloader_arguments.c arguments_callback: the option only reports its deprecation (m_error) and returns FALSE, so every value is rejected; nothing to record. Removed in v1.0.0-1."
+    }
+  ]
 }
