@@ -1,0 +1,135 @@
+name: Bug report
+description: mydumper-lint crashes, misbehaves, or a fix damages a file.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+
+        **Remove secrets before you paste anything.** Configuration files often
+        contain passwords, host names, user names and schema names: replace them
+        with placeholders such as `secret` or `db.example.com`.
+
+        - A diagnostic you believe is wrong? Use the **False positive** form.
+        - A security vulnerability? Never report it here: use the
+          [private report form](https://github.com/tomsihap/mydumper-lint/security/advisories/new)
+          (see SECURITY.md).
+
+  - type: input
+    id: version
+    attributes:
+      label: mydumper-lint version
+      description: Output of `mydumper-lint version`.
+      placeholder: mydumper-lint 0.1.0 (commit 1a2b3c4, built 2026-10-01)
+    validations:
+      required: true
+
+  - type: input
+    id: mydumper-version
+    attributes:
+      label: Target mydumper version
+      description: >-
+        The version you lint for (`--mydumper-version`, or `mydumper-version` in
+        `.mydumper-lint.yaml`), and the version you actually run if it differs.
+      placeholder: v0.19.3-3
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: How do you run mydumper-lint?
+      options:
+        - Release binary
+        - go install
+        - Docker image
+        - pre-commit hook
+        - GitHub Action
+        - Built from source
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Minimal configuration file (sanitized)
+      description: >-
+        The smallest file that reproduces the problem, with every password, host
+        name and user name replaced. Invisible bytes often matter (trailing
+        spaces, CRLF line endings, a byte order mark, NUL bytes, a missing final
+        newline): if they might, also upload the file below.
+      render: ini
+    validations:
+      required: true
+
+  - type: upload
+    id: config-file
+    attributes:
+      label: The same file, byte for byte
+      description: >-
+        Zip the sanitized file first: GitHub does not accept .cnf files, and a
+        zip keeps every byte.
+    validations:
+      required: false
+      accept: ".zip"
+
+  - type: textarea
+    id: inspect
+    attributes:
+      label: Output of `mydumper-lint inspect`
+      description: >-
+        Run `mydumper-lint inspect FILE` on the file above and paste the output
+        (or its error, if `inspect` itself fails).
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Command and actual behavior
+      description: The exact command you ran, its complete output, and its exit code.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: >-
+        What you expected instead, and why. If it depends on what mydumper does
+        with the file, say how you checked.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: >-
+        Your `.mydumper-lint.yaml`, your CI configuration, anything else that
+        helps.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I removed passwords, host names, user names and other secrets from everything above.
+          required: true
+        - label: I searched the existing issues.
+          required: true

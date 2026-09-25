@@ -1,0 +1,102 @@
+name: False positive
+description: A diagnostic is wrong for the mydumper version you target.
+labels: [false-positive]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every rule claims something about what mydumper or myloader does with a
+        file. A false positive is a diagnostic whose claim does not hold for the
+        target version, so the most useful thing you can give is evidence of what
+        mydumper actually does.
+
+        **Remove secrets before you paste anything**: passwords, host names, user
+        names and schema names.
+
+  - type: input
+    id: rule
+    attributes:
+      label: Rule
+      description: The rule ID and name from the diagnostic.
+      placeholder: MDL102 whitespace-only-line
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: mydumper-lint version
+      description: Output of `mydumper-lint version`.
+    validations:
+      required: true
+
+  - type: input
+    id: mydumper-version
+    attributes:
+      label: Target mydumper version
+      description: >-
+        The version you lint for (`--mydumper-version`, or `mydumper-version` in
+        `.mydumper-lint.yaml`), and the version you ran mydumper with, if you did.
+      placeholder: v0.19.3-3
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Minimal configuration file (sanitized)
+      description: >-
+        The smallest file that still gets the diagnostic. If invisible bytes may
+        matter (trailing spaces, CRLF line endings, a byte order mark, NUL bytes,
+        a missing final newline), also upload the file below.
+      render: ini
+    validations:
+      required: true
+
+  - type: upload
+    id: config-file
+    attributes:
+      label: The same file, byte for byte
+      description: >-
+        Zip the sanitized file first: GitHub does not accept .cnf files, and a
+        zip keeps every byte.
+    validations:
+      required: false
+      accept: ".zip"
+
+  - type: textarea
+    id: diagnostic
+    attributes:
+      label: Diagnostic
+      description: The complete output of `mydumper-lint check FILE`.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Why the diagnostic is wrong
+      description: >-
+        What mydumper or myloader actually does with this file, and how you
+        observed it: for example a run with `--defaults-file` that loads the file
+        (no "Failed to load config file" warning) and applies the option, the
+        output of `mydumper-lint inspect FILE`, or a link to the mydumper source.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Your `.mydumper-lint.yaml`, anything else that helps.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I removed passwords, host names, user names and other secrets from everything above.
+          required: true
+        - label: I searched the existing issues.
+          required: true

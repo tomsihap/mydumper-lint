@@ -1,0 +1,80 @@
+name: Rule request
+description: Propose a new rule, or a change to an existing rule.
+labels: [enhancement, rule-request]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every rule is justified by a verified mydumper behavior, and every runtime
+        consequence a rule claims is proven by an end-to-end test against the real
+        mydumper binary. Evidence is what gets a rule accepted: the more precise it
+        is, the faster the rule lands.
+
+        **Remove secrets before you paste anything**: passwords, host names, user
+        names and schema names.
+
+  - type: textarea
+    id: behavior
+    attributes:
+      label: The mydumper behavior
+      description: >-
+        What mydumper or myloader does with a configuration like the one below,
+        and why it is a problem. For example: the whole file is ignored, an option
+        is silently dropped or means the opposite of what it says, a masking
+        function falls back to identity.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        How you observed the behavior: the mydumper or myloader version and build
+        (official Docker image or distribution package), the commands you ran and
+        their output, and links to the mydumper source or documentation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example configuration (sanitized)
+      description: A minimal file that shows the behavior.
+      render: ini
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Affected mydumper versions
+      description: The versions you checked, or the range you believe is affected.
+      placeholder: ">= v0.19.1-1, or v1.0.x only"
+
+  - type: textarea
+    id: diagnostic
+    attributes:
+      label: Proposed diagnostic
+      description: What the rule should report, where, and at which severity.
+
+  - type: dropdown
+    id: fix
+    attributes:
+      label: Automatic fix
+      description: >-
+        A safe fix never changes what mydumper does with a file that already
+        works; an unsafe fix may, and is only applied on request.
+      options:
+        - Safe fix possible
+        - Unsafe fix only
+        - No automatic fix
+        - Not sure
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked that no existing rule covers this (`mydumper-lint rules`), and searched the existing issues.
+          required: true

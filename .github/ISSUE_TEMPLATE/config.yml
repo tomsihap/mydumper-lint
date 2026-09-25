@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/tomsihap/mydumper-lint/discussions
+    about: Ask usage questions and discuss ideas in GitHub Discussions.
+  - name: Security vulnerability
+    url: https://github.com/tomsihap/mydumper-lint/security/advisories/new
+    about: Report it privately, never in a public issue (see SECURITY.md).
+  - name: Bug in mydumper or myloader
+    url: https://github.com/mydumper/mydumper/issues
+    about: Bugs in mydumper or myloader themselves belong upstream.
