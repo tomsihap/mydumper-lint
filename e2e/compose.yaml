@@ -1,0 +1,34 @@
+# MySQL server of the end-to-end suite (e2e/README.md, design §11.6).
+#
+# mydumper and myloader do not run here: the harness starts one container per
+# scenario from the official image of each version, on the network below.
+# Test-only credentials: never reuse them.
+#
+# Bump the image with its digest (8.4 series only):
+#   docker buildx imagetools inspect mysql:8.4 --format '{{json .Manifest.Digest}}'
+name: mydumper-lint-e2e
+
+services:
+  mysql:
+    # mysql:8.4.10, multi-architecture index digest.
+    image: mysql:8.4@sha256:d36d39a64cd12a5c1cc9e6aa2bfb5f8d4c81a2f6586e0a04a9ae13939db02209
+    command: ["--skip-name-resolve"]
+    environment:
+      MYSQL_ROOT_PASSWORD: e2e-root-password
+    volumes:
+      - ./fixtures/seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+    # The data directory is disposable: every `up` starts from the seed.
+    tmpfs:
+      - /var/lib/mysql
+    # The entrypoint runs the seed on a server without networking, then
+    # restarts it with TCP enabled: a TCP ping therefore means "seeded".
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --host=127.0.0.1 --user=root --password=\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 2s
+      timeout: 5s
+      retries: 60
+      start_period: 180s
+
+networks:
+  default:
+    name: mydumper-lint-e2e

@@ -1,0 +1,24 @@
+Control of mdl102-whitespace-line-drops-masking: the same file without the
+whitespace-only line loads, and users.email is masked. It also proves that
+the [client] section alone provides the connection (F13: with [client]
+present, the client library reads only the client groups).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+threads=2
+
+[`app`.`users`]
+`email`=random_string

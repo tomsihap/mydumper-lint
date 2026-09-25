@@ -1,0 +1,18 @@
+MDL102, F1, F12: a line of two spaces makes mydumper ignore the whole file.
+mydumper only logs a warning and exits 0; the MySQL client library still reads
+[client] on its own, so the dump connects and looks healthy, but the masking
+rule of the table section is not applied: users.email is dumped in plaintext.
+The pre-processor that turns the line into "  = 1" exists from v0.19.3-1
+(v0.19.1-x: see mdl113-whitespace-line-harmless-v0.19.1).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL102, MDL405
+expect config-loaded: false
+expect stderr-contains: Failed to load config file /work/defaults.cnf
+expect exit: 0
+expect connected: true
+expect column app.users.email: plaintext
+-- defaults.cnf.esc --
+[client]\nhost=mysql\nuser=e2e\npassword=e2e-password\n\n[mydumper]\nthreads=2\n\x20\x20\n[`app`.`users`]\n`email`=random_string\n
