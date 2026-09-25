@@ -175,6 +175,12 @@ prints:
 Every file is parsed before any case runs. On an error, nothing is printed; stderr says
 `oracle: FILE:LINE: message` and the exit status is 2.
 
+`internal/goption` checks its GOption emulation against this mode two ways: the recorded
+cases (`TestConformance`, byte-for-byte against `expected.jsonl`, no oracle needed) and
+random option tables and vectors piped to `--goption-cases -` in the C and a UTF-8 locale
+(`TestOracleRandom`, when `MYDUMPER_LINT_ORACLE` is set; `make oracle-diff` runs it on
+every image).
+
 ## Runner and expected files
 
 `tools/oracle/run-cases.sh MODE ORACLE_CMD...` runs the cases through any oracle command.
