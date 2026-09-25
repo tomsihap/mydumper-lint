@@ -3,12 +3,12 @@
 select: ALL
 -- input.cnf.esc --
 [mydumper]\nthreads=4\n\n  
+-- fixed.cnf --
+[mydumper]
+threads=4
 -- diagnostics --
 4:1-4:3 error MDL102[whitespace-only-line] last line contains only whitespace and has no newline: harmless now, fatal as soon as anything is appended
   = If a newline or another block is appended to this file (for example a [client] section added by a script), mydumper will ignore the entire file.
   fix (safe): Remove the whitespace
 4:3-4:3 error MDL104[missing-final-newline] file does not end with a newline
   = Anything appended to this file (for example a [client] section added by a script) is glued to its last line.
--- fixed.cnf --
-[mydumper]
-threads=4

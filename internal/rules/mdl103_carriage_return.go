@@ -33,7 +33,11 @@ func init() {
 						continue
 					}
 					if j == len(c)-1 && l.HasNewline {
-						crlf = append(crlf, l.Start+j)
+						// GLib strips exactly one '\r' before '\n': removing it is
+						// safe only when it is the only trailing '\r'.
+						if j == 0 || c[j-1] != '\r' {
+							crlf = append(crlf, l.Start+j)
+						}
 						continue
 					}
 					if stray {
@@ -55,6 +59,11 @@ func init() {
 						Message: "empty line with a Windows (CRLF) line ending: mydumper's pre-processor turns it " +
 							"into `\\r= 1`, a key/value pair with an empty key (" + glibSays(lc.Message) + ")",
 						Consequence: rejectionConsequence(p),
+						Fix: &diag.Fix{
+							Applicability: diag.Safe,
+							Description:   "Remove the carriage returns of this empty line",
+							Edits:         []diag.Edit{{Start: l.Start, End: l.End}},
+						},
 					})
 				}
 			}

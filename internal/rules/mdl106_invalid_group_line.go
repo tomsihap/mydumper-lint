@@ -21,6 +21,25 @@ func init() {
 		},
 		Check: func(p *Pass) {
 			forCause(p, keyfile.CauseInvalidGroupLine, func(n int, lc keyfile.LineClass) {
+				l := p.File.Line(n)
+				if raw := p.File.Content(n); !l.HasNewline && len(raw) > 0 && raw[len(raw)-1] == '\r' {
+					ls := firstSignificant(raw)
+					if h := raw[ls:]; len(h) > 0 && h[0] == '[' && isBlankish(h[bytes.IndexByte(h, ']')+1:]) {
+						tail := l.Start + ls + bytes.IndexByte(h, ']') + 1
+						p.Report(diag.Diagnostic{
+							Span: lineSpan(p, n),
+							Message: "the group header ends with a carriage return and the file has no final newline: " +
+								"GLib only strips `\\r` right before `\\n` (" + glibSays(lc.Message) + ")",
+							Consequence: rejectionConsequence(p),
+							Fix: &diag.Fix{
+								Applicability: diag.Safe,
+								Description:   "Remove the whitespace and carriage returns after the header",
+								Edits:         []diag.Edit{{Start: tail, End: l.End}},
+							},
+						})
+						return
+					}
+				}
 				c := content(p, n)
 				ls := firstSignificant(c)
 				d := diag.Diagnostic{

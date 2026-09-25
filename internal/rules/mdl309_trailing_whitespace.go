@@ -29,13 +29,16 @@ func init() {
 				if lc.Kind != keyfile.KindGroup && !isComment {
 					continue
 				}
-				t := len(bytes.TrimRight(c, " \t"))
+				t := len(bytes.TrimRight(c, " \t\r\f"))
 				if t == len(c) {
 					continue
 				}
 				msg := "trailing whitespace after the group header"
 				if isComment {
 					msg = "trailing whitespace in a comment"
+				}
+				if bytes.IndexByte(c[t:], '\r') >= 0 {
+					msg += " (including carriage returns)"
 				}
 				p.Report(diag.Diagnostic{
 					Span:    diag.Span{Start: l.Start + t, End: l.Start + len(c)},

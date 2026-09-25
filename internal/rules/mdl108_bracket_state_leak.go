@@ -54,10 +54,21 @@ func init() {
 					if c == keyfile.CauseBracketLeakBlank {
 						d.Message = fmt.Sprintf("mydumper's pre-processor turns this empty line into `= 1` because "+
 							"line %d contains `[` after other text (%s)", origin, glibSays(lc.Message))
+						// Removing only this line would make the next empty line the
+						// victim: remove the whole run of empty lines at once.
+						end := n
+						for end < len(p.File.Lines) && p.File.Line(end+1).HasNewline && len(p.File.Content(end+1)) == 0 {
+							end++
+						}
+						start, _ := p.File.LineSpan(n, true)
+						_, stop := p.File.LineSpan(end, true)
 						d.Fix = &diag.Fix{
 							Applicability: diag.Safe,
 							Description:   "Remove the empty line",
-							Edits:         []diag.Edit{deleteLine(p, n)},
+							Edits:         []diag.Edit{{Start: start, End: stop}},
+						}
+						if end > n {
+							d.Fix.Description = "Remove the empty lines"
 						}
 					} else {
 						text := content(p, n)

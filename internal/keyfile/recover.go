@@ -51,15 +51,28 @@ func recoveryEdit(f *source.File, l source.Line, c Cause, neutralize bool) diag.
 		case CauseWhitespaceOnly, CauseCarriageReturn:
 			return diag.Edit{Start: l.Start, End: l.End}
 		case CauseBracketLeakBlank:
-			return diag.Edit{Start: l.Start, End: l.End + 1}
+			// The whole run of empty lines: each would become the next victim.
+			end := l.End + 1
+			for n := l.Num + 1; n <= len(f.Lines); n++ {
+				next := f.Line(n)
+				if !next.HasNewline || next.End != next.Start {
+					break
+				}
+				end = next.End + 1
+			}
+			return diag.Edit{Start: l.Start, End: end}
 		case CauseBracketLeakFlag:
 			at := l.Start + len(content) - crLen(content)
 			return diag.Edit{Start: at, End: at, New: "=1"}
 		case CauseMissingFinalNewline:
 			return diag.Edit{Start: l.End, End: l.End, New: "\n"}
 		case CauseInvalidGroupLine:
-			if cut, ok := headerCommentCut(content); ok {
-				return diag.Edit{Start: l.Start + cut, End: l.Start + len(content) - crLen(content)}
+			if cut, ok := headerCut(content); ok {
+				end := l.Start + len(content)
+				if l.HasNewline {
+					end -= crLen(content) // GLib strips that '\r' anyway
+				}
+				return diag.Edit{Start: l.Start + cut, End: end}
 			}
 		case NoCause, CauseEmptyKey, CauseKeyBeforeGroup, CauseInvalidKeyName, CauseNulByte,
 			CauseBracketNoValue, CauseUnknown:
@@ -69,9 +82,11 @@ func recoveryEdit(f *source.File, l source.Line, c Cause, neutralize bool) diag.
 	return diag.Edit{Start: l.Start, End: l.End, New: "#"}
 }
 
-// headerCommentCut returns the offset just after the ']' of a header followed
-// by a '#' comment ("[g]  # main"), whose recovery drops the comment.
-func headerCommentCut(content []byte) (int, bool) {
+// headerCut returns the offset just after the ']' of a header followed only by
+// a '#' comment ("[g]  # main") or by whitespace GLib does not accept there
+// (a '\r' at the end of a file without a final newline); the recovery keeps
+// the header and drops the rest.
+func headerCut(content []byte) (int, bool) {
 	ls := 0
 	for ls < len(content) && isSpace(content[ls]) {
 		ls++
@@ -84,8 +99,8 @@ func headerCommentCut(content []byte) (int, bool) {
 		return 0, false
 	}
 	cut := ls + end + 1
-	rest := bytes.TrimLeft(content[cut:], " \t")
-	return cut, len(rest) > 0 && rest[0] == '#'
+	rest := bytes.TrimLeft(content[cut:], " \t\r\f")
+	return cut, len(rest) == 0 || rest[0] == '#'
 }
 
 func crLen(content []byte) int {

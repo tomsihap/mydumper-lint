@@ -70,16 +70,17 @@ func glibSays(msg string) string {
 	return "GLib: " + b.String()
 }
 
-// content returns line n (1-based) without a trailing '\r'.
+// content returns line n (1-based) as GLib sees it: without the '\r' of a
+// CRLF line ending (GLib strips one '\r' only right before '\n').
 func content(p *Pass, n int) []byte {
 	c := p.File.Content(n)
-	if len(c) > 0 && c[len(c)-1] == '\r' {
+	if len(c) > 0 && c[len(c)-1] == '\r' && p.File.Line(n).HasNewline {
 		return c[:len(c)-1]
 	}
 	return c
 }
 
-// lineSpan is the span of line n's content, without a trailing '\r'.
+// lineSpan is the span of line n's content, without a CRLF line ending.
 func lineSpan(p *Pass, n int) diag.Span {
 	l := p.File.Line(n)
 	return diag.Span{Start: l.Start, End: l.Start + len(content(p, n))}
