@@ -1,0 +1,15 @@
+Negative control on v0.19.1-x (no pre-processor): the whitespace-only line
+that makes later versions ignore the file (mdl102-whitespace-line-drops-masking)
+is just a blank line to GLib, so the file loads and users.email is masked.
+The expected lint assumes the linter models v0.19.1-x (no MDL102 error there).
+-- scenario --
+tool: mydumper
+versions: < v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+-- defaults.cnf.esc --
+[client]\nhost=mysql\nuser=e2e\npassword=e2e-password\n\n[mydumper]\nthreads=2\n\x20\x20\n[`app`.`users`]\n`email`=random_string\n

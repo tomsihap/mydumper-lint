@@ -1,0 +1,25 @@
+MDL108, P1, F12: after a comment containing '[' ("# see [docs]"), the
+pre-processor does not reset its state, so the empty line that follows becomes
+"= 1" and GLib rejects the file. mydumper ignores all of it, connects through
+[client] and exits 0, with users.email in plaintext.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL108, MDL405
+expect config-loaded: false
+expect exit: 0
+expect connected: true
+expect column app.users.email: plaintext
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+threads=2
+# masking: see [docs]
+
+[`app`.`users`]
+`email`=random_string

@@ -1,0 +1,20 @@
+Control of myloader-whitespace-line-ignores-config: without the
+whitespace-only line, myloader applies "no-data": the tables are created
+empty.
+-- scenario --
+tool: myloader
+versions: >= v0.19.1-1
+args: --defaults-file /work/myloader.cnf --directory /work/source-dump --database ${RESTORE_DB}
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect rows ${RESTORE_DB}.users: 0
+-- myloader.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[myloader]
+threads=2
+no-data=1

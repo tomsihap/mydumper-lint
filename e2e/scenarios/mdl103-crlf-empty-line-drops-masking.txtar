@@ -1,0 +1,16 @@
+MDL103, F1, F12: in a file with Windows (CRLF) line endings, an empty line is
+"\r\n": the pre-processor counts the '\r' as content and turns it into
+"\r= 1", so GLib rejects the file. mydumper ignores all of it, still connects
+through [client] (the client library strips the '\r') and exits 0, with
+users.email in plaintext.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL103, MDL405
+expect config-loaded: false
+expect exit: 0
+expect connected: true
+expect column app.users.email: plaintext
+-- defaults.cnf.esc --
+[client]\r\nhost=mysql\r\nuser=e2e\r\npassword=e2e-password\r\n\r\n[mydumper]\r\nthreads=2\r\n\r\n[`app`.`users`]\r\n`email`=random_string\r\n

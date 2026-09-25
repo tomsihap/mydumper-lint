@@ -1,0 +1,24 @@
+MDL112, latent case: a comment containing '[' on the last line is harmless
+today (no empty line follows it), so the file loads and users.email is masked.
+The linter warns because a block appended after an empty line would break it.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL112, MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+threads=2
+
+[`app`.`users`]
+`email`=random_string
+# masking: see [docs]

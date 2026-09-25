@@ -1,0 +1,14 @@
+MDL103, latent case: the same CRLF file without empty lines loads, because
+GLib strips the '\r' before each '\n', and users.email is masked. The linter
+still reports the CRLF line endings: one empty line would break the file.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL103, MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+-- defaults.cnf.esc --
+[client]\r\nhost=mysql\r\nuser=e2e\r\npassword=e2e-password\r\n[mydumper]\r\nthreads=2\r\n[`app`.`users`]\r\n`email`=random_string\r\n
