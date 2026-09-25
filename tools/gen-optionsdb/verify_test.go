@@ -5,6 +5,7 @@ import (
 	"errors"
 	"slices"
 	"strings"
+	"sync"
 	"testing"
 )
 
@@ -31,15 +32,19 @@ threads                       = 4
 }
 
 // fakeDocker answers docker commands from a table keyed by the arguments.
+// The tables are read-only once a test starts; ran is guarded by mu.
 type fakeDocker struct {
 	out  map[string]string
 	errs map[string]bool
+	mu   sync.Mutex
 	ran  []string
 }
 
 func (f *fakeDocker) run(_ context.Context, args ...string) (string, string, error) {
 	k := strings.Join(args, " ")
+	f.mu.Lock()
 	f.ran = append(f.ran, k)
+	f.mu.Unlock()
 	if f.errs[k] {
 		return "", "failure for " + k, errors.New("exit status 1")
 	}
