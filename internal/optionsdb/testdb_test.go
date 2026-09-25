@@ -36,8 +36,10 @@ func newTestDB() *DB {
 	db.Options = []Option{
 		{Name: "compress", Tool: "mydumper", Spans: []OptionSpan{
 			{Range: Range{From: "v0.19.1-1", To: "v0.19.3-1"}, Short: "c", Arg: "callback", Flags: []string{"optional_arg"}, Group: "extra"},
-			{Range: Range{From: "v0.19.3-3"}, Short: "c", Arg: "callback", Flags: []string{"optional_arg"}, Group: "extra",
-				Values: []string{"gzip", "zstd"}, ValuesIgnoreCase: true},
+			{
+				Range: Range{From: "v0.19.3-3"}, Short: "c", Arg: "callback", Flags: []string{"optional_arg"}, Group: "extra",
+				Values: []string{"gzip", "zstd"}, ValuesIgnoreCase: true,
+			},
 		}},
 		{Name: "outputdir", Tool: "mydumper", Spans: []OptionSpan{{Range: Range{From: "v0.19.1-1"}, Short: "o", Arg: "filename"}}},
 		{Name: "ssl-mode", Tool: "mydumper", Spans: []OptionSpan{

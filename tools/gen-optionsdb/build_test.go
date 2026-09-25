@@ -30,9 +30,11 @@ func variant(short, arg, group, cond string, flags ...string) optVariant {
 func testExtractions() []*extraction {
 	var xs []*extraction
 	for i, tag := range testTags {
-		x := &extraction{tag: tag, options: map[string]map[string][]optVariant{"mydumper": {}, "myloader": {}},
+		x := &extraction{
+			tag: tag, options: map[string]map[string][]optVariant{"mydumper": {}, "myloader": {}},
 			fingerprint: strings.Repeat("0", 63) + string(rune('0'+i)),
-			funcPrints:  map[string]string{"load_config_file": "same", "parse_key_file_group": string(rune('0' + i/2))}}
+			funcPrints:  map[string]string{"load_config_file": "same", "parse_key_file_group": string(rune('0' + i/2))},
+		}
 		// retyped in the third version
 		if i < 2 {
 			x.options["mydumper"]["rows"] = []optVariant{variant("r", "int", "", "")}

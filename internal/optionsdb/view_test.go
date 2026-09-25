@@ -100,18 +100,30 @@ func TestViewFacts(t *testing.T) {
 		masq     []string
 		products []string
 	}{
-		{"v0.19.3-3", []string{"columns_on_select", "where"},
+		{
+			"v0.19.3-3",
+			[]string{"columns_on_select", "where"},
 			[]string{"where", "columns_on_select"},
 			[]string{"limit", "columns_on_select_replace", "Where", "where "},
-			[]string{"constant"}, []string{"mysql"}},
-		{"v0.21.3-1", []string{"columns_on_select", "columns_on_select_replace", "where"},
+			[]string{"constant"},
+			[]string{"mysql"},
+		},
+		{
+			"v0.21.3-1",
+			[]string{"columns_on_select", "columns_on_select_replace", "where"},
 			[]string{"columns_on_select_replace"},
 			[]string{"columns_on_select_replace_`c`"},
-			[]string{"constant"}, []string{"mysql", "rds"}},
-		{"v1.0.5-1", []string{"columns_on_select", "columns_on_select_replace", "where"},
+			[]string{"constant"},
+			[]string{"mysql", "rds"},
+		},
+		{
+			"v1.0.5-1",
+			[]string{"columns_on_select", "columns_on_select_replace", "where"},
 			[]string{"columns_on_select_replace", "columns_on_select_replace_`c`"},
 			[]string{"columns_on_selec"},
-			[]string{"constant", "null"}, []string{"mysql", "rds"}},
+			[]string{"constant", "null"},
+			[]string{"mysql", "rds"},
+		},
 	}
 	for _, tt := range tests {
 		v := mustView(t, db, tt.tag, DefaultBuild)

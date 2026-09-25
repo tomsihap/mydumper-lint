@@ -8,6 +8,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "e4fb37ba6af6bfdabd366b8566de784d1f85255d0cdea62a16613fbc2bcf1462",
+      "preprocessor": false,
       "image_verified": true
     },
     {
@@ -17,6 +18,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "e4fb37ba6af6bfdabd366b8566de784d1f85255d0cdea62a16613fbc2bcf1462",
+      "preprocessor": false,
       "image_verified": true
     },
     {
@@ -26,6 +28,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "e4fb37ba6af6bfdabd366b8566de784d1f85255d0cdea62a16613fbc2bcf1462",
+      "preprocessor": false,
       "image_verified": true
     },
     {
@@ -35,6 +38,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -44,6 +48,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -53,6 +58,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -62,6 +68,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -71,6 +78,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -80,6 +88,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -89,6 +98,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -98,6 +108,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -107,6 +118,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -116,6 +128,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -125,6 +138,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -134,6 +148,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -143,6 +158,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -152,6 +168,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -161,6 +178,7 @@
       "prerelease": false,
       "ignore_unknown_options": false,
       "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -170,6 +188,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -179,6 +198,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -188,6 +208,7 @@
       "prerelease": true,
       "ignore_unknown_options": false,
       "loader_fingerprint": "cbdcc476e4fb2544145d4855ae412851cfeff721293a90f3cf278e2452e3c9d4",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -197,6 +218,7 @@
       "prerelease": false,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -205,6 +227,7 @@
       "prerelease": true,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -214,6 +237,7 @@
       "prerelease": false,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -223,6 +247,7 @@
       "prerelease": true,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -232,6 +257,7 @@
       "prerelease": false,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
       "image_verified": false
     },
     {
@@ -241,6 +267,7 @@
       "prerelease": true,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
       "image_verified": true
     },
     {
@@ -250,6 +277,7 @@
       "prerelease": true,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
       "image_verified": true
     }
   ],

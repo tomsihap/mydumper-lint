@@ -28,6 +28,7 @@ type Version struct {
 	Prerelease           bool   `json:"prerelease"`             // no stable GitHub release (V1)
 	IgnoreUnknownOptions bool   `json:"ignore_unknown_options"` // F6
 	LoaderFingerprint    string `json:"loader_fingerprint"`     // sha256 of normalized load_config_file + parse_key_file_group
+	Preprocessor         bool   `json:"preprocessor"`           // load_config_file runs mydumper's pre-processor (§3.2)
 	ImageVerified        bool   `json:"image_verified"`         // cross-check with the official image passed (§5.4)
 }
 

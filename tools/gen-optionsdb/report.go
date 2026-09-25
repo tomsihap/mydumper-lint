@@ -12,7 +12,8 @@ import (
 // version table, disagreements, extraction notes, the changes between
 // versions and, after -verify-images, the cross-check table.
 func printReport(w io.Writer, cands []candidate, verified map[string]bool, parity []string,
-	xs []*extraction, rels []release, overlayWarnings []string, checked []imageRecord) {
+	xs []*extraction, rels []release, overlayWarnings []string, checked []imageRecord,
+) {
 	fmt.Fprintf(w, "Upstream tags since %s: %d\n", cands[0].tag, len(cands))
 	for _, c := range cands {
 		fmt.Fprintf(w, "  %s\n", c.describe(verified[c.tag]))

@@ -106,7 +106,7 @@ func (u *upstream) github() (*githubCache, error) {
 func (u *upstream) paginate(url string, out any) error {
 	var all []json.RawMessage
 	for page := 1; ; page++ {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s?per_page=100&page=%d", url, page), nil)
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s?per_page=100&page=%d", url, page), http.NoBody)
 		if err != nil {
 			return err
 		}
@@ -169,7 +169,7 @@ func (u *upstream) imageExists(tag string) (bool, error) {
 		}
 		return v, nil
 	}
-	req, err := http.NewRequest(http.MethodGet, u.dockerTags+"/"+tag, nil)
+	req, err := http.NewRequest(http.MethodGet, u.dockerTags+"/"+tag, http.NoBody)
 	if err != nil {
 		return false, err
 	}
@@ -203,7 +203,7 @@ func (u *upstream) tree(tag, commit string) (srcTree, error) {
 			return nil, fmt.Errorf("offline: %s is not in the cache", tag)
 		}
 		fmt.Fprintf(u.log, "downloading %s (%s)\n", tag, commit[:12])
-		req, err := http.NewRequest(http.MethodGet, u.codeload+"/"+commit, nil)
+		req, err := http.NewRequest(http.MethodGet, u.codeload+"/"+commit, http.NoBody)
 		if err != nil {
 			return nil, err
 		}

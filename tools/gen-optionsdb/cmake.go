@@ -99,13 +99,13 @@ func cmakeCommands(src string) ([]cmakeCommand, error) {
 	i := 0
 	skipSpace := func() {
 		for i < len(src) {
-			switch c := src[i]; {
-			case c == '\n':
+			switch c := src[i]; c {
+			case '\n':
 				line++
 				i++
-			case c == ' ' || c == '\t' || c == '\r':
+			case ' ', '\t', '\r':
 				i++
-			case c == '#':
+			case '#':
 				for i < len(src) && src[i] != '\n' {
 					i++
 				}
@@ -120,7 +120,7 @@ func cmakeCommands(src string) ([]cmakeCommand, error) {
 			return out, nil
 		}
 		start := i
-		for i < len(src) && (isIdentChar(src[i])) {
+		for i < len(src) && isIdentChar(src[i]) {
 			i++
 		}
 		if start == i {

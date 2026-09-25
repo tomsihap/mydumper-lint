@@ -36,6 +36,7 @@ func buildDB(rels []release, xs []*extraction, verified map[string]bool) (*optio
 			Prerelease:           r.prerelease,
 			IgnoreUnknownOptions: xs[i].ignoreUnknown,
 			LoaderFingerprint:    xs[i].fingerprint,
+			Preprocessor:         xs[i].preprocessor,
 			ImageVerified:        verified[r.tag],
 		})
 	}
@@ -119,7 +120,7 @@ func buildDB(rels []release, xs []*extraction, verified map[string]bool) (*optio
 		at := map[k][]int{}
 		for vi, x := range xs {
 			for _, f := range get(x) {
-				key := k{f.name, f.prefix}
+				key := k(f)
 				at[key] = append(at[key], vi)
 			}
 		}

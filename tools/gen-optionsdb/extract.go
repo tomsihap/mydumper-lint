@@ -57,6 +57,7 @@ type extraction struct {
 	products      []string
 	ignoreUnknown bool
 	fingerprint   string            // loader fingerprint (both functions)
+	preprocessor  bool              // load_config_file rewrites valueless lines (design §3.2)
 	funcPrints    map[string]string // fingerprint of each loader function, for the report
 	notes         []string          // findings worth printing in the report
 }
@@ -182,6 +183,9 @@ func extract(tag string, tree srcTree) (*extraction, error) {
 		return nil, fmt.Errorf("%s: %w", tag, err)
 	}
 	x.fingerprint, x.funcPrints = fp, prints
+	if x.preprocessor, err = loaderPreprocesses(official); err != nil {
+		return nil, fmt.Errorf("%s: %w", tag, err)
+	}
 	return x, nil
 }
 
@@ -605,7 +609,7 @@ func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]str
 				if f.name != "parse_key_file_group" {
 					return nil, fmt.Errorf("%s: g_option_context_set_ignore_unknown_options is called in %s, not in parse_key_file_group: review how the config-file parser treats unknown options", tool, f)
 				}
-				if len(c.args) != 2 || len(c.args[1]) != 1 || !(c.args[1][0].isIdent("TRUE") || c.args[1][0].text == "1") {
+				if len(c.args) != 2 || len(c.args[1]) != 1 || (!c.args[1][0].isIdent("TRUE") && c.args[1][0].text != "1") {
 					return nil, fmt.Errorf("%s: g_option_context_set_ignore_unknown_options with an unexpected value in %s", tool, f)
 				}
 				ignore[tool] = true
@@ -910,8 +914,10 @@ func equalityContext(ts []token, c call) bool {
 	return false
 }
 
-var stringFuncs = []string{"g_strcmp0", "strcmp", "g_str_equal", "g_str_has_prefix",
-	"g_ascii_strcasecmp", "strcasecmp", "g_ascii_strncasecmp", "strncasecmp", "strncmp", "g_str_has_suffix", "g_strstr_len", "strstr"}
+var stringFuncs = []string{
+	"g_strcmp0", "strcmp", "g_str_equal", "g_str_has_prefix",
+	"g_ascii_strcasecmp", "strcasecmp", "g_ascii_strncasecmp", "strncasecmp", "strncmp", "g_str_has_suffix", "g_strstr_len", "strstr",
+}
 
 // comparisons returns the names compared with subject (a token sequence such
 // as keys [ j ]) in f: exact matches and prefix matches.
@@ -1061,6 +1067,23 @@ func productNames(cus map[string]*cfgUnit, macros macroTable) ([]string, error) 
 // loaderFunctions are the functions whose behavior the emulators reproduce
 // (design §3.2, §3.4).
 var loaderFunctions = []string{"load_config_file", "parse_key_file_group"}
+
+// loaderPreprocesses reports whether load_config_file runs mydumper's
+// pre-processor, which appends the literal "= 1" to valueless lines. The
+// earliest versions (v0.19.1-x) load the file with GLib directly.
+func loaderPreprocesses(cus map[string]*cfgUnit) (bool, error) {
+	f, err := findOneFunc(cus, "load_config_file")
+	if err != nil {
+		return false, fmt.Errorf("pre-processor detection: %w", err)
+	}
+	from, to := f.cu.rawIdx[f.nameIdx], f.cu.rawIdx[f.close]
+	for _, t := range f.cu.u.raw[from : to+1] {
+		if t.text == `"= 1"` {
+			return true, nil
+		}
+	}
+	return false, nil
+}
 
 // loaderFingerprint hashes the tokens of the loader functions, from the name
 // to the closing brace, directives included, comments and whitespace

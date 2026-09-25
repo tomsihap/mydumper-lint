@@ -60,7 +60,7 @@ func runMain(args []string, stdout, stderr io.Writer) int {
 	fl.StringVar(&o.docker, "docker", "docker", "docker command for -verify-images")
 	fl.IntVar(&o.jobs, "jobs", 4, "parallel image checks")
 	fl.StringVar(&o.minTag, "min-version", "v0.19.1-1", "oldest mydumper version to embed")
-	fl.StringVar(&o.debugDir, "debug-dir", "", "analyse an extracted source tree and print its facts (development aid)")
+	fl.StringVar(&o.debugDir, "debug-dir", "", "analyze an extracted source tree and print its facts (development aid)")
 	fl.StringVar(&o.exportSrc, "export-src", "", "also write the files the extractor reads to DIR/<tag>/, to review overlay evidence")
 	fl.StringVar(&o.funcHistory, "func-history", "", "comma-separated C functions: print the version ranges over which each is token-identical, then exit")
 	if err := fl.Parse(args); err != nil {

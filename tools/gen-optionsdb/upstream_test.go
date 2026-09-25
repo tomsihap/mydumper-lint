@@ -21,8 +21,10 @@ func makeArchive(t *testing.T, commit string, files map[string]string) []byte {
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
 	tw := tar.NewWriter(gz)
-	if err := tw.WriteHeader(&tar.Header{Typeflag: tar.TypeXGlobalHeader, Name: "pax_global_header",
-		PAXRecords: map[string]string{"comment": commit}, Format: tar.FormatPAX}); err != nil {
+	if err := tw.WriteHeader(&tar.Header{
+		Typeflag: tar.TypeXGlobalHeader, Name: "pax_global_header",
+		PAXRecords: map[string]string{"comment": commit}, Format: tar.FormatPAX,
+	}); err != nil {
 		t.Fatal(err)
 	}
 	if err := tw.WriteHeader(&tar.Header{Typeflag: tar.TypeDir, Name: "repo-x/", Mode: 0o755}); err != nil {

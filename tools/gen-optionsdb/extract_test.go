@@ -112,28 +112,61 @@ func TestExtractErrors(t *testing.T) {
 		hooks map[string]string
 		want  string
 	}{
-		{"ignore-unknown elsewhere", map[string]string{"EXTRA_HOOK": "g_option_context_set_ignore_unknown_options(ctx, TRUE);"},
-			"not in parse_key_file_group"},
-		{"ignore-unknown with a variable", map[string]string{"IGNORE_HOOK": "g_option_context_set_ignore_unknown_options(ctx, flag);"},
-			"unexpected value"},
-		{"undecidable condition in an array", map[string]string{"MAIN_HOOK": "#if SOME_CHECK(1)\n{\"cond\", 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL},\n#endif"},
-			"cannot evaluate"},
-		{"unknown array", map[string]string{"EXTRA_HOOK": "g_option_group_add_entries(main_group, nowhere_entries);"},
-			"no GOptionEntry array of that name"},
-		{"duplicate option", map[string]string{"MAIN_HOOK": "{\"beta\", 0, 0, G_OPTION_ARG_INT, NULL, NULL, NULL},"},
-			"registered twice"},
-		{"unknown flag", map[string]string{"MAIN_HOOK": "{\"f\", 0, G_OPTION_FLAG_BOGUS, G_OPTION_ARG_NONE, NULL, NULL, NULL},"},
-			"unknown flag"},
-		{"unknown arg type", map[string]string{"MAIN_HOOK": "{\"f\", 0, 0, G_OPTION_ARG_BOGUS, NULL, NULL, NULL},"},
-			"unknown argument type"},
-		{"non-literal long name", map[string]string{"MAIN_HOOK": "{name_var, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL},"},
-			"not a string"},
-		{"case-insensitive table key", map[string]string{"TABLE_HOOK": "if (!g_ascii_strcasecmp(names[n], \"eps\")) { }"},
-			"unsupported comparison"},
-		{"inverted comparison", map[string]string{"TABLE_HOOK": "if (g_strcmp0(names[n], \"eps\")) { }"},
-			"not used as an equality test"},
-		{"group from a parameter", map[string]string{"EXTRA_HOOK": "dead_code(main_group);"},
-			"is a parameter"},
+		{
+			"ignore-unknown elsewhere",
+			map[string]string{"EXTRA_HOOK": "g_option_context_set_ignore_unknown_options(ctx, TRUE);"},
+			"not in parse_key_file_group",
+		},
+		{
+			"ignore-unknown with a variable",
+			map[string]string{"IGNORE_HOOK": "g_option_context_set_ignore_unknown_options(ctx, flag);"},
+			"unexpected value",
+		},
+		{
+			"undecidable condition in an array",
+			map[string]string{"MAIN_HOOK": "#if SOME_CHECK(1)\n{\"cond\", 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL},\n#endif"},
+			"cannot evaluate",
+		},
+		{
+			"unknown array",
+			map[string]string{"EXTRA_HOOK": "g_option_group_add_entries(main_group, nowhere_entries);"},
+			"no GOptionEntry array of that name",
+		},
+		{
+			"duplicate option",
+			map[string]string{"MAIN_HOOK": "{\"beta\", 0, 0, G_OPTION_ARG_INT, NULL, NULL, NULL},"},
+			"registered twice",
+		},
+		{
+			"unknown flag",
+			map[string]string{"MAIN_HOOK": "{\"f\", 0, G_OPTION_FLAG_BOGUS, G_OPTION_ARG_NONE, NULL, NULL, NULL},"},
+			"unknown flag",
+		},
+		{
+			"unknown arg type",
+			map[string]string{"MAIN_HOOK": "{\"f\", 0, 0, G_OPTION_ARG_BOGUS, NULL, NULL, NULL},"},
+			"unknown argument type",
+		},
+		{
+			"non-literal long name",
+			map[string]string{"MAIN_HOOK": "{name_var, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, NULL},"},
+			"not a string",
+		},
+		{
+			"case-insensitive table key",
+			map[string]string{"TABLE_HOOK": "if (!g_ascii_strcasecmp(names[n], \"eps\")) { }"},
+			"unsupported comparison",
+		},
+		{
+			"inverted comparison",
+			map[string]string{"TABLE_HOOK": "if (g_strcmp0(names[n], \"eps\")) { }"},
+			"not used as an equality test",
+		},
+		{
+			"group from a parameter",
+			map[string]string{"EXTRA_HOOK": "dead_code(main_group);"},
+			"is a parameter",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
