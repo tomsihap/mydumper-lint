@@ -75,7 +75,7 @@ func TestFixpoint(t *testing.T) {
 
 func TestFixpointGivesUpAfterMaxPasses(t *testing.T) {
 	// A fix that always re-creates what it fixes never converges.
-	flip := func(src []byte) []diag.Diagnostic {
+	flip := func(_ []byte) []diag.Diagnostic {
 		return []diag.Diagnostic{d("MDL1", diag.Safe, diag.Edit{Start: 0, End: 0, New: "a"})}
 	}
 	_, err := Fixpoint([]byte(""), flip, Options{MaxPasses: 3})

@@ -37,6 +37,7 @@ func init() {
 					msg = "indented comment"
 				case keyfile.KindEntry:
 					msg = "indented key"
+				case keyfile.KindBlank, keyfile.KindRejected: // excluded above
 				}
 				p.Report(diag.Diagnostic{
 					Span:    diag.Span{Start: l.Start, End: l.Start + j},

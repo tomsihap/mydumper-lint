@@ -35,7 +35,9 @@ func runConfig(args []string, e *env) int {
 		if err != nil {
 			return ExitError
 		}
-		e.stdout.Write(b)
+		if _, err := e.stdout.Write(b); err != nil {
+			return ExitError
+		}
 		return ExitOK
 	case "path", "show":
 		cfg, err := config.NewLoader().For(target)

@@ -77,7 +77,7 @@ func parse(fs *flag.FlagSet, args []string) ([]string, error) {
 			value = args[i]
 		}
 		if err := fs.Set(name, value); err != nil {
-			return nil, fmt.Errorf("invalid value %q for --%s: %v", value, name, err)
+			return nil, fmt.Errorf("invalid value %q for --%s: %w", value, name, err)
 		}
 	}
 	return pos, nil

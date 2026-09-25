@@ -67,7 +67,7 @@ func TestRunEqualsLeak(t *testing.T) {
 	if !l.StartDirty || l.LeakOrigin != 2 || l.AppendsEqOne || !l.IdealAppendsEqOne {
 		t.Errorf("flag line: got %+v", l)
 	}
-	if r.Lines[1].OutEqualFound != true || r.Lines[1].OutNewLine != false {
+	if !r.Lines[1].OutEqualFound || r.Lines[1].OutNewLine {
 		t.Errorf("regex line out state: %+v", r.Lines[1])
 	}
 	if r.Lines[3].StartDirty {

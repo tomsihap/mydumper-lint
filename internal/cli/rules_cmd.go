@@ -87,7 +87,9 @@ func runRules(args []string, e *env) int {
 			}
 			fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\n", r.ID, r.Name, j.Severity, j.Fix, summary)
 		}
-		tw.Flush()
+		if err := tw.Flush(); err != nil {
+			return ExitError
+		}
 	default:
 		return usageError(e, "rules", fmt.Errorf("--format must be text or json, not %q", *format))
 	}

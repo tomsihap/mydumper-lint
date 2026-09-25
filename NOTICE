@@ -19,3 +19,16 @@ The oracle is a test-only tool: the test suite runs it to check the Go
 emulation against GLib. It is never compiled into or linked into the
 mydumper-lint binary, and it is not part of the binary releases or of the
 Docker image. The Apache License, Version 2.0 does not apply to it.
+
+internal/textdiff/
+------------------
+
+internal/textdiff/diff.go is a copy of the Go standard library's internal/diff
+package. Copyright 2022 The Go Authors. It is licensed under the BSD 3-Clause
+license reproduced in internal/textdiff/LICENSE.
+
+go.yaml.in/yaml/v3
+------------------
+
+The YAML decoder is licensed under the MIT and Apache 2.0 licenses; see its
+LICENSE and NOTICE files in the module source.

@@ -17,6 +17,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"os/exec"
 	"strings"
@@ -65,7 +66,8 @@ func Start() (*Oracle, error) {
 		args = append(args, "--unsetenv", v)
 	}
 	args = append(args, "--serve")
-	cmd := exec.Command(spec[0], append(spec[1:], args...)...)
+	// The command comes from the developer's own environment variable.
+	cmd := exec.Command(spec[0], append(spec[1:], args...)...) //nolint:gosec // G204/G702: test-only, trusted input
 	cmd.Stderr = os.Stderr
 	in, err := cmd.StdinPipe()
 	if err != nil {
@@ -86,8 +88,7 @@ func (o *Oracle) Close() error {
 	if o == nil {
 		return nil
 	}
-	o.in.Close()
-	return o.cmd.Wait()
+	return errors.Join(o.in.Close(), o.cmd.Wait())
 }
 
 // Load asks the oracle what GLib does with content, after mydumper's
@@ -95,8 +96,11 @@ func (o *Oracle) Close() error {
 func (o *Oracle) Load(content []byte) (Verdict, error) {
 	o.mu.Lock()
 	defer o.mu.Unlock()
+	if len(content) > math.MaxUint32 {
+		return Verdict{}, errors.New("content too large for the oracle protocol")
+	}
 	var hdr [4]byte
-	binary.BigEndian.PutUint32(hdr[:], uint32(len(content)))
+	binary.BigEndian.PutUint32(hdr[:], uint32(len(content))) //nolint:gosec // G115: bounded above
 	if _, err := o.in.Write(append(hdr[:], content...)); err != nil {
 		return Verdict{}, err
 	}
@@ -163,7 +167,7 @@ func bytesOf(s string) (string, error) {
 		if r > 0xff {
 			return "", fmt.Errorf("code point %U out of the byte range", r)
 		}
-		b = append(b, byte(r))
+		b = append(b, byte(r)) //nolint:gosec // G115: r <= 0xff checked above
 	}
 	return string(b), nil
 }

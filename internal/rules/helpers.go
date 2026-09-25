@@ -122,7 +122,7 @@ func isBlankish(b []byte) bool {
 // quote shows a fragment of a line in a message, escaping what a terminal
 // would not show, and truncating long fragments.
 func quote(b []byte) string {
-	const max = 60
+	const maxRunes = 60
 	// Markdown convention: a fragment containing a backtick is wrapped in
 	// double backticks and spaces.
 	open, closing := "`", "`"
@@ -132,7 +132,7 @@ func quote(b []byte) string {
 	var sb strings.Builder
 	sb.WriteString(open)
 	n := 0
-	for len(b) > 0 && n < max {
+	for len(b) > 0 && n < maxRunes {
 		r, size := utf8.DecodeRune(b)
 		switch {
 		case r == utf8.RuneError && size == 1:

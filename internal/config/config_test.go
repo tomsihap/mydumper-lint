@@ -61,7 +61,7 @@ func TestParseFull(t *testing.T) {
 
 func TestParseErrors(t *testing.T) {
 	tests := map[string]string{
-		"mydumper-verison: x\n":                   `unknown key "mydumper-verison" (did you mean "mydumper-version"?)`,
+		"mydumper-verison: x\n": `unknown key "mydumper-verison" (did you mean "mydumper-version"?)`, //nolint:misspell // deliberate typo under test
 		"rules:\n  selct: [ALL]\n":                `unknown key "selct" (did you mean "select"?)`,
 		"fail-on: fatal\n":                        "fail-on must be error, warning, info or none",
 		"rules:\n  select: [MDL999]\n":            `unknown rule "MDL999"`,
@@ -98,7 +98,7 @@ func TestResolve(t *testing.T) {
 	c.Dir = "/repo"
 	s := c.Resolve("/repo/prod/app-extra-file.cnf")
 	if s.MydumperVersion != "0.19.3-3" || s.FailOn != "warning" || s.Conventions == nil ||
-		s.Selection.Severity["MDL306"] != diag.Off || !s.ExtendSafe["MDL306"] || *s.Build.SSL != true {
+		s.Selection.Severity["MDL306"] != diag.Off || !s.ExtendSafe["MDL306"] || !*s.Build.SSL {
 		t.Errorf("settings %+v", s)
 	}
 	legacy := c.Resolve("/repo/legacy/old.cnf")
@@ -162,7 +162,7 @@ func TestSchema(t *testing.T) {
 			t.Errorf("schema lacks %q", key)
 		}
 	}
-	if s["additionalProperties"] != false {
+	if ap, ok := s["additionalProperties"].(bool); !ok || ap {
 		t.Error("the schema must reject unknown keys")
 	}
 	sev := props["rules"].(map[string]any)["properties"].(map[string]any)["severity"].(map[string]any)

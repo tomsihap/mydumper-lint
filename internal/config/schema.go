@@ -30,6 +30,7 @@ func typeSchema(t reflect.Type) map[string]any {
 			typeSchema(reflect.TypeFor[Conventions]()),
 		}}
 	}
+	//exhaustive:ignore // only the kinds used by the configuration types exist
 	switch t.Kind() {
 	case reflect.String:
 		return map[string]any{"type": "string"}

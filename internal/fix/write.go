@@ -9,7 +9,7 @@ import (
 // temporary file in the same directory, syncs it, and renames it over the
 // target. The mode, and the owner when permitted, are preserved. A symlink is
 // resolved and its target is written, so the link stays a link.
-func WriteAtomic(path string, data []byte) (err error) {
+func WriteAtomic(path string, data []byte) error {
 	target, err := filepath.EvalSymlinks(path)
 	if err != nil {
 		return err
@@ -23,28 +23,33 @@ func WriteAtomic(path string, data []byte) (err error) {
 	if err != nil {
 		return err
 	}
+	done, closed := false, false
 	defer func() {
-		if err != nil {
-			_ = tmp.Close()
+		if !done {
+			if !closed {
+				_ = tmp.Close()
+			}
 			_ = os.Remove(tmp.Name())
 		}
 	}()
-	if _, err = tmp.Write(data); err != nil {
+	if _, err := tmp.Write(data); err != nil {
 		return err
 	}
-	if err = tmp.Chmod(info.Mode().Perm()); err != nil {
+	if err := tmp.Chmod(info.Mode().Perm()); err != nil {
 		return err
 	}
 	preserveOwner(tmp, info)
-	if err = tmp.Sync(); err != nil {
+	if err := tmp.Sync(); err != nil {
 		return err
 	}
-	if err = tmp.Close(); err != nil {
+	closed = true
+	if err := tmp.Close(); err != nil {
 		return err
 	}
-	if err = os.Rename(tmp.Name(), target); err != nil {
+	if err := os.Rename(tmp.Name(), target); err != nil {
 		return err
 	}
+	done = true
 	syncDir(dir)
 	return nil
 }

@@ -205,10 +205,12 @@ func (p *parser) line(l source.Line, info preprocess.LineInfo) {
 	case KindEntry:
 		lc.Kind = KindEntry
 		lc.Entry = p.addEntry(res, content, l)
-	default: // Rejected
+	case KindBlank: // not produced by classify; kept for exhaustiveness
+		lc.Kind = KindBlank
+	case KindRejected:
 		lc.Kind = KindRejected
 		lc.Message = res.message
-		lc.Cause = cause(p.f, l, info, content, g, res, p.cur >= 0)
+		lc.Cause = cause(l, info, content, g, res)
 		if p.r.FirstError == nil {
 			p.r.FirstError = &LineError{Line: l.Num, Message: res.message}
 		}
@@ -423,7 +425,9 @@ func isKeyValue(s []byte) bool {
 func isKeyName(name []byte) bool {
 	end := len(name)
 	next := func(q int) int { // g_utf8_find_next_char(q, end), NULL mapped to end
-		for q++; q < end && name[q]&0xc0 == 0x80; q++ {
+		q++
+		for q < end && name[q]&0xc0 == 0x80 {
+			q++
 		}
 		return q
 	}
@@ -487,7 +491,7 @@ func makeValid(b []byte) string {
 }
 
 // cause assigns the single, most specific cause of a rejected line.
-func cause(f *source.File, l source.Line, info preprocess.LineInfo, content, g []byte, res classified, hasGroup bool) Cause {
+func cause(l source.Line, info preprocess.LineInfo, content, g []byte, res classified) Cause {
 	switch {
 	case l.Num == 1 && bytes.HasPrefix(content, bom):
 		return CauseBOM

@@ -363,7 +363,9 @@ func (c *checkCmd) finish(outcomes []outcome) int {
 		}
 	}
 	if c.diff {
-		c.e.stdout.Write(diffs.Bytes())
+		if _, err := c.e.stdout.Write(diffs.Bytes()); err != nil {
+			return ExitError
+		}
 		if diffs.Len() > 0 && code == ExitOK {
 			code = ExitFindings
 		}

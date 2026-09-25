@@ -157,8 +157,10 @@ func buildInspect(path string, src []byte, target model.Target, version string, 
 	pre := preprocess.Run(f)
 	kf := keyfile.Parse(f, pre)
 	m := model.Build(kf, model.Options{Languages: languages, Target: target})
-	doc := inspectDoc{Path: path, MydumperVersion: version, Loadable: kf.Loadable, Health: m.Health.String(),
-		Rewritten: []inspectLine{}, GLib: []inspectGroup{}, Model: []inspectMGroup{}}
+	doc := inspectDoc{
+		Path: path, MydumperVersion: version, Loadable: kf.Loadable, Health: m.Health.String(),
+		Rewritten: []inspectLine{}, GLib: []inspectGroup{}, Model: []inspectMGroup{},
+	}
 	if kf.FirstError != nil {
 		doc.Error = &inspectError{Line: kf.FirstError.Line, Message: kf.FirstError.Message}
 	}

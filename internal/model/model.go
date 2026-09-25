@@ -180,7 +180,7 @@ func ClassifyGroup(name string, products []string) (GroupKind, string) {
 		}
 		return GroupGlobalVariables, m[1]
 	}
-	if m := productGroupRE.FindStringSubmatch(name); m != nil && contains(products, m[2]) {
+	if m := productGroupRE.FindStringSubmatch(name); len(m) > 2 && contains(products, m[2]) {
 		return GroupProductOptions, m[1]
 	}
 	return GroupUnknown, ""

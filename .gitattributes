@@ -1,5 +1,5 @@
 # Byte-exact fixtures: git must never rewrite their line endings or content.
-testdata/** -text
+**/testdata/** -text
 *.cnf -text
 *.txtar -text
 e2e/scenarios/** -text

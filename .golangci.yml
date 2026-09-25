@@ -40,6 +40,13 @@ linters:
     errcheck:
       # An unchecked type assertion panics on unexpected input.
       check-type-assertions: true
+      # Help texts and messages written to the terminal: a failed write (a closed
+      # pipe) is not actionable. Output formats return their write errors, and
+      # the CLI reports them.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
 
     exhaustive:
       # Keep this strict: the emulators rely on exhaustive switches over their
@@ -64,6 +71,11 @@ linters:
         - opinionated
       disabled-checks:
         - whyNoLint # nolintlint already requires an explanation on every //nolint
+        # Copying a few hundred bytes per call or iteration is irrelevant for a
+        # linter that reads small files; pointers would only hurt readability.
+        # Benchmarks (make bench) guard the performance target instead.
+        - hugeParam
+        - rangeValCopy
 
     gosec:
       excludes:
@@ -121,6 +133,10 @@ linters:
 
   exclusions:
     generated: strict
+    paths:
+      # Verbatim copy of Go's internal/diff (BSD-3-Clause), kept identical to
+      # upstream on purpose.
+      - internal/textdiff/
     rules:
       # Tests may ignore errors, and use fixed paths, temporary files and
       # subprocesses freely.

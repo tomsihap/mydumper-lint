@@ -86,7 +86,7 @@ func mainHelp() string {
 	return b.String()
 }
 
-func runVersion(args []string, e *env) int {
+func runVersion(_ []string, e *env) int {
 	fmt.Fprintln(e.stdout, buildinfo.String())
 	return ExitOK
 }

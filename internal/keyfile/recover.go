@@ -61,6 +61,9 @@ func recoveryEdit(f *source.File, l source.Line, c Cause, neutralize bool) diag.
 			if cut, ok := headerCommentCut(content); ok {
 				return diag.Edit{Start: l.Start + cut, End: l.Start + len(content) - crLen(content)}
 			}
+		case NoCause, CauseEmptyKey, CauseKeyBeforeGroup, CauseInvalidKeyName, CauseNulByte,
+			CauseBracketNoValue, CauseUnknown:
+			// No recovery rule: the line is neutralized below.
 		}
 	}
 	return diag.Edit{Start: l.Start, End: l.End, New: "#"}

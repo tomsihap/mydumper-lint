@@ -97,6 +97,7 @@ func Summarize(results []FileResult) Summary {
 				s.Warnings++
 			case diag.Info:
 				s.Infos++
+			case diag.Off:
 			}
 			if d.Fix != nil {
 				if d.Fix.Applicability == diag.Safe {

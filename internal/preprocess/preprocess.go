@@ -123,8 +123,8 @@ func apply(b []byte, ideal bool) []byte {
 	s := clean
 	for i := 0; i < len(b); i++ {
 		c := b[i]
-		switch {
-		case c == '[':
+		switch c {
+		case '[':
 			for i < len(b) && b[i] != '\n' {
 				out = append(out, b[i])
 				i++
@@ -137,7 +137,7 @@ func apply(b []byte, ideal bool) []byte {
 			if ideal {
 				s = clean
 			}
-		case c == '\n':
+		case '\n':
 			if !s.equalFound && !s.newLine {
 				out = append(out, EqOne...)
 			}
