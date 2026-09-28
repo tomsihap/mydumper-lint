@@ -1,0 +1,10 @@
+-- input.cnf --
+[mydumper]
+# mydumper-lint: disable-line=MDL402
+# mydumper-lint: disable-file=
+# mydumper-lint: disable-file=MDL402 [x]
+threads=4
+-- diagnostics --
+2:1-2:37 warning MDL002[invalid-suppression] unknown suppression "disable-line=MDL402": use `disable-next-line=ID,…` or `disable-file=ID,…`
+3:1-3:31 warning MDL002[invalid-suppression] the suppression names no rule: list rule IDs or names after `=`
+4:1-4:41 warning MDL002[invalid-suppression] a suppression comment must not contain `[`: mydumper's pre-processor would not reset its state after it

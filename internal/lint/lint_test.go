@@ -49,6 +49,7 @@ func fuzzLinters(t testing.TB) []*Linter {
 }
 
 var seeds = []string{
+	"[mydumper]\n# see [x]\n# mydumper-lint: disable-next-line=MDL402,MDL407\n\nroutines=0\n# mydumper-lint: disable-file=MDL999\n",
 	"[mydumper]\nroutines=-t\nthreads=4\n", "[mydumper]\nroutines=--\nthreads=08\nChunk_Filesize=1 \n",
 	"[myloader]\noutputdir=/x\ncompress=-G\ndatabase=caf\xc3\xa9\n", "[mydumper_mysql]\nt=4\nroutines=0\nregex=^(a\n",
 	"[mydumper]\nthreads=4\n  \nroutines\n", "\xef\xbb\xbf[mydumper]\nk=v", "[g] # c\n# see [x]\n\n\n\nk=1\r\n\r\n",

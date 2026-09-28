@@ -1,0 +1,8 @@
+-- input.cnf --
+[mydumper]
+# mydumper-lint: disable-file=MDL999
+# mydumper-lint: disable-next-line=whitespace-only-line
+threads=4
+-- diagnostics --
+2:31-2:37 warning MDL002[invalid-suppression] unknown rule "MDL999" in the suppression (did you mean "MDL109"?)
+3:36-3:56 warning MDL002[invalid-suppression] MDL102 cannot be suppressed by a comment: disable it in the configuration or with --ignore

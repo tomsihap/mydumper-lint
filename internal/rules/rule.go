@@ -134,6 +134,7 @@ func (p *Pass) Run(enabled []Enabled) []diag.Diagnostic {
 		e.Rule.Check(p)
 	}
 	p.rule = nil
+	p.suppress(enabled)
 	diag.Sort(p.out)
 	return p.out
 }

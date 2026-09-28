@@ -1,0 +1,10 @@
+# A used suppression hides MDL402 and is not reported.
+-- options --
+mydumper-version: v0.19.3-3
+select: MDL001, MDL402
+-- input.cnf --
+[mydumper]
+# mydumper-lint: disable-next-line=MDL402
+routines=0
+-- diagnostics --
+(none)

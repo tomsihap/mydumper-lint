@@ -1,0 +1,15 @@
+# Only the unused rule is removed from the list.
+-- options --
+mydumper-version: v0.19.3-3
+select: MDL001, MDL402, MDL407
+-- input.cnf --
+[mydumper]
+# mydumper-lint: disable-file=MDL402, MDL407
+routines=0
+-- diagnostics --
+2:31-2:45 info MDL001[unused-suppression] unused suppression: MDL407 reported nothing here
+  fix (safe): Remove MDL407 from the suppression
+-- fixed.cnf --
+[mydumper]
+# mydumper-lint: disable-file=MDL402
+routines=0

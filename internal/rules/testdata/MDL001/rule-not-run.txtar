@@ -1,0 +1,9 @@
+# Rules that did not run are not judged.
+-- options --
+select: MDL001
+-- input.cnf --
+[mydumper]
+# mydumper-lint: disable-file=MDL402
+routines=0
+-- diagnostics --
+(none)

@@ -1,0 +1,8 @@
+# Ordinary comments are not directives.
+-- input.cnf --
+[mydumper]
+# mydumper is great
+# mydumper-lint: disable-file=MDL402
+threads=4
+-- diagnostics --
+(none)

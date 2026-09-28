@@ -6,6 +6,7 @@ import (
 
 	"github.com/tomsihap/mydumper-lint/internal/diag"
 	"github.com/tomsihap/mydumper-lint/internal/goption"
+	"github.com/tomsihap/mydumper-lint/internal/model"
 )
 
 func init() {
@@ -26,52 +27,69 @@ func init() {
 			E2E:  []string{"mdl401-unknown-option-fatal-or-ignored"},
 		},
 		Check: func(p *Pass) {
-			for _, k := range optionKeys(p) {
+			keys := optionKeys(p)
+			type candidate struct {
+				k               *optionKey
+				hint, canonical string
+			}
+			var unknown []candidate
+			for i := range keys {
+				k := &keys[i]
 				if _, include := includeDirective(k.e.Key); k.entry != nil || include {
 					continue // include directives: MDL602
 				}
+				hint, canonical := unknownOptionHint(p, k)
+				unknown = append(unknown, candidate{k, hint, canonical})
+			}
+			// The renames of one pass are applied together: keep a rename only
+			// if the group still parses with it and every rename kept before.
+			// Renaming turns an ignored key into a real option, which may
+			// reject the value or change how the rest of the group is parsed
+			// (a value that swallowed the next key may now be consumed, G8).
+			fixable := map[*optionKey]bool{}
+			argvs := map[*model.Group][]string{}
+			for _, c := range unknown {
+				if c.canonical == "" {
+					continue
+				}
+				run := c.k.g.GOption
+				argv := argvs[c.k.g]
+				if argv == nil {
+					argv = run.Argv
+				}
+				trial := append([]string(nil), argv...)
+				trial[c.k.e.Element] = "--" + c.canonical
+				if !run.Result.OK || c.k.ctx.Parse(trial, nil).OK {
+					argvs[c.k.g], fixable[c.k] = trial, true
+				}
+			}
+			for _, c := range unknown {
+				k := c.k
 				key := k.e.Key
 				msg := fmt.Sprintf("%s is not a %s option", quote([]byte(key)), k.g.Tool)
 				if p.Version != "" {
 					msg += " in " + p.Version
 				}
-				hint, canonical := unknownOptionHint(p, &k)
-				if hint != "" {
-					msg += ": " + hint
+				if c.hint != "" {
+					msg += ": " + c.hint
 				}
 				d := diag.Diagnostic{Span: k.ke.KeySpan, Message: msg}
 				if k.ctx.IgnoreUnknown {
 					d.Consequence = fmt.Sprintf("%s ignores it silently: this version skips unknown options, so the setting has no effect.", k.g.Tool) + productNote(k.g)
 				} else {
-					d.Consequence = fatalConsequence(&k, "Unknown option --"+key)
+					d.Consequence = fatalConsequence(k, "Unknown option --"+key)
 				}
-				if canonical != "" && renameKeepsWorking(&k, canonical) {
+				if fixable[k] {
 					d.Fix = &diag.Fix{
 						Applicability: diag.Unsafe,
-						Description:   "Rename the key to `" + canonical + "`",
-						Edits:         []diag.Edit{{Start: k.ke.KeySpan.Start, End: k.ke.KeySpan.End, New: canonical}},
+						Description:   "Rename the key to `" + c.canonical + "`",
+						Edits:         []diag.Edit{{Start: k.ke.KeySpan.Start, End: k.ke.KeySpan.End, New: c.canonical}},
 					}
 				}
 				p.Report(d)
 			}
 		},
 	})
-}
-
-// renameKeepsWorking reports whether renaming the key to canonical gives an
-// option that accepts the line's value. Renaming turns an ignored key into
-// a real option; if the option then rejected the value, or parsed a value
-// starting with '-' as options (G8), the fix would make mydumper abort.
-func renameKeepsWorking(k *optionKey, canonical string) bool {
-	r, _, ok := k.ctx.Lookup(canonical)
-	if !ok {
-		return false
-	}
-	e, v := k.ctx.Entry(r), k.ke.Value
-	if (e.NoArg() || e.OptionalArg()) && len(v) >= 2 && v[0] == '-' {
-		return false
-	}
-	return k.ctx.Check(r, "--"+e.Long, v) == ""
 }
 
 // unknownOptionHint explains an unknown key and, when exactly one option

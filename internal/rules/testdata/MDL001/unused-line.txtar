@@ -1,0 +1,14 @@
+# The next line no longer has a MDL402 problem.
+-- options --
+mydumper-version: v0.19.3-3
+select: MDL001, MDL402
+-- input.cnf --
+[mydumper]
+# mydumper-lint: disable-next-line=MDL402
+routines=1
+-- diagnostics --
+2:36-2:42 info MDL001[unused-suppression] unused suppression: MDL402 reported nothing here
+  fix (safe): Remove the suppression comment
+-- fixed.cnf --
+[mydumper]
+routines=1
