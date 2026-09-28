@@ -1,0 +1,16 @@
+# K14: with LANG unset only [C] is visible.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+threads[fr]=4
+threads[C]=2
+[client]
+user[de]=x
+-- diagnostics --
+2:1-2:12 warning MDL305[localized-key] `threads[fr]` is a translation of `threads`: it only exists when mydumper runs with a fr language
+  = Where it is visible, mydumper passes the unknown option --threads[fr] (fatal at startup up to v1.0.0-1); `threads` is never set.
+3:1-3:11 warning MDL305[localized-key] `threads[C]` is a translation of `threads` for the C locale, which mydumper's language list contains
+  = Where it is visible, mydumper passes the unknown option --threads[C] (fatal at startup up to v1.0.0-1); `threads` is never set.
+5:1-5:9 warning MDL305[localized-key] `user[de]` is a translation of `user`: it only exists when mydumper runs with a de language
+  = `user` is never set by this line.

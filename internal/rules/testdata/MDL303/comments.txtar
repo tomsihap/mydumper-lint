@@ -1,0 +1,31 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+threads=4 # four threads
+outputdir=/backup	# nightly
+[`db`.`t`]
+where=name = 'a # b' # not in quotes
+[client]
+user=backup # MySQL strips this
+-- fixed-unsafe.cnf --
+[mydumper]
+# four threads
+threads=4
+# nightly
+outputdir=/backup
+[`db`.`t`]
+# not in quotes
+where=name = 'a # b'
+[client]
+user=backup # MySQL strips this
+-- diagnostics --
+2:11-2:25 warning MDL303[inline-comment] `# four threads` is part of the value of `threads`: GLib has no end-of-line comments
+  = mydumper aborts at startup: "option parsing failed: Cannot parse integer value “4 # four threads” for --threads, try --help".
+  fix (unsafe): Move the comment to its own line above
+3:19-3:28 warning MDL303[inline-comment] `# nightly` is part of the value of `outputdir`: GLib has no end-of-line comments
+  = The value is `/backup\t# nightly`, not `/backup`.
+  fix (unsafe): Move the comment to its own line above
+5:22-5:37 warning MDL303[inline-comment] `# not in quotes` is part of the value of `where`: GLib has no end-of-line comments
+  = The comment runs to the end of the SQL statement mydumper builds, cutting what follows it.
+  fix (unsafe): Move the comment to its own line above

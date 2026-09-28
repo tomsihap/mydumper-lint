@@ -6,7 +6,7 @@ users.email in plaintext, while the run connects through [client] and exits 0.
 tool: mydumper
 versions: >= v0.19.3-1
 args: --defaults-file /work/defaults.cnf --database app
-lint: MDL104, MDL308, MDL405
+lint: MDL104, MDL405
 expect config-loaded: false
 expect exit: 0
 expect connected: true

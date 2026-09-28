@@ -1,0 +1,17 @@
+-- input.cnf --
+[mydumper]
+threads = 4
+outputdir	=/backup
+logfile= /tmp/x
+-- fixed.cnf --
+[mydumper]
+threads=4
+outputdir=/backup
+logfile=/tmp/x
+-- diagnostics --
+2:8-2:11 info MDL307[spaces-around-equals] spaces around `=`
+  fix (safe): Remove the spaces
+3:10-3:12 info MDL307[spaces-around-equals] spaces around `=`
+  fix (safe): Remove the spaces
+4:8-4:10 info MDL307[spaces-around-equals] spaces around `=`
+  fix (safe): Remove the spaces

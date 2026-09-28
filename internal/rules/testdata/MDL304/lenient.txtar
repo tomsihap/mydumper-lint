@@ -1,0 +1,22 @@
+# v1.0.5-1 ignores unknown options: the fix is safe.
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[mydumper]
+  ; nightly dump
+threads=4
+[other]
+; note
+-- fixed.cnf --
+[mydumper]
+  # nightly dump
+threads=4
+[other]
+# note
+-- diagnostics --
+2:3-2:4 error MDL304[semicolon-comment] `;` does not start a comment for GLib: this line is a key
+  = mydumper passes it as an unknown option, which this version ignores.
+  fix (safe): Replace `;` with `#`
+5:1-5:2 error MDL304[semicolon-comment] `;` does not start a comment for GLib: this line is a key
+  = The line is a key of a group nobody reads: harmless, but not a comment.
+  fix (safe): Replace `;` with `#`

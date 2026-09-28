@@ -147,7 +147,7 @@ func TestFixAndDiff(t *testing.T) {
 	root := workspace(t, map[string]string{"bad.cnf": broken})
 	path := filepath.Join(root, "bad.cnf")
 	r := run(t, "", "check", "--diff", path)
-	if r.code != ExitFindings || !strings.Contains(r.stdout, "-  \n+\n") {
+	if r.code != ExitFindings || !strings.Contains(r.stdout, "-  \n-routines\n+\n+routines=1\n") {
 		t.Errorf("diff: %+v", r)
 	}
 	if b, _ := os.ReadFile(path); string(b) != broken {
@@ -157,12 +157,12 @@ func TestFixAndDiff(t *testing.T) {
 	if r.code != ExitOK {
 		t.Errorf("fix: %+v", r)
 	}
-	if b, _ := os.ReadFile(path); string(b) != "[mydumper]\nthreads=4\n\nroutines\n" {
+	if b, _ := os.ReadFile(path); string(b) != "[mydumper]\nthreads=4\n\nroutines=1\n" {
 		t.Errorf("fixed content: %q", b)
 	}
 	// stdin: the fixed file goes to stdout, diagnostics to stderr.
 	r = run(t, broken, "check", "--fix", "--stdin-filename", "conf/app.cnf", "-")
-	if r.stdout != "[mydumper]\nthreads=4\n\nroutines\n" || r.code != ExitOK {
+	if r.stdout != "[mydumper]\nthreads=4\n\nroutines=1\n" || r.code != ExitOK {
 		t.Errorf("stdin fix: %+v", r)
 	}
 	r = run(t, broken, "check", "-")
@@ -187,7 +187,7 @@ func TestSelection(t *testing.T) {
 
 func TestConfigurationDiscoveryAndOverrides(t *testing.T) {
 	root := workspace(t, map[string]string{
-		".mydumper-lint.yaml": "rules:\n  ignore: [MDL102]\nexclude: [\"skipped/**\"]\noverrides:\n  - files: [\"strict/*.cnf\"]\n    rules:\n      ignore: []\n",
+		".mydumper-lint.yaml": "rules:\n  ignore: [MDL102, MDL308]\nexclude: [\"skipped/**\"]\noverrides:\n  - files: [\"strict/*.cnf\"]\n    rules:\n      ignore: []\n",
 		"a/bad.cnf":           broken,
 		"strict/bad.cnf":      broken,
 		"skipped/bad.cnf":     broken,

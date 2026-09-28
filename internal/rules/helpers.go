@@ -210,3 +210,18 @@ func firstSignificant(b []byte) int {
 var bom = []byte{0xef, 0xbb, 0xbf}
 
 func hasBOM(b []byte) bool { return bytes.HasPrefix(b, bom) }
+
+// removeLine is an edit that deletes line n. Right after a line whose '['
+// leaks the pre-processor's state (P1), deleting it could put an empty line
+// right after the leak: the line is reduced to "#" instead.
+func removeLine(p *Pass, n int) diag.Edit {
+	l := p.File.Line(n)
+	if p.Pre.Lines[n-1].StartDirty {
+		return diag.Edit{Start: l.Start, End: l.End, New: "#"}
+	}
+	end := l.End
+	if l.HasNewline {
+		end++
+	}
+	return diag.Edit{Start: l.Start, End: end}
+}

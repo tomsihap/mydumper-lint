@@ -1,0 +1,8 @@
+# A # without a space before it, or inside SQL quotes, is kept.
+-- input.cnf --
+[mydumper]
+regex=^db#1
+[`db`.`t`]
+where=name = 'a # b'
+-- diagnostics --
+(none)

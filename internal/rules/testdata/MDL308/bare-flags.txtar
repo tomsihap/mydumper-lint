@@ -1,0 +1,11 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf.esc --
+[mydumper]\nroutines\n  triggers\r\n[client]\ncompress\n
+-- fixed.cnf.esc --
+[mydumper]\nroutines=1\n  triggers=1\r\n[client]\ncompress\n
+-- diagnostics --
+2:1-2:9 info MDL308[flag-without-value] `routines` relies on mydumper's pre-processor to get its value: write `routines=1`
+  fix (safe): Write the value explicitly (`routines=1`)
+3:3-3:11 info MDL308[flag-without-value] `triggers` relies on mydumper's pre-processor to get its value: write `triggers=1`
+  fix (safe): Write the value explicitly (`triggers=1`)

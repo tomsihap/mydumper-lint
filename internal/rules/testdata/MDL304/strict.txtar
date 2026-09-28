@@ -1,0 +1,15 @@
+# v0.19.3-3: an unknown option is fatal, so the fix changes behavior (unsafe).
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+; nightly dump
+threads=4
+-- fixed-unsafe.cnf --
+[mydumper]
+# nightly dump
+threads=4
+-- diagnostics --
+2:1-2:2 error MDL304[semicolon-comment] `;` does not start a comment for GLib: this line is a key
+  = mydumper passes it as an unknown option and aborts at startup: "option parsing failed: Unknown option".
+  fix (unsafe): Replace `;` with `#`

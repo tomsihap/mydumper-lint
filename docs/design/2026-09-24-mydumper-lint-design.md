@@ -638,7 +638,7 @@ All `error`, except MDL112.
 | MDL301 | `duplicate-key` | warning; error if the values differ | the same key twice in a group: the last value wins and is applied twice (G11); the first is lost | unsafe: delete the earlier occurrences | K13 |
 | MDL302 | `trailing-whitespace-in-value` | error | value ending with a space or tab: integers abort (G5), paths and regexes silently differ (K9) | unsafe (can be promoted with `fix.extend-safe`): trim | K9, G5 |
 | MDL303 | `inline-comment` | warning | ` #` or `\t#` in a value (K10); for SQL-valued keys, only outside quotes (sqlscan) | unsafe: move the comment to its own line above, unless it contains `[` | K10 |
-| MDL304 | `semicolon-comment` | error | line starting with `;`: a stray key, fatal wherever unknown options are fatal | safe: `;` → `#` | K3, F6 |
+| MDL304 | `semicolon-comment` | error | line starting with `;`: a stray key, fatal wherever unknown options are fatal | **AMENDED.** `;` → `#`: safe when the key has no effect (ignored unknown option, unread group), unsafe otherwise, since removing an effect changes what mydumper does | K3, F6 |
 | MDL305 | `localized-key` | warning | **AMENDED.** `name[xx]`: invisible, or passed as the unknown option `--name[xx]`, depending on the runtime locale (K14); `[C]` is always passed | — | K14 |
 | MDL306 | `leading-whitespace` | info | indentation before a key, comment or group: tolerated by GLib, but an indented group header is a leak origin | safe: remove | K2, P1 |
 | MDL307 | `spaces-around-equals` | info | `key = value` | safe: `key=value` | K8, K9 |

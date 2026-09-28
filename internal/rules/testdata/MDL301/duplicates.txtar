@@ -1,0 +1,23 @@
+# K13: the last value wins; the first is lost.
+-- input.cnf --
+[mydumper]
+threads=4
+outputdir=/backup
+threads=8
+
+[mydumper]
+outputdir=/backup
+-- fixed-unsafe.cnf --
+[mydumper]
+threads=8
+
+[mydumper]
+outputdir=/backup
+-- diagnostics --
+2:1-2:8 error MDL301[duplicate-key] `threads` is set again on line 4 in [mydumper]: only the last value counts
+  = The value `4` on this line is lost: `8` is used instead.
+  note 4:1-4:8: the value that counts
+  fix (unsafe): Delete this earlier occurrence
+3:1-3:10 warning MDL301[duplicate-key] `outputdir` is set again on line 7 in [mydumper]: only the last value counts
+  note 7:1-7:10: the value that counts
+  fix (unsafe): Delete this earlier occurrence

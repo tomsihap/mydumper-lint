@@ -1,0 +1,9 @@
+# Same key in different groups, and localized variants, are distinct.
+-- input.cnf --
+[mydumper]
+threads=4
+threads[fr]=2
+[myloader]
+threads=4
+-- diagnostics --
+(none)

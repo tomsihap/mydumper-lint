@@ -1,0 +1,9 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+outputdir=/backup
+database="app
+regex=^"x"
+-- diagnostics --
+(none)

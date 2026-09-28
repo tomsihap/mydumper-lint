@@ -1,0 +1,5 @@
+-- input.cnf.esc --
+[mydumper]\n# caf\xe9\ndatabase=caf\xe9\nregex=ok\n
+-- diagnostics --
+2:6-2:7 warning MDL311[invalid-utf8] invalid UTF-8: the file is probably not saved as UTF-8
+3:13-3:14 warning MDL311[invalid-utf8] invalid UTF-8: the file is probably not saved as UTF-8

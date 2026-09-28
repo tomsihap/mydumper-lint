@@ -197,7 +197,7 @@ func (p *Pass) suppress(enabled []Enabled) {
 			fix.Edits = []diag.Edit{{Start: d.list.Start, End: d.list.End, New: strings.Join(used, ",")}}
 		} else {
 			fix.Description = "Remove the suppression comment"
-			fix.Edits = []diag.Edit{p.removeComment(d.line)}
+			fix.Edits = []diag.Edit{removeLine(p, d.line)}
 		}
 		emit(mdl001, diag.Diagnostic{
 			Span:    d.list,
@@ -222,19 +222,4 @@ func (p *Pass) suppressed(dirs []*directive, d diag.Diagnostic) bool {
 		}
 	}
 	return hit
-}
-
-// removeComment deletes a comment line. After a line whose '[' leaks the
-// pre-processor's state (P1), deleting it could put an empty line right after
-// the leak: the comment is reduced to "#" instead.
-func (p *Pass) removeComment(n int) diag.Edit {
-	l := p.File.Line(n)
-	if p.Pre.Lines[n-1].StartDirty {
-		return diag.Edit{Start: l.Start, End: l.End, New: "#"}
-	}
-	end := l.End
-	if l.HasNewline {
-		end++
-	}
-	return diag.Edit{Start: l.Start, End: end}
 }
