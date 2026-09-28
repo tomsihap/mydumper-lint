@@ -1,0 +1,33 @@
+# F11: fatal syntax errors and undefined behavior.
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[`app`.`users`]
+`a`=apply 'x' 'y' 'z'
+`b`=apply 'x
+`c`=regex '^(a' 'b'
+`d`=regex 'a'
+`e`=random_format <nope 3>
+`f`=random_format <string 5
+`g`=apply
+`h`=random_string REPLACE_NULL 0
+`i`=random_int MAX_LENGTH
+-- diagnostics --
+2:11-2:22 error MDL504[masquerade-syntax] apply takes 1 or 2 quoted arguments, not 3 ("Parsing apply function failed")
+  = mydumper aborts at startup, while it loads its table sections.
+3:11-3:13 error MDL504[masquerade-syntax] a quote is not closed ("Parsing format failed missing quote (')")
+  = mydumper aborts at startup, while it loads its table sections.
+4:12-4:15 error MDL504[masquerade-syntax] the pattern `^(a` does not compile (error parsing regexp: missing closing ) in `^(a`; checked with a PCRE-like engine)
+  = mydumper aborts at startup, while it loads its table sections.
+5:11-5:14 error MDL504[masquerade-syntax] regex takes pairs of quoted arguments (pattern, replacement), not 1 ("Parsing regex function failed")
+  = mydumper aborts at startup, while it loads its table sections.
+6:19-6:27 error MDL504[masquerade-syntax] <nope 3> is not a tag mydumper knows: <file F>, <string N>, <number N> or <regex '…'> ("Parsing format failed key inside <tag> not valid")
+  = mydumper aborts at startup, while it loads its table sections.
+7:19-7:28 error MDL504[masquerade-syntax] a <tag> is not closed ("Parsing format failed missing close character (>)")
+  = mydumper aborts at startup, while it loads its table sections.
+8:5-8:10 error MDL504[masquerade-syntax] `apply` has no arguments: mydumper reads them from byte 7 of the value, past its end
+  = mydumper reads or writes out of bounds: the masking is unpredictable, and mydumper may crash.
+9:19-9:33 error MDL504[masquerade-syntax] REPLACE_NULL needs a positive length right after one space ("REPLACE_NULL receives an integer value as paramter")
+  = mydumper aborts at startup, while it loads its table sections.
+10:16-10:26 error MDL504[masquerade-syntax] MAX_LENGTH needs an argument: mydumper reads it past the end of the value
+  = mydumper reads or writes out of bounds: the masking is unpredictable, and mydumper may crash.

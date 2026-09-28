@@ -1,0 +1,11 @@
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[`app`.`users`]
+`email`=constantly x
+`age`=random_intx
+-- diagnostics --
+2:9-2:19 warning MDL503[masquerade-function-prefix] `constantly` selects the masking function `constant`: mydumper only compares the start of the value
+  = The masking uses `constant`; the rest of the word is read as its arguments.
+3:7-3:18 warning MDL503[masquerade-function-prefix] `random_intx` selects the masking function `random_int`: mydumper only compares the start of the value
+  = The masking uses `random_int`; the rest of the word is read as its arguments.

@@ -1,0 +1,6 @@
+-- input.cnf --
+[`app`.`users`]
+where=(id > 10) AND name = 'a)b' -- (
+columns_on_select=id, concat(name, ','), email
+-- diagnostics --
+(none)

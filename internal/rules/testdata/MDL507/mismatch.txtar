@@ -1,0 +1,8 @@
+-- input.cnf --
+[`app`.`users`]
+columns_on_select=id, concat(first, ',', last), email
+columns_on_insert=id, full_name
+-- diagnostics --
+3:19-3:32 warning MDL507[columns-count-mismatch] columns_on_insert lists 2 columns, columns_on_select 3
+  = Every INSERT of this table's dump fails at restore time.
+  note 2:19-2:54: columns_on_select

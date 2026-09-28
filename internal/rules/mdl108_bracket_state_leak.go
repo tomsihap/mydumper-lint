@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/tomsihap/mydumper-lint/internal/diag"
@@ -70,6 +71,18 @@ func init() {
 						if end > n {
 							d.Fix.Description = "Remove the empty lines"
 						}
+						// Once the run is gone, the lines after it inherit the leak:
+						// lines containing '[' carry it on, an empty line becomes
+						// the next victim, any other line resets the state. When
+						// deleting would only move the problem, a "#" line absorbs
+						// the leak and resets the pre-processor instead.
+						if leakReachesEmptyLine(p, end+1) {
+							d.Fix = &diag.Fix{
+								Applicability: diag.Safe,
+								Description:   "Turn the empty line into a `#` line, which stops the leak",
+								Edits:         []diag.Edit{{Start: l.Start, End: l.End, New: "#"}},
+							}
+						}
 					} else {
 						text := content(p, n)
 						d.Message = fmt.Sprintf("%s does not get its implicit `= 1` because line %d contains `=` "+
@@ -86,4 +99,20 @@ func init() {
 			}
 		},
 	})
+}
+
+// leakReachesEmptyLine reports whether a leaked pre-processor state entering
+// line n would reach an empty line: it crosses lines that contain '[' and
+// stops at the first other line.
+func leakReachesEmptyLine(p *Pass, n int) bool {
+	for ; n <= len(p.File.Lines); n++ {
+		c := p.File.Content(n)
+		switch {
+		case len(c) == 0 && p.File.Line(n).HasNewline:
+			return true
+		case bytes.IndexByte(c, '[') < 0:
+			return false
+		}
+	}
+	return false
 }

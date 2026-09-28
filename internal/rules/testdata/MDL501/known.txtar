@@ -1,0 +1,10 @@
+# Added in later versions: object_to_import, skip-*-checksums.
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[`app`.`users`]
+where=id > 10
+object_to_import=1
+columns_on_select_replace_`email`=x
+-- diagnostics --
+(none)

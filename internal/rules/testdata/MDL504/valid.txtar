@@ -1,0 +1,12 @@
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[`app`.`users`]
+`a`=apply 'upper(%s)'
+`b`=regex '@.*' '@example.org'
+`c`=random_format 'user-'<number 4>'@x.org'
+`d`=random_string REPLACE_NULL 8 UNIQUE WITH_MEM
+`e`=constant 'x'
+`f`=null
+-- diagnostics --
+(none)

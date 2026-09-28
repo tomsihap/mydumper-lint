@@ -1,0 +1,8 @@
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[`app`.`users`]
+`email`=random_string
+`name`=constant 'x'
+-- diagnostics --
+(none)

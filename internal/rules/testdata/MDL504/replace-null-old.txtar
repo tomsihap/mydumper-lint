@@ -1,0 +1,8 @@
+# REPLACE_NULL 0 only aborts from v0.21.4-1.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[`app`.`users`]
+`h`=random_string REPLACE_NULL 0
+-- diagnostics --
+(none)

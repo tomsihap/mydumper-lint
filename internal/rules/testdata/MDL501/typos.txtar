@@ -1,0 +1,21 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[`app`.`users`]
+wehre=id > 10
+rows=1000
+num_thread=4
+`email`=random_string
+-- fixed-unsafe.cnf --
+[`app`.`users`]
+where=id > 10
+rows=1000
+num_threads=4
+`email`=random_string
+-- diagnostics --
+2:1-2:6 error MDL501[unknown-table-key] `wehre` is not a table key mydumper knows in v0.19.3-3: did you mean `where`?
+  = mydumper ignores it: [`app`.`users`] behaves as if the line were absent.
+  fix (unsafe): Rename the key to `where`
+4:1-4:11 error MDL501[unknown-table-key] `num_thread` is not a table key mydumper knows in v0.19.3-3: did you mean `num_threads`?
+  = mydumper ignores it: [`app`.`users`] behaves as if the line were absent.
+  fix (unsafe): Rename the key to `num_threads`

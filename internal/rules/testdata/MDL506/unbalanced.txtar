@@ -1,0 +1,13 @@
+-- input.cnf --
+[`app`.`users`]
+where=(id > 10 AND name = 'x'
+columns_on_select=id, concat(name, 'x'), email /* note
+[mydumper]
+where=a = "b
+-- diagnostics --
+2:7-2:8 error MDL506[sql-unbalanced] the SQL of `where` has a `(` without `)`
+  = The statement mydumper builds fails when the table is reached.
+3:48-3:49 error MDL506[sql-unbalanced] the SQL of `columns_on_select` has an unclosed /* comment
+  = The statement mydumper builds fails when the table is reached.
+5:11-5:12 error MDL506[sql-unbalanced] the SQL of `where` has an unclosed " quote
+  = The statement mydumper builds fails when the table is reached.

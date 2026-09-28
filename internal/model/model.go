@@ -262,7 +262,7 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 			}
 			k := [2]string{g.Name, e.Key}
 			entry := Entry{Key: e.Key, Value: lastValue[k], Line: e.Line}
-			entry.Reason = reason(m, m.Groups[i], e, languages, lastLine[k])
+			entry.Reason = reason(m, m.Groups[i], e, languages, lastLine[k], opt.Target)
 			entry.Effective = entry.Reason == ReasonEffective
 			m.Groups[i].Entries = append(m.Groups[i].Entries, entry)
 		}
@@ -277,7 +277,7 @@ func visible(e keyfile.Entry, languages []string) bool {
 	return e.Locale == "" || keyfile.IsInterestingLocale(e.Locale, languages)
 }
 
-func reason(m *Model, g Group, e keyfile.Entry, languages []string, lastLine int) Reason {
+func reason(m *Model, g Group, e keyfile.Entry, languages []string, lastLine int, t Target) Reason {
 	switch {
 	case m.Health == Rejected:
 		return ReasonFileRejected
@@ -289,8 +289,44 @@ func reason(m *Model, g Group, e keyfile.Entry, languages []string, lastLine int
 		return ReasonShadowed
 	case (g.Kind == GroupToolOptions || g.Kind == GroupProductOptions) && connectionKeys[e.Key]:
 		return ReasonConnectionKey
+	case g.Kind == GroupTable && t != nil:
+		return tableReason(e, t)
 	}
 	return ReasonEffective
+}
+
+// tableReason is the reason of a key of a table section (§3.5): a known
+// table key, a masked column whose value names a masking function, or
+// neither.
+func tableReason(e keyfile.Entry, t Target) Reason {
+	if IsMaskedColumn(e.Key) {
+		if MasqueradeFunction(e.Value, t.MasqueradeFunctions()) == "" {
+			return ReasonMasqueradeIdentity
+		}
+		return ReasonEffective
+	}
+	if t.TableKey(e.Key) {
+		return ReasonEffective
+	}
+	return ReasonUnknownTableKey
+}
+
+// IsMaskedColumn reports whether a key of a table section declares a masked
+// column (F9): it starts with a backtick and contains a second one.
+func IsMaskedColumn(key string) bool {
+	return len(key) > 1 && key[0] == '`' && strings.IndexByte(key[1:], '`') >= 0
+}
+
+// MasqueradeFunction returns the masking function mydumper selects for a
+// masked column's value: the known name the value starts with (F10), or ""
+// when none matches and mydumper falls back to identity.
+func MasqueradeFunction(value string, functions []string) string {
+	for _, f := range functions {
+		if strings.HasPrefix(value, f) {
+			return f
+		}
+	}
+	return ""
 }
 
 // Projection is a canonical text of everything mydumper applies from the

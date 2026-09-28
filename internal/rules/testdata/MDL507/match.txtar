@@ -1,0 +1,6 @@
+-- input.cnf --
+[`app`.`users`]
+columns_on_select=id, concat(first, ' ', last)
+columns_on_insert=id, full_name
+-- diagnostics --
+(none)

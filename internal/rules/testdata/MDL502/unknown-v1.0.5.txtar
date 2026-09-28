@@ -1,0 +1,15 @@
+# From v0.21.3-1 the column is dumped empty; null exists from v0.21.4-1.
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[`app`.`users`]
+`email`=random_strin
+`phone`=null
+-- fixed-unsafe.cnf --
+[`app`.`users`]
+`email`=random_string
+`phone`=null
+-- diagnostics --
+2:9-2:21 error MDL502[unknown-masquerade-function] `random_strin` is not a masking function in v1.0.5-1: did you mean `random_string`?
+  = mydumper dumps the column empty: its data is silently lost.
+  fix (unsafe): Use `random_string`

@@ -44,8 +44,8 @@ func (f fakeTarget) OptionNames(string) []string {
 	sort.Strings(names)
 	return names
 }
-func (f fakeTarget) TableKey(string) bool          { return false }
-func (f fakeTarget) MasqueradeFunctions() []string { return nil }
+func (f fakeTarget) TableKey(k string) bool        { return k == "where" }
+func (f fakeTarget) MasqueradeFunctions() []string { return []string{"constant", "random_string"} }
 func (f fakeTarget) Products() []string            { return nil }
 
 func buildWith(s string, t Target, cs goption.Charset) *Model {
@@ -126,6 +126,11 @@ func TestGOptionSemantics(t *testing.T) {
 		{
 			name: "non-option groups are not parsed", in: "[client]\nbogus=1\n[`db`.`t`]\nwhere=a\n", health: OK,
 			reasons: "client.bogus:effective `db`.`t`.where:effective",
+		},
+		{
+			name: "table keys and masking", in: "[`db`.`t`]\nwhere=a\nwehre=b\n`c`=constant x\n`d`=radnom_string\n`e`=\n", health: OK,
+			reasons: "`db`.`t`.where:effective `db`.`t`.wehre:unknown-table-key `db`.`t`.`c`:effective " +
+				"`db`.`t`.`d`:masquerade-fallback-identity `db`.`t`.`e`:masquerade-fallback-identity",
 		},
 	}
 	for _, tt := range tests {

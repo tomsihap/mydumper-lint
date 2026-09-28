@@ -1,0 +1,5 @@
+-- input.cnf --
+[`app`.`users`]
+`email`=random_string
+-- diagnostics --
+(none)
