@@ -1,0 +1,9 @@
+-- options --
+mydumper-version: v1.0.5-1
+select: MDL508
+base-dir: testdata/files
+-- input.cnf --
+[`app`.`users`]
+`first`=random_format <file names.txt>
+-- diagnostics --
+(none)

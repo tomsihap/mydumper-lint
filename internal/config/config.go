@@ -249,3 +249,14 @@ func (c *Config) validate() error {
 	}
 	return nil
 }
+
+// Rules converts the conventions for the rules (MDL901-MDL905).
+func (c *Conventions) Rules() *rules.Conventions {
+	if c == nil {
+		return nil
+	}
+	return &rules.Conventions{
+		FilenamePattern: c.FilenamePattern, Values: c.Values, TableSchema: c.TableSchema,
+		Required: c.Required, Forbidden: c.Forbidden,
+	}
+}

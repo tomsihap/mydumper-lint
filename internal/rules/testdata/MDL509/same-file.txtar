@@ -1,0 +1,14 @@
+-- options --
+select: MDL509
+-- input.cnf --
+[mydumper]
+regex=^app\.(users|orders)$
+[`app`.`users`]
+where=1
+[`app`.`logs`]
+where=1
+[`app`.``]
+rows=10
+-- diagnostics --
+5:2-5:14 info MDL509[table-group-not-dumped] app.logs does not match the regex ^app\.(users|orders)$: mydumper never dumps it
+  = The settings of this section never apply.

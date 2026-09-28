@@ -1,0 +1,7 @@
+-- options --
+select: MDL509
+-- input.cnf --
+[`app`.`logs`]
+where=1
+-- diagnostics --
+(none)

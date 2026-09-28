@@ -313,6 +313,27 @@ func TestFixRefusesHarmfulUnsafeFixes(t *testing.T) {
 	}
 }
 
+func TestLoadSetsAndConventions(t *testing.T) {
+	root := workspace(t, map[string]string{
+		".mydumper-lint.yaml": "mydumper-version: 0.19.3-3\n" +
+			"load-sets:\n  - defaults-file: defaults.cnf\n    extra-files: [\"*-extra.cnf\"]\n" +
+			"conventions:\n  filename-pattern: '^(?P<schema>[a-z]+)-extra\\.cnf$|^defaults\\.cnf$'\n" +
+			"  required:\n    mydumper: [outputdir]\n",
+		"defaults.cnf":    "[client]\nhost=db\n[mydumper]\noutputdir=/b\n",
+		"sales-extra.cnf": "[mydumper]\nthreads=4\n",
+	})
+	r := run(t, "", "check", "--format", "concise", root)
+	if !strings.Contains(r.stdout, "sales-extra.cnf:1:2: warning MDL603") || !strings.Contains(r.stdout, "sales-extra.cnf:1:2: error MDL904") ||
+		strings.Contains(r.stdout, "defaults.cnf:1") {
+		t.Errorf("load sets and conventions: %+v", r)
+	}
+	// Checking the extra file alone still reads the defaults file.
+	r = run(t, "", "check", "--format", "concise", filepath.Join(root, "sales-extra.cnf"))
+	if !strings.Contains(r.stdout, "MDL603") {
+		t.Errorf("extra file alone: %+v", r)
+	}
+}
+
 func TestInspect(t *testing.T) {
 	root := workspace(t, map[string]string{"bad.cnf": broken, "loc.cnf": "[mydumper]\nthreads[fr]=4\nhost=db\n"})
 	r := run(t, "", "inspect", "--format", "json", filepath.Join(root, "bad.cnf"))

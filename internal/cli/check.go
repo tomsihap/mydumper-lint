@@ -92,6 +92,7 @@ func runCheck(args []string, e *env) int {
 	if err := c.validate(); err != nil {
 		return usageError(e, "check", err)
 	}
+	c.targets.baseDir = c.baseDir
 	if len(paths) == 0 {
 		paths = []string{"."}
 	}
@@ -113,6 +114,7 @@ func runCheck(args []string, e *env) int {
 		return ExitError
 	}
 	outcomes := c.run(files)
+	c.loadSets(outcomes)
 	return c.finish(outcomes)
 }
 
@@ -265,7 +267,8 @@ type outcome struct {
 	src      []byte
 	settings config.Settings
 	result   *lint.Result // of the fixed content when fixing
-	output   []byte       // fixed content (--fix, --diff)
+	linter   *lint.Linter
+	output   []byte // fixed content (--fix, --diff)
 	fixed    int
 	dropped  []diag.Diagnostic // fixes refused because they would make mydumper fail
 	version  string
@@ -320,7 +323,7 @@ func (c *checkCmd) process(path string) outcome {
 		o.err = err
 		return o
 	}
-	o.version, o.warning = version, warning
+	o.version, o.warning, o.linter = version, warning, l
 	if !c.fix && !c.diff {
 		o.result = l.Check(o.path, o.src)
 		return o
@@ -540,5 +543,51 @@ func printStatistics(w io.Writer, results []report.FileResult) {
 	}
 	if len(stats) > 0 {
 		fmt.Fprintln(w, "[*] fixable with --fix")
+	}
+}
+
+// loadSets runs the cross-file rules (design §9.3) on every checked file that
+// a load set of its configuration names as an extra file, with that set's
+// defaults file: taken from this run when it was checked too, else read.
+func (c *checkCmd) loadSets(outcomes []outcome) {
+	byPath := map[string]*outcome{}
+	for i := range outcomes {
+		if abs, err := filepath.Abs(outcomes[i].path); err == nil && !outcomes[i].isStdin {
+			byPath[abs] = &outcomes[i]
+		}
+	}
+	for i := range outcomes {
+		x := &outcomes[i]
+		cfg := x.settings.Config
+		if x.err != nil || x.isStdin || cfg == nil || len(cfg.LoadSets) == 0 || x.linter == nil {
+			continue
+		}
+		rel := relTo(x.settings, x.path)
+		for _, ls := range cfg.LoadSets {
+			if !glob.MatchAny(ls.ExtraFiles, rel) {
+				continue
+			}
+			path := filepath.Join(cfg.Dir, filepath.FromSlash(ls.DefaultsFile))
+			abs, err := filepath.Abs(path)
+			if err != nil {
+				continue
+			}
+			var defaults *lint.Result
+			if d := byPath[abs]; d != nil && d.err == nil {
+				defaults = d.result
+			} else if src, err := os.ReadFile(abs); err == nil {
+				defaults = x.linter.Check(path, src)
+			} else {
+				x.warning = fmt.Sprintf("load set: cannot read the defaults file %s: %v", path, err)
+				continue
+			}
+			onDefaults, onExtra := x.linter.CheckSet(defaults, x.result)
+			x.result.Diagnostics = append(x.result.Diagnostics, onExtra...)
+			diag.Sort(x.result.Diagnostics)
+			if d := byPath[abs]; d != nil && d.result != nil && len(onDefaults) > 0 {
+				d.result.Diagnostics = append(d.result.Diagnostics, onDefaults...)
+				diag.Sort(d.result.Diagnostics)
+			}
+		}
 	}
 }

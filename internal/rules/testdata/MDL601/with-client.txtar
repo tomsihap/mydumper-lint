@@ -1,0 +1,30 @@
+# F13, C1: with [client], [mydumper]'s connection keys are read by nobody.
+-- input.cnf --
+[client]
+host=db
+
+[mydumper]
+user=backup
+host=other
+threads=4
+[mydumper_mysql]
+password=x
+-- fixed-unsafe.cnf --
+[client]
+host=db
+user=backup
+password=x
+
+[mydumper]
+host=other
+threads=4
+[mydumper_mysql]
+-- diagnostics --
+5:1-5:5 error MDL601[connection-keys-ignored] `user` in [mydumper] is read by nobody: mydumper leaves connection keys to the MySQL client library, and the file has a [client] section, so the MySQL client library reads [client], not [mydumper]
+  = The connection does not use this user: it falls back to [client], the command line or the defaults.
+  fix (unsafe): Move it to [client]
+6:1-6:5 error MDL601[connection-keys-ignored] `host` in [mydumper] is read by nobody: mydumper leaves connection keys to the MySQL client library, and the file has a [client] section, so the MySQL client library reads [client], not [mydumper]
+  = The connection does not use this host: it falls back to [client], the command line or the defaults.
+9:1-9:9 error MDL601[connection-keys-ignored] `password` in [mydumper_mysql] is read by nobody: mydumper leaves connection keys to the MySQL client library, and the MySQL client library never reads [mydumper_mysql]
+  = The connection does not use this password: it falls back to [client], the command line or the defaults.
+  fix (unsafe): Move it to [client]

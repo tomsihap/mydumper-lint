@@ -1,0 +1,12 @@
+-- options --
+select: MDL905
+path: sales-extra-file.cnf
+conventions: {"filename-pattern": "^(?P<schema>[a-z_]+)-extra-file\\.cnf$", "values": {"mydumper.outputdir": "/{schema}$"}, "table-schema": "{schema}", "required": {"mydumper": ["outputdir", "logfile"]}, "forbidden": {"*": ["password"], "groups": ["client"]}}
+-- input.cnf --
+[client]
+user=u
+[mydumper]
+password=x
+-- diagnostics --
+1:2-1:8 error MDL905[forbidden-key] the [client] group is forbidden by the conventions
+4:1-4:9 error MDL905[forbidden-key] password is forbidden in [mydumper] by the conventions

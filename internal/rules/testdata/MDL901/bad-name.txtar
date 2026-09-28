@@ -1,0 +1,9 @@
+-- options --
+select: MDL901
+path: Sales.cnf
+conventions: {"filename-pattern": "^(?P<schema>[a-z_]+)-extra-file\\.cnf$", "values": {"mydumper.outputdir": "/{schema}$"}, "table-schema": "{schema}", "required": {"mydumper": ["outputdir", "logfile"]}, "forbidden": {"*": ["password"], "groups": ["client"]}}
+-- input.cnf --
+[mydumper]
+outputdir=/backups/sales
+-- diagnostics --
+1:1-1:1 error MDL901[filename-pattern] the file name "Sales.cnf" does not match ^(?P<schema>[a-z_]+)-extra-file\.cnf$

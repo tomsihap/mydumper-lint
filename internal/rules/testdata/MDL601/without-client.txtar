@@ -1,0 +1,7 @@
+# Without [client], the client library reads [mydumper] (F13).
+-- input.cnf --
+[mydumper]
+host=db
+user=backup
+-- diagnostics --
+(none)

@@ -1,0 +1,11 @@
+# Without [mydumper] or [client], the extra file does not take over.
+-- options --
+load-set: yes
+-- defaults.cnf --
+[client]
+host=db
+-- input.cnf --
+[`app`.`users`]
+where=1
+-- diagnostics --
+(none)

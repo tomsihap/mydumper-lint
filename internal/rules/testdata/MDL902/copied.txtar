@@ -1,0 +1,9 @@
+-- options --
+select: MDL902
+path: sales-extra-file.cnf
+conventions: {"filename-pattern": "^(?P<schema>[a-z_]+)-extra-file\\.cnf$", "values": {"mydumper.outputdir": "/{schema}$"}, "table-schema": "{schema}", "required": {"mydumper": ["outputdir", "logfile"]}, "forbidden": {"*": ["password"], "groups": ["client"]}}
+-- input.cnf --
+[mydumper]
+outputdir=/backups/hr
+-- diagnostics --
+2:11-2:22 error MDL902[value-template] mydumper.outputdir is `/backups/hr`, which does not match /sales$

@@ -1,0 +1,11 @@
+-- options --
+mydumper-version: v1.0.5-1
+select: MDL508
+base-dir: testdata/files
+-- input.cnf --
+[`app`.`users`]
+`first`=random_format <file names.txt>
+`last`=random_format <file surnames.txt>
+-- diagnostics --
+3:22-3:41 warning MDL508[masquerade-file-missing] the file `surnames.txt` does not exist (resolved as testdata/files/surnames.txt)
+  = mydumper aborts at startup: "File not open".

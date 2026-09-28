@@ -24,6 +24,10 @@ type Config struct {
 	NoPreprocessor bool
 	// Charset is the character set of mydumper's locale (model.Options).
 	Charset goption.Charset
+	// BaseDir resolves relative file references (MDL508).
+	BaseDir string
+	// Conventions enable MDL901-MDL905; nil when off.
+	Conventions *rules.Conventions
 }
 
 // Linter checks and fixes files with one configuration. It is safe for
@@ -75,8 +79,25 @@ func (l *Linter) Check(path string, src []byte) *Result {
 	p := rules.NewPass(f, pre, kf, m)
 	p.Target, p.Version, p.Languages = l.cfg.Target, l.cfg.Version, l.cfg.Languages
 	p.Preprocessor = !l.cfg.NoPreprocessor
+	p.BaseDir, p.Conventions = l.cfg.BaseDir, l.cfg.Conventions
 	ds := p.Run(l.enabled)
 	return &Result{File: f, Pre: pre, KF: kf, Model: m, Diagnostics: ds}
+}
+
+// pass rebuilds the rules' view of a checked file.
+func (l *Linter) pass(r *Result) *rules.Pass {
+	p := rules.NewPass(r.File, r.Pre, r.KF, r.Model)
+	p.Target, p.Version, p.Languages = l.cfg.Target, l.cfg.Version, l.cfg.Languages
+	p.Preprocessor = !l.cfg.NoPreprocessor
+	p.BaseDir, p.Conventions = l.cfg.BaseDir, l.cfg.Conventions
+	return p
+}
+
+// CheckSet runs the cross-file rules on a load set (design §9.3): the
+// defaults file and an extra file of one mydumper invocation, both already
+// checked. It returns the additional diagnostics of each.
+func (l *Linter) CheckSet(defaults, extra *Result) (onDefaults, onExtra []diag.Diagnostic) {
+	return rules.RunSet(l.enabled, l.pass(defaults), l.pass(extra))
 }
 
 // Measure returns the projection of the recovered model of src and the

@@ -1,0 +1,9 @@
+-- options --
+select: MDL903
+path: sales-extra-file.cnf
+conventions: {"filename-pattern": "^(?P<schema>[a-z_]+)-extra-file\\.cnf$", "values": {"mydumper.outputdir": "/{schema}$"}, "table-schema": "{schema}", "required": {"mydumper": ["outputdir", "logfile"]}, "forbidden": {"*": ["password"], "groups": ["client"]}}
+-- input.cnf --
+[`hr`.`people`]
+where=1
+-- diagnostics --
+1:2-1:15 error MDL903[table-schema-template] the table section is in database "hr", not "sales"

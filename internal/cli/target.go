@@ -14,6 +14,7 @@ import (
 type targetCache struct {
 	mu      sync.Mutex
 	linters map[string]cachedLinter
+	baseDir string // --base-dir (MDL508)
 }
 
 type cachedLinter struct {
@@ -38,7 +39,7 @@ func (t *targetCache) linter(s config.Settings) (*lint.Linter, string, string, e
 	var c cachedLinter
 	tg, err := resolveTarget(s)
 	if err == nil {
-		cfg := lint.Config{Selection: s.Selection}
+		cfg := lint.Config{Selection: s.Selection, BaseDir: t.baseDir, Conventions: s.Conventions.Rules()}
 		tg.Configure(&cfg)
 		c.l, err = lint.New(cfg)
 		c.version, c.warning = tg.Version(), tg.Notice
@@ -55,8 +56,8 @@ func settingsKey(s config.Settings) string {
 	}
 	sort.Strings(sev)
 	ssl := s.Build.SSL != nil && *s.Build.SSL
-	return fmt.Sprintf("%s|%s|%v|%s|%s|%s|%s|%v",
+	return fmt.Sprintf("%s|%s|%v|%s|%s|%s|%s|%v|%p",
 		s.MydumperVersion, s.Build.Client, ssl,
 		strings.Join(s.Selection.Select, ","), strings.Join(s.Selection.ExtendSelect, ","),
-		strings.Join(s.Selection.Ignore, ","), strings.Join(sev, ","), s.Selection.Preview)
+		strings.Join(s.Selection.Ignore, ","), strings.Join(sev, ","), s.Selection.Preview, s.Conventions)
 }

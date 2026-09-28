@@ -2,6 +2,7 @@ package rules_test
 
 import (
 	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -26,7 +27,10 @@ var update = flag.Bool("update", false, "rewrite the expected sections of golden
 //
 //	input.cnf[.esc]        the file to lint (required)
 //	options                optional "key: value" lines: select, ignore (comma-separated),
-//	                       mydumper-version (default: none, GLib-level rules only)
+//	                       mydumper-version (default: none, GLib-level rules only),
+//	                       path (the file's name), base-dir, conventions (JSON),
+//	                       load-set (input.cnf is then the extra file of defaults.cnf)
+//	defaults.cnf[.esc]     the defaults file of a load set
 //	diagnostics            expected diagnostics (see formatDiagnostics)
 //	fixed.cnf[.esc]        expected output of --fix (absent: no change)
 //	fixed-unsafe.cnf[.esc] expected output of --fix --unsafe-fixes (absent: same as fixed)
@@ -64,6 +68,7 @@ func runGolden(t *testing.T, path string) {
 	ruleID := filepath.Base(filepath.Dir(path))
 	sel := rules.Selection{Select: []string{ruleID}}
 	cfg := lint.Config{}
+	name, loadSet := "input.cnf", false
 	if opts, ok, _ := a.Get("options"); ok {
 		for _, line := range strings.Split(string(opts), "\n") {
 			k, v, found := strings.Cut(line, ":")
@@ -76,6 +81,27 @@ func runGolden(t *testing.T, path string) {
 				sel.Select = list
 			case "ignore":
 				sel.Ignore = list
+			case "path":
+				name = strings.TrimSpace(v)
+			case "base-dir":
+				cfg.BaseDir = strings.TrimSpace(v)
+			case "load-set":
+				loadSet = true
+			case "conventions":
+				var c struct {
+					FilenamePattern string              `json:"filename-pattern"`
+					Values          map[string]string   `json:"values"`
+					TableSchema     string              `json:"table-schema"`
+					Required        map[string][]string `json:"required"`
+					Forbidden       map[string][]string `json:"forbidden"`
+				}
+				if err := json.Unmarshal([]byte(v), &c); err != nil {
+					t.Fatalf("conventions: %v", err)
+				}
+				cfg.Conventions = &rules.Conventions{
+					FilenamePattern: c.FilenamePattern, Values: c.Values, TableSchema: c.TableSchema,
+					Required: c.Required, Forbidden: c.Forbidden,
+				}
 			case "mydumper-version":
 				tg, err := target.Resolve(strings.TrimSpace(v), optionsdb.DefaultBuild)
 				if err != nil {
@@ -92,7 +118,16 @@ func runGolden(t *testing.T, path string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	res := l.Check("input.cnf", input)
+	res := l.Check(name, input)
+	if loadSet {
+		defaults, ok, err := a.Get("defaults.cnf")
+		if !ok || err != nil {
+			t.Fatalf("load-set needs a defaults.cnf section (err %v)", err)
+		}
+		_, onExtra := l.CheckSet(l.Check("defaults.cnf", defaults), res)
+		res.Diagnostics = append(res.Diagnostics, onExtra...)
+		diag.Sort(res.Diagnostics)
+	}
 	n := 0
 	for _, d := range res.Diagnostics {
 		if d.RuleID == ruleID {
@@ -102,11 +137,11 @@ func runGolden(t *testing.T, path string) {
 	results[ruleID] = append(results[ruleID], caseResult{rule: ruleID, diagnostics: n})
 
 	got := map[string][]byte{"diagnostics": []byte(formatDiagnostics(res.File, res.Diagnostics))}
-	safe, err := l.Fix("input.cnf", input, fix.Options{})
+	safe, err := l.Fix(name, input, fix.Options{})
 	if err != nil {
 		t.Fatalf("fix: %v", err)
 	}
-	unsafe, err := l.Fix("input.cnf", input, fix.Options{Unsafe: true})
+	unsafe, err := l.Fix(name, input, fix.Options{Unsafe: true})
 	if err != nil {
 		t.Fatalf("fix --unsafe-fixes: %v", err)
 	}

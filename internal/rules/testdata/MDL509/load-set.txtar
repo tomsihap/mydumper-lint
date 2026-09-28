@@ -1,0 +1,13 @@
+# The defaults file's regex applies to the extra file's table sections.
+-- options --
+select: MDL509
+load-set: yes
+-- defaults.cnf --
+[mydumper]
+regex=^app\.users$
+-- input.cnf --
+[`app`.`orders`]
+where=1
+-- diagnostics --
+1:2-1:16 info MDL509[table-group-not-dumped] app.orders does not match the regex ^app\.users$ (from defaults.cnf): mydumper never dumps it
+  = The settings of this section never apply.

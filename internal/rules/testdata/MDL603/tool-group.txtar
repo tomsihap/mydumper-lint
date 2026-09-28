@@ -1,0 +1,13 @@
+# F14, C2: the extra file takes over; the defaults' [client] is ignored.
+-- options --
+load-set: yes
+-- defaults.cnf --
+[client]
+host=db
+user=backup
+-- input.cnf --
+[mydumper]
+threads=4
+-- diagnostics --
+1:2-1:10 warning MDL603[client-group-overridden] this extra file becomes the MySQL client library's defaults file because it has a [mydumper] section: the [client] section of defaults.cnf (line 1) is ignored
+  = The connection uses only this file's settings: the host, user and password of the defaults file's [client] do not apply.

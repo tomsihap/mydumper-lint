@@ -1,0 +1,12 @@
+-- options --
+select: MDL903
+path: sales-extra-file.cnf
+conventions: {"filename-pattern": "^(?P<schema>[a-z_]+)-extra-file\\.cnf$", "values": {"mydumper.outputdir": "/{schema}$"}, "table-schema": "{schema}", "required": {"mydumper": ["outputdir", "logfile"]}, "forbidden": {"*": ["password"], "groups": ["client"]}}
+-- input.cnf --
+[mydumper]
+outputdir=/backups/sales
+logfile=/var/log/sales.log
+[`sales`.`orders`]
+where=1
+-- diagnostics --
+(none)

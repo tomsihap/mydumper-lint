@@ -45,10 +45,12 @@ type Meta struct {
 	E2E            []string // end-to-end scenarios proving the runtime consequence
 }
 
-// Rule is a rule and its check.
+// Rule is a rule and its check. CheckSet, when set, also checks the files
+// of a load set together (design §9.3).
 type Rule struct {
 	Meta
-	Check func(p *Pass)
+	Check    func(p *Pass)
+	CheckSet func(s *Set)
 }
 
 var (
@@ -98,6 +100,11 @@ type Pass struct {
 	// pre-processor (false for v0.19.1-x). Latent pre-processor risks are
 	// only reported when it does.
 	Preprocessor bool
+	// BaseDir resolves relative file references of the configuration
+	// (MDL508); empty means the working directory.
+	BaseDir string
+	// Conventions are the team's conventions (MDL901-MDL905); nil when off.
+	Conventions *Conventions
 
 	rule     *Rule
 	severity diag.Severity
