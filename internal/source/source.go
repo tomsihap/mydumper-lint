@@ -28,6 +28,9 @@ type File struct {
 // New builds the line table of b. The file keeps a reference to b.
 func New(path string, b []byte) *File {
 	f := &File{Path: path, Bytes: b}
+	if len(b) > 0 {
+		f.Lines = make([]Line, 0, bytes.Count(b, []byte{'\n'})+1)
+	}
 	start := 0
 	for start < len(b) {
 		i := bytes.IndexByte(b[start:], '\n')

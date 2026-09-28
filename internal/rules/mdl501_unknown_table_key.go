@@ -29,7 +29,7 @@ func init() {
 			}
 			for _, e := range p.KF.Entries {
 				g := p.KF.Groups[e.Group]
-				if !g.Valid || !model.IsTableGroup(g.Name) || e.Key == "" || e.Key[0] == '`' || p.Target.TableKey(e.Key) {
+				if !g.Valid || p.groupKind(e.Group) != model.GroupTable || e.Key == "" || e.Key[0] == '`' || p.Target.TableKey(e.Key) {
 					continue // masked columns and malformed ones (MDL505) aside
 				}
 				msg := fmt.Sprintf("`%s` is not a table key mydumper knows", e.Key)

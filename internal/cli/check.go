@@ -266,14 +266,18 @@ type outcome struct {
 	path     string // as shown to the user
 	src      []byte
 	settings config.Settings
-	result   *lint.Result // of the fixed content when fixing
-	linter   *lint.Linter
-	output   []byte // fixed content (--fix, --diff)
-	fixed    int
-	dropped  []diag.Diagnostic // fixes refused because they would make mydumper fail
-	version  string
-	warning  string // e.g. version resolution notice
-	err      error
+	// result is the full analysis (of the fixed content when fixing); kept
+	// only for load sets, to bound memory on large runs.
+	result      *lint.Result
+	loadable    bool
+	diagnostics []diag.Diagnostic
+	linter      *lint.Linter
+	output      []byte // fixed content (--fix, --diff)
+	fixed       int
+	dropped     []diag.Diagnostic // fixes refused because they would make mydumper fail
+	version     string
+	warning     string // e.g. version resolution notice
+	err         error
 }
 
 func (c *checkCmd) run(files []string) []outcome {
@@ -325,7 +329,7 @@ func (c *checkCmd) process(path string) outcome {
 	}
 	o.version, o.warning, o.linter = version, warning, l
 	if !c.fix && !c.diff {
-		o.result = l.Check(o.path, o.src)
+		o.keep(l.Check(o.path, o.src))
 		return o
 	}
 	res, err := l.Fix(o.path, o.src, fix.Options{Unsafe: c.unsafeFixes, ExtendSafe: o.settings.ExtendSafe})
@@ -334,7 +338,7 @@ func (c *checkCmd) process(path string) outcome {
 		return o
 	}
 	o.output, o.fixed, o.dropped = res.Output, res.Applied, res.Dropped
-	o.result = l.Check(o.path, res.Output)
+	o.keep(l.Check(o.path, res.Output))
 	if c.fix && !o.isStdin && !bytes.Equal(res.Output, o.src) {
 		if err := fix.WriteAtomic(path, res.Output); err != nil {
 			o.err = fmt.Errorf("writing fixes: %w", err)
@@ -379,10 +383,10 @@ func (c *checkCmd) finish(outcomes []outcome) int {
 			}
 		}
 		results = append(results, report.FileResult{
-			Path: o.path, Source: src, Loadable: o.result.KF.Loadable, Version: o.version,
-			Diagnostics: o.result.Diagnostics, Fixed: o.fixed,
+			Path: o.path, Source: src, Loadable: o.loadable, Version: o.version,
+			Diagnostics: o.diagnostics, Fixed: o.fixed,
 		})
-		if code != ExitError && failing(o.result.Diagnostics, o.settings.FailOn) {
+		if code != ExitError && failing(o.diagnostics, o.settings.FailOn) {
 			code = ExitFindings
 		}
 	}
@@ -573,7 +577,7 @@ func (c *checkCmd) loadSets(outcomes []outcome) {
 				continue
 			}
 			var defaults *lint.Result
-			if d := byPath[abs]; d != nil && d.err == nil {
+			if d := byPath[abs]; d != nil && d.err == nil && d.result != nil {
 				defaults = d.result
 			} else if src, err := os.ReadFile(abs); err == nil {
 				defaults = x.linter.Check(path, src)
@@ -581,13 +585,25 @@ func (c *checkCmd) loadSets(outcomes []outcome) {
 				x.warning = fmt.Sprintf("load set: cannot read the defaults file %s: %v", path, err)
 				continue
 			}
+			if x.result == nil {
+				continue
+			}
 			onDefaults, onExtra := x.linter.CheckSet(defaults, x.result)
-			x.result.Diagnostics = append(x.result.Diagnostics, onExtra...)
-			diag.Sort(x.result.Diagnostics)
-			if d := byPath[abs]; d != nil && d.result != nil && len(onDefaults) > 0 {
-				d.result.Diagnostics = append(d.result.Diagnostics, onDefaults...)
-				diag.Sort(d.result.Diagnostics)
+			x.diagnostics = append(x.diagnostics, onExtra...)
+			diag.Sort(x.diagnostics)
+			if d := byPath[abs]; d != nil && d.err == nil && len(onDefaults) > 0 {
+				d.diagnostics = append(d.diagnostics, onDefaults...)
+				diag.Sort(d.diagnostics)
 			}
 		}
+	}
+}
+
+// keep records what the report needs from an analysis, and the analysis
+// itself only when a load set may need it.
+func (o *outcome) keep(r *lint.Result) {
+	o.loadable, o.diagnostics = r.KF.Loadable, r.Diagnostics
+	if cfg := o.settings.Config; cfg != nil && len(cfg.LoadSets) > 0 {
+		o.result = r
 	}
 }

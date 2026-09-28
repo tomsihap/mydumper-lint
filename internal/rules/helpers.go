@@ -3,6 +3,7 @@ package rules
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 	"unicode/utf8"
 
@@ -224,4 +225,23 @@ func removeLine(p *Pass, n int) diag.Edit {
 		end++
 	}
 	return diag.Edit{Start: l.Start, End: end}
+}
+
+// entryAt returns the keyfile entry on line n, or nil. Entries are in file
+// order.
+func entryAt(p *Pass, n int) *keyfile.Entry {
+	i := sort.Search(len(p.KF.Entries), func(i int) bool { return p.KF.Entries[i].Line >= n })
+	if i < len(p.KF.Entries) && p.KF.Entries[i].Line == n {
+		return &p.KF.Entries[i]
+	}
+	return nil
+}
+
+// headerAt returns the index in KF.Groups of the header on line n, or -1.
+func headerAt(p *Pass, n int) int {
+	i := sort.Search(len(p.KF.Groups), func(i int) bool { return p.KF.Groups[i].Line >= n })
+	if i < len(p.KF.Groups) && p.KF.Groups[i].Line == n {
+		return i
+	}
+	return -1
 }

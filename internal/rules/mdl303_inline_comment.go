@@ -24,10 +24,6 @@ func init() {
 			Refs: []string{"K10"},
 		},
 		Check: func(p *Pass) {
-			kinds := map[string]model.GroupKind{}
-			for _, g := range p.Model.Groups {
-				kinds[g.Name] = g.Kind
-			}
 			options := map[int]*optionKey{}
 			keys := optionKeys(p)
 			for i := range keys {
@@ -35,7 +31,7 @@ func init() {
 			}
 			for _, e := range p.KF.Entries {
 				g := p.KF.Groups[e.Group]
-				kind := kinds[g.Name]
+				kind := p.groupKind(e.Group)
 				if !g.Valid || kind == model.GroupClient || kind == model.GroupSessionVariables || kind == model.GroupGlobalVariables {
 					continue // libmysqlclient and the server strip such comments
 				}

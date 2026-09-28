@@ -26,10 +26,6 @@ func init() {
 			E2E:  []string{"mdl602-include-directive-in-tool-group", "mdl602-include-directive-in-client-group"},
 		},
 		Check: func(p *Pass) {
-			kinds := map[string]model.GroupKind{}
-			for _, g := range p.Model.Groups {
-				kinds[g.Name] = g.Kind
-			}
 			for _, e := range p.KF.Entries {
 				directive, ok := includeDirective(e.Key)
 				if !ok {
@@ -42,7 +38,7 @@ func init() {
 					Consequence: "The connection settings of the included file apply, but any [mydumper], [myloader] or table section in it is ignored.",
 				}
 				group := p.KF.Groups[e.Group].Name
-				if kind := kinds[group]; kind == model.GroupToolOptions || kind == model.GroupProductOptions {
+				if kind := p.groupKind(e.Group); kind == model.GroupToolOptions || kind == model.GroupProductOptions {
 					tool := strings.SplitN(group, "_", 2)[0]
 					d.Severity = diag.Error
 					fatal := fmt.Sprintf("%s aborts at startup: \"option parsing failed: Unknown option --%s, try --help\"", tool, e.Key)

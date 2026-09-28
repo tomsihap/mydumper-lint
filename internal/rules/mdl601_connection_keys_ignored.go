@@ -26,10 +26,6 @@ func init() {
 			if !p.KF.Loadable {
 				return
 			}
-			kinds := map[string]model.GroupKind{}
-			for _, g := range p.Model.Groups {
-				kinds[g.Name] = g.Kind
-			}
 			client := map[string]bool{} // connection keys [client] sets
 			clientEnd := -1             // offset after the last line of [client]
 			for gi, g := range p.KF.Groups {
@@ -48,7 +44,7 @@ func init() {
 				if !g.Valid || !connectionKey(e.Key) {
 					continue
 				}
-				kind := kinds[g.Name]
+				kind := p.groupKind(e.Group)
 				var why string
 				switch {
 				case kind == model.GroupProductOptions:

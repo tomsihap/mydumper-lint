@@ -1,7 +1,9 @@
 package model
 
 import (
+	"reflect"
 	"sort"
+	"sync"
 
 	"github.com/tomsihap/mydumper-lint/internal/goption"
 )
@@ -32,6 +34,33 @@ func (r *GOptionRun) entryAt(g *Group, i int) int {
 // in name order. The order never changes which option a key names, since
 // option names are unique per tool.
 func OptionContext(t Target, tool string, cs goption.Charset) *goption.Context {
+	// Contexts are immutable once built: share them between files when the
+	// target can be a map key (an *optionsdb.View is).
+	cacheable := reflect.TypeOf(t).Comparable()
+	key := contextKey{t, tool, cs}
+	if cacheable {
+		if c, ok := contexts.Load(key); ok {
+			if ctx, ok := c.(*goption.Context); ok {
+				return ctx
+			}
+		}
+	}
+	ctx := buildContext(t, tool, cs)
+	if cacheable {
+		contexts.Store(key, ctx)
+	}
+	return ctx
+}
+
+type contextKey struct {
+	t    Target
+	tool string
+	cs   goption.Charset
+}
+
+var contexts sync.Map // contextKey -> *goption.Context
+
+func buildContext(t Target, tool string, cs goption.Charset) *goption.Context {
 	ctx := &goption.Context{Main: &goption.Group{Name: "main"}, IgnoreUnknown: t.IgnoreUnknownOptions(), Charset: cs}
 	groups := map[string]*goption.Group{}
 	for _, name := range t.OptionNames(tool) {

@@ -25,7 +25,7 @@ func init() {
 			for i := range p.KF.Entries {
 				e := &p.KF.Entries[i]
 				g := p.KF.Groups[e.Group]
-				if !g.Valid || !model.IsTableGroup(g.Name) {
+				if (e.Key != "columns_on_select" && e.Key != "columns_on_insert") || !g.Valid || p.groupKind(e.Group) != model.GroupTable {
 					continue
 				}
 				s := sections[g.Name]

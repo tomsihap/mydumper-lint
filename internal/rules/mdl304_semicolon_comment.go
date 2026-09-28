@@ -22,11 +22,17 @@ func init() {
 			Refs: []string{"K3", "F6"},
 		},
 		Check: func(p *Pass) {
-			reasons := map[int]model.Reason{}
-			for _, g := range p.Model.Groups {
-				for _, e := range g.Entries {
-					reasons[e.Line] = e.Reason
+			var reasons map[int]model.Reason // built on the first ';' line
+			reasonAt := func(n int) model.Reason {
+				if reasons == nil {
+					reasons = map[int]model.Reason{}
+					for _, g := range p.Model.Groups {
+						for _, e := range g.Entries {
+							reasons[e.Line] = e.Reason
+						}
+					}
 				}
+				return reasons[n]
 			}
 			for i, lc := range p.KF.Lines {
 				n := i + 1
@@ -44,7 +50,7 @@ func init() {
 				}
 				applicability := diag.Unsafe
 				key := quote(bytes.TrimSpace(content(p, n)))
-				switch reasons[n] {
+				switch reasonAt(n) {
 				case model.ReasonUnknownGroup:
 					applicability = diag.Safe
 					d.Consequence = "The line is a key of a group nobody reads: harmless, but not a comment."

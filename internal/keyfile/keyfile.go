@@ -153,7 +153,7 @@ func notKVMessage(line []byte) string {
 
 // Parse classifies every line of f, given the pre-processor's decisions.
 func Parse(f *source.File, pre *preprocess.Result) *Result {
-	p := &parser{f: f, r: &Result{Lines: make([]LineClass, len(f.Lines))}, cur: -1, passthrough: pre.Passthrough}
+	p := &parser{f: f, r: &Result{Lines: make([]LineClass, len(f.Lines)), Entries: make([]Entry, 0, len(f.Lines))}, cur: -1, passthrough: pre.Passthrough}
 	for i, l := range f.Lines {
 		p.line(l, pre.Lines[i])
 	}

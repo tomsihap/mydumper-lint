@@ -19,13 +19,9 @@ func init() {
 				"started, or swallows the rest of it.",
 		},
 		Check: func(p *Pass) {
-			kinds := map[string]model.GroupKind{}
-			for _, g := range p.Model.Groups {
-				kinds[g.Name] = g.Kind
-			}
 			for _, e := range p.KF.Entries {
 				g := p.KF.Groups[e.Group]
-				kind := kinds[g.Name]
+				kind := p.groupKind(e.Group)
 				isSQL := (kind == model.GroupTable && sqlKey(e.Key)) ||
 					((kind == model.GroupToolOptions || kind == model.GroupProductOptions) && e.Key == "where")
 				if !g.Valid || !isSQL {

@@ -21,7 +21,7 @@ func init() {
 		Check: func(p *Pass) {
 			for _, e := range p.KF.Entries {
 				g := p.KF.Groups[e.Group]
-				if !g.Valid || !model.IsTableGroup(g.Name) || !strings.HasPrefix(e.Key, "`") || model.IsMaskedColumn(e.Key) {
+				if !g.Valid || p.groupKind(e.Group) != model.GroupTable || !strings.HasPrefix(e.Key, "`") || model.IsMaskedColumn(e.Key) {
 					continue
 				}
 				d := diag.Diagnostic{

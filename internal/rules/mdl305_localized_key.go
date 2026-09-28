@@ -27,10 +27,6 @@ func init() {
 			if languages == nil {
 				languages = []string{"C"}
 			}
-			kinds := map[string]model.GroupKind{}
-			for _, g := range p.Model.Groups {
-				kinds[g.Name] = g.Kind
-			}
 			for _, e := range p.KF.Entries {
 				if e.Locale == "" || !p.KF.Groups[e.Group].Valid {
 					continue
@@ -43,7 +39,7 @@ func init() {
 				} else {
 					d.Message = fmt.Sprintf("`%s` is a translation of `%s`: it only exists when mydumper runs with a %s language", e.Key, base, e.Locale)
 				}
-				switch kind := kinds[p.KF.Groups[e.Group].Name]; kind {
+				switch kind := p.groupKind(e.Group); kind {
 				case model.GroupToolOptions, model.GroupProductOptions:
 					d.Consequence = fmt.Sprintf("Where it is visible, mydumper passes the unknown option --%s (fatal at startup up to v1.0.0-1); `%s` is never set.", e.Key, base)
 				case model.GroupUnknown, model.GroupSessionVariables, model.GroupGlobalVariables, model.GroupClient, model.GroupTable:

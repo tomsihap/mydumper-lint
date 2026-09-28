@@ -8,6 +8,7 @@ package model
 
 import (
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -145,6 +146,9 @@ type Entry struct {
 	// Shadowed is set for an earlier occurrence of a duplicate key: its
 	// value is replaced by the last one (K13), even in a rejected file.
 	Shadowed bool
+	// LastLine is the line of the occurrence whose value counts (the last
+	// visible one), 0 when none is visible.
+	LastLine int
 	passed   bool // GLib lists it and mydumper passes it to GOption
 }
 
@@ -237,16 +241,10 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 		m.Health = Rejected
 	}
 	pos := map[string]int{}
-	lastLine := map[[2]string]int{} // (group, key) -> line of the last visible occurrence
-	for _, e := range kf.Entries {
-		g := kf.Groups[e.Group]
-		if g.Valid && visible(e, languages) {
-			lastLine[[2]string{g.Name, e.Key}] = e.Line
-		}
-	}
-	lastValue := map[[2]string]string{}
-	for _, e := range kf.Entries {
-		lastValue[[2]string{kf.Groups[e.Group].Name, e.Key}] = e.Value
+	lastLine, lastValue := lastOccurrences(kf, languages)
+	byGroup := make([][]int, len(kf.Groups)) // entry indexes of each header
+	for i, e := range kf.Entries {
+		byGroup[e.Group] = append(byGroup[e.Group], i)
 	}
 	for gi, g := range kf.Groups {
 		if !g.Valid && kf.Loadable {
@@ -260,13 +258,14 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 			m.Groups = append(m.Groups, Group{Name: g.Name, Kind: kind, Tool: tool})
 		}
 		m.Groups[i].Lines = append(m.Groups[i].Lines, g.Line)
-		for _, e := range kf.Entries {
-			if e.Group != gi {
-				continue
-			}
-			k := [2]string{g.Name, e.Key}
-			entry := Entry{Key: e.Key, Value: lastValue[k], Line: e.Line, Shadowed: e.Line != lastLine[k]}
-			entry.Reason = reason(m, m.Groups[i], e, languages, lastLine[k], opt.Target)
+		if m.Groups[i].Entries == nil {
+			m.Groups[i].Entries = make([]Entry, 0, len(byGroup[gi]))
+		}
+		for _, ei := range byGroup[gi] {
+			e := kf.Entries[ei]
+			last := lastLine[ei]
+			entry := Entry{Key: e.Key, Value: lastValue[ei], Line: e.Line, LastLine: last, Shadowed: last != 0 && e.Line != last}
+			entry.Reason = reason(m, m.Groups[i], e, languages, last, opt.Target)
 			kind := m.Groups[i].Kind
 			entry.passed = (kind == GroupToolOptions || kind == GroupProductOptions) &&
 				visible(e, languages) && !connectionKeys[e.Key]
@@ -360,4 +359,44 @@ func (m *Model) Projection() string {
 		b.WriteString("fatal: " + m.Fatal + "\n")
 	}
 	return b.String()
+}
+
+// lastOccurrences returns, for each entry of kf, the line of the last
+// visible occurrence of its (group, key) in a valid group (0 when none), and
+// the value of its last occurrence, which GLib returns for every occurrence
+// (K13). Entries are sorted by (group, key) instead of hashed: large files
+// have thousands of keys.
+func lastOccurrences(kf *keyfile.Result, languages []string) (lastLine []int, lastValue []string) {
+	n := len(kf.Entries)
+	order := make([]int, n)
+	for i := range order {
+		order[i] = i
+	}
+	name := func(i int) string { return kf.Groups[kf.Entries[i].Group].Name }
+	sort.SliceStable(order, func(a, b int) bool {
+		ea, eb := &kf.Entries[order[a]], &kf.Entries[order[b]]
+		if na, nb := name(order[a]), name(order[b]); na != nb {
+			return na < nb
+		}
+		return ea.Key < eb.Key
+	})
+	lastLine, lastValue = make([]int, n), make([]string, n)
+	for start := 0; start < n; {
+		end := start + 1
+		for end < n && name(order[end]) == name(order[start]) && kf.Entries[order[end]].Key == kf.Entries[order[start]].Key {
+			end++
+		}
+		line, value := 0, kf.Entries[order[end-1]].Value
+		for _, i := range order[start:end] {
+			e := &kf.Entries[i]
+			if kf.Groups[e.Group].Valid && visible(*e, languages) {
+				line = e.Line
+			}
+		}
+		for _, i := range order[start:end] {
+			lastLine[i], lastValue[i] = line, value
+		}
+		start = end
+	}
+	return lastLine, lastValue
 }

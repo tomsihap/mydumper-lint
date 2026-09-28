@@ -33,7 +33,7 @@ func init() {
 			functions := p.Target.MasqueradeFunctions()
 			for _, e := range p.KF.Entries {
 				g := p.KF.Groups[e.Group]
-				if !g.Valid || !model.IsTableGroup(g.Name) || !model.IsMaskedColumn(e.Key) ||
+				if !g.Valid || p.groupKind(e.Group) != model.GroupTable || !model.IsMaskedColumn(e.Key) ||
 					model.MasqueradeFunction(e.Value, functions) != "random_format" {
 					continue
 				}

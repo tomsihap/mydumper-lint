@@ -109,6 +109,22 @@ type Pass struct {
 	rule     *Rule
 	severity diag.Severity
 	out      []diag.Diagnostic
+	kinds    []model.GroupKind // groupKind's cache
+	optKeys  []optionKey       // optionKeys' cache
+	optDone  bool
+	headers  []keyfile.Group // validHeaders' cache
+}
+
+// groupKind returns who reads the group of header gi (an index in
+// KF.Groups), computed once per pass.
+func (p *Pass) groupKind(gi int) model.GroupKind {
+	if p.kinds == nil {
+		p.kinds = make([]model.GroupKind, len(p.KF.Groups))
+		for i, g := range p.KF.Groups {
+			p.kinds[i], _ = model.ClassifyGroup(g.Name, products(p))
+		}
+	}
+	return p.kinds[gi]
 }
 
 // NewPass prepares a pass over a parsed file.

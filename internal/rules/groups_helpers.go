@@ -31,13 +31,15 @@ func looksLikeTable(name string) bool {
 
 // validHeaders lists the group headers GLib accepted, in file order.
 func validHeaders(p *Pass) []keyfile.Group {
-	var out []keyfile.Group
-	for _, g := range p.KF.Groups {
-		if g.Valid {
-			out = append(out, g)
+	if p.headers == nil {
+		p.headers = make([]keyfile.Group, 0, len(p.KF.Groups))
+		for _, g := range p.KF.Groups {
+			if g.Valid {
+				p.headers = append(p.headers, g)
+			}
 		}
 	}
-	return out
+	return p.headers
 }
 
 // groupNames are the names suggested for a misspelled group.

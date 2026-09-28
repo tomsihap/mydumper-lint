@@ -24,10 +24,6 @@ func init() {
 			Refs: []string{"K9", "G5"},
 		},
 		Check: func(p *Pass) {
-			kinds := map[string]model.GroupKind{}
-			for _, g := range p.Model.Groups {
-				kinds[g.Name] = g.Kind
-			}
 			options := map[int]*optionKey{}
 			keys := optionKeys(p)
 			for i := range keys {
@@ -39,7 +35,7 @@ func init() {
 					continue
 				}
 				consequence := "The whitespace becomes part of the value."
-				switch kinds[p.KF.Groups[e.Group].Name] {
+				switch p.groupKind(e.Group) {
 				case model.GroupToolOptions, model.GroupProductOptions:
 					if k := options[e.Line]; k != nil && k.entry != nil {
 						if k.entry.NoArg() {

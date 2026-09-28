@@ -19,26 +19,28 @@ func init() {
 			Refs: []string{"K12"},
 		},
 		Check: func(p *Pass) {
-			first := map[string]int{} // name -> index in p.KF.Groups
-			for i, g := range p.KF.Groups {
-				if !g.Valid {
+			for _, mg := range p.Model.Groups {
+				if len(mg.Lines) < 2 {
 					continue
 				}
-				fi, seen := first[g.Name]
-				if !seen {
-					first[g.Name] = i
-					continue
+				fi := headerAt(p, mg.Lines[0])
+				for _, line := range mg.Lines[1:] {
+					i := headerAt(p, line)
+					if fi < 0 || i < 0 || !p.KF.Groups[fi].Valid || !p.KF.Groups[i].Valid {
+						continue
+					}
+					g := p.KF.Groups[i]
+					d := diag.Diagnostic{
+						Span:        g.NameSpan,
+						Message:     fmt.Sprintf("[%s] is already declared on line %d: GLib merges the two sections", g.Name, p.KF.Groups[fi].Line),
+						Consequence: "The keys of both sections form one group; a key set in both keeps the last value.",
+						Related:     []diag.Related{{Span: p.KF.Groups[fi].NameSpan, Message: "first declaration"}},
+					}
+					if edits, ok := moveSection(p, i, fi); ok {
+						d.Fix = &diag.Fix{Applicability: diag.Unsafe, Description: "Move these lines to the end of the first section", Edits: edits}
+					}
+					p.Report(d)
 				}
-				d := diag.Diagnostic{
-					Span:        g.NameSpan,
-					Message:     fmt.Sprintf("[%s] is already declared on line %d: GLib merges the two sections", g.Name, p.KF.Groups[fi].Line),
-					Consequence: "The keys of both sections form one group; a key set in both keeps the last value.",
-					Related:     []diag.Related{{Span: p.KF.Groups[fi].NameSpan, Message: "first declaration"}},
-				}
-				if edits, ok := moveSection(p, i, fi); ok {
-					d.Fix = &diag.Fix{Applicability: diag.Unsafe, Description: "Move these lines to the end of the first section", Edits: edits}
-				}
-				p.Report(d)
 			}
 		},
 	})

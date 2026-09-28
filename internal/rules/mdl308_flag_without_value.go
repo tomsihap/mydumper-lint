@@ -22,16 +22,12 @@ func init() {
 			E2E:  []string{"mdl308-bare-flag-accepted-from-v0.19.3"},
 		},
 		Check: func(p *Pass) {
-			kinds := map[string]model.GroupKind{}
-			for _, g := range p.Model.Groups {
-				kinds[g.Name] = g.Kind
-			}
 			known := map[int]bool{} // lines whose key names an option of the target
 			for _, k := range optionKeys(p) {
 				known[k.e.Line] = k.entry != nil
 			}
 			for _, e := range p.KF.Entries {
-				kind := kinds[p.KF.Groups[e.Group].Name]
+				kind := p.groupKind(e.Group)
 				if !e.Synthesized || !p.KF.Groups[e.Group].Valid || !isOptionName([]byte(e.Key)) ||
 					(kind != model.GroupToolOptions && kind != model.GroupProductOptions) {
 					continue

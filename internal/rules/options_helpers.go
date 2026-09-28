@@ -35,6 +35,13 @@ func (k *optionKey) effective() bool { return !k.e.Shadowed }
 // and localized keys (MDL305). Empty when no target is known or the file is
 // rejected.
 func optionKeys(p *Pass) []optionKey {
+	if !p.optDone {
+		p.optKeys, p.optDone = computeOptionKeys(p), true
+	}
+	return p.optKeys
+}
+
+func computeOptionKeys(p *Pass) []optionKey {
 	if p.Model == nil {
 		return nil
 	}
