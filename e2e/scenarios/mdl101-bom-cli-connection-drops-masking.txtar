@@ -1,0 +1,17 @@
+MDL101, K15, F1: the same byte order mark in a file without [client], the
+connection coming from the command line. GLib rejects the file, so mydumper
+ignores all of it and dumps users.email in plaintext, exit 0. The MySQL client
+library still reads the file as its defaults file (F12) and rejects it too
+("Found option without preceding group"); this scenario shows whether the
+connection survives that when host, user and password are explicit.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL101, MDL112
+expect config-loaded: false
+expect exit: 0
+expect connected: true
+expect column app.users.email: plaintext
+-- defaults.cnf.esc --
+\xef\xbb\xbf[mydumper]\nthreads=2\n\n[`app`.`users`]\n`email`=random_string\n

@@ -1,0 +1,25 @@
+Control of MDL603 (F14): an extra file with neither [mydumper] nor [client]
+does not take over, so the defaults file's [client] still provides the
+connection; the extra file's table section is merged, so users.email is
+masked.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --defaults-extra-file /work/extra.cnf --database app
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+-- extra.cnf --
+[`app`.`users`]
+`email`=random_string
+-- .mydumper-lint.yaml --
+load-sets:
+  - defaults-file: defaults.cnf
+    extra-files: [extra.cnf]

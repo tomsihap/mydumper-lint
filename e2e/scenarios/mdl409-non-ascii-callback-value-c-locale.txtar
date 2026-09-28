@@ -1,0 +1,16 @@
+MDL409 (W1 finding 1): regex is a CALLBACK option without the FILENAME flag,
+so GOption converts its value to UTF-8 before calling the callback. In the C
+locale of the official images, a non-ASCII regex makes mydumper abort at
+startup, exit 1.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password
+lint: MDL409
+expect config-loaded: true
+expect exit: 1
+expect stderr-contains: option parsing failed: Invalid byte sequence in conversion input, try --help
+expect connected: false
+-- mydumper.cnf --
+[mydumper]
+regex=^app\.(users|zoé)$

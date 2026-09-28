@@ -1,0 +1,16 @@
+MDL313, F4: GKeyFile returns values raw, so outputdir="dump" keeps its
+quotes: mydumper silently writes the dump into a directory literally named
+"dump" (quotes included), not dump. Compare
+mdl313-quoted-absolute-outputdir-aborts.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL313
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect dump-dir: "dump"
+-- mydumper.cnf --
+[mydumper]
+outputdir="dump"

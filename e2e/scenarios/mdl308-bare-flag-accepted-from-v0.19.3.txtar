@@ -1,0 +1,26 @@
+MDL308, §3.2: from v0.19.3-1, the pre-processor turns the valueless flag
+"routines" into "routines= 1": the same file that v0.19.1-x rejects
+(mdl113-bare-flag-v0.19.1) loads, routines are dumped and users.email is
+masked. The linter only notes the fragile form (info).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL308, MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect routines-dumped: true
+expect column app.users.email: masked
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+routines
+threads=2
+
+[`app`.`users`]
+`email`=random_string

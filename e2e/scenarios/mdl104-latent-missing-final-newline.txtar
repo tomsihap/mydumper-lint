@@ -1,0 +1,16 @@
+MDL104, latent case: when the last line without a final newline is a
+key/value pair, the file loads (routines dumped, users.email masked); the
+linter still reports the missing newline, which glues anything appended to
+that line.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL104, MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+expect routines-dumped: true
+-- defaults.cnf.esc --
+[client]\nhost=mysql\nuser=e2e\npassword=e2e-password\n\n[`app`.`users`]\n`email`=random_string\n\n[mydumper]\nroutines=1

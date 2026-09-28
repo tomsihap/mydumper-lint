@@ -1,0 +1,15 @@
+MDL102 and MDL104, latent case: a whitespace-only last line without a final
+newline is harmless today (the pre-processor only rewrites a line when it
+meets its '\n'). The file loads and users.email is masked; the linter still
+reports the latent risk.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL102, MDL104, MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+-- defaults.cnf.esc --
+[client]\nhost=mysql\nuser=e2e\npassword=e2e-password\n\n[mydumper]\nthreads=2\n\n[`app`.`users`]\n`email`=random_string\n\x20\x20

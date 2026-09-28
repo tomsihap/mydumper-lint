@@ -1,0 +1,25 @@
+Control of mdl113-bare-flag-v0.19.1: the same file with "routines=1" instead
+of the bare flag loads on v0.19.1-x: routines are dumped and users.email is
+masked.
+-- scenario --
+tool: mydumper
+versions: < v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect routines-dumped: true
+expect column app.users.email: masked
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+routines=1
+threads=2
+
+[`app`.`users`]
+`email`=random_string

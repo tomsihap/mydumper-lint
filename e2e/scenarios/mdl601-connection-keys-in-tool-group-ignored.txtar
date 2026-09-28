@@ -1,0 +1,21 @@
+MDL601, C1 (hypothesis), F3, F13: mydumper never passes host, user and
+password of [mydumper] to GOption, and because the file also has [client], it
+hands the file to the MySQL client library without a group, which then reads
+only the client groups. user and password of [mydumper] are read by nobody:
+the connection to the host of [client] is refused.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL405, MDL601
+expect config-loaded: true
+expect exit: nonzero
+expect connected: false
+expect stderr-contains: Access denied
+-- defaults.cnf --
+[client]
+host=mysql
+
+[mydumper]
+user=e2e
+password=e2e-password

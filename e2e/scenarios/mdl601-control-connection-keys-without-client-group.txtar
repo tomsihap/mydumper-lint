@@ -1,0 +1,17 @@
+Control of MDL601 (F3, F13): without a [client] section, mydumper hands the
+file to the MySQL client library with the group "mydumper", so host, user and
+password of [mydumper] are read by the client library and the connection
+works.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+-- defaults.cnf --
+[mydumper]
+host=mysql
+user=e2e
+password=e2e-password

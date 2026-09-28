@@ -1,0 +1,16 @@
+MDL313, F4: with quotes kept, outputdir="/work/dump" is the relative path
+"/work/dump" (quotes included), whose first component, a directory named '"',
+does not exist: mydumper cannot create the output directory and aborts at
+startup ("Unable to create"), before connecting.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL313
+expect config-loaded: true
+expect exit: nonzero
+expect stderr-contains: Unable to create `"/work/dump"'
+expect connected: false
+-- mydumper.cnf --
+[mydumper]
+outputdir="/work/dump"

@@ -1,0 +1,15 @@
+MDL403, G7: "threads=08" starts like an octal number but 8 is not an octal
+digit, so GOption cannot parse it: mydumper aborts at startup ("Cannot parse
+integer value") before connecting.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL403
+expect config-loaded: true
+expect exit: nonzero
+expect stderr-contains: Cannot parse integer value
+expect connected: false
+-- mydumper.cnf --
+[mydumper]
+threads=08

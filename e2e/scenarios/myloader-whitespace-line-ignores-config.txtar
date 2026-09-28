@@ -1,0 +1,14 @@
+MDL102, F1, F12 for myloader: the whitespace-only line makes myloader ignore
+its whole config file too. It still connects through [client] and exits 0,
+but "no-data" is not applied: the rows are restored. The harness first dumps
+the seeded database into /work/source-dump with the same image.
+-- scenario --
+tool: myloader
+versions: >= v0.19.3-1
+args: --defaults-file /work/myloader.cnf --directory /work/source-dump --database ${RESTORE_DB}
+lint: MDL102, MDL405
+expect config-loaded: false
+expect exit: 0
+expect rows ${RESTORE_DB}.users: 3
+-- myloader.cnf.esc --
+[client]\nhost=mysql\nuser=e2e\npassword=e2e-password\n\n[myloader]\nthreads=2\n\x20\x20\nno-data=1\n

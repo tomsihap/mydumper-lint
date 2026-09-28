@@ -1,0 +1,93 @@
+# End-to-end suite (design §11.6, e2e/README.md): the official mydumper images
+# against a seeded MySQL 8.4 server prove the runtime consequences the rules
+# claim. Pull requests that touch the linter, the CLI or the suite run the
+# default matrix (the latest stable image-verified release of each branch); the
+# nightly schedule runs every image-verified version.
+#
+# Hardening as in ci.yml: every action is pinned by commit SHA (Dependabot keeps
+# the pins and their version comments current), the token has no permission
+# unless a job asks for one, and checkouts do not keep the token in .git/config.
+name: E2E
+
+on:
+  pull_request:
+    paths:
+      - "internal/**"
+      - "cmd/**"
+      - "e2e/**"
+      - "mk/e2e.mk"
+      - "go.mod"
+      - "go.sum"
+      - "tools/gen-optionsdb/images.json"
+      - ".github/workflows/e2e.yml"
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
+    inputs:
+      versions:
+        description: "E2E_VERSIONS: empty for the default matrix, all, or a comma-separated list of tags"
+        required: false
+        default: ""
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  e2e:
+    name: e2e (${{ github.event_name == 'schedule' && 'all versions' || 'default matrix' }})
+    runs-on: ubuntu-latest
+    # Every image-verified version pulls about thirty images.
+    timeout-minutes: ${{ github.event_name == 'schedule' && 240 || 60 }}
+    permissions:
+      contents: read
+    env:
+      # Passed through the environment, never interpolated into a script.
+      E2E_VERSIONS: ${{ github.event_name == 'schedule' && 'all' || inputs.versions }}
+      E2E_PARALLEL: "4"
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Start MySQL
+        run: make e2e-up
+
+      - name: Run the end-to-end suite
+        run: |
+          timeout="90m"
+          if [[ "$E2E_VERSIONS" == all ]]; then timeout="230m"; fi
+          make e2e E2E_GO_TIMEOUT="$timeout"
+
+      - name: Summarize
+        if: always()
+        run: |
+          if [[ -f e2e/.out/summary.md ]]; then
+            cat e2e/.out/summary.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No summary: the suite did not start (see the logs above)." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload the logs
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: e2e-logs
+          path: |
+            e2e/.out/summary.md
+            e2e/.out/logs/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Stop MySQL
+        if: always()
+        run: make e2e-down

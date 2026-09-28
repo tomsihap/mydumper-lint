@@ -1,0 +1,16 @@
+MDL104, F1, F12: a valueless flag on the last line of a file without a final
+newline never gets its "= 1" (the pre-processor only acts on '\n'), so GLib
+rejects "routines" and mydumper ignores the whole file: no routines, and
+users.email in plaintext, while the run connects through [client] and exits 0.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL104, MDL308, MDL405
+expect config-loaded: false
+expect exit: 0
+expect connected: true
+expect column app.users.email: plaintext
+expect routines-dumped: false
+-- defaults.cnf.esc --
+[client]\nhost=mysql\nuser=e2e\npassword=e2e-password\n\n[`app`.`users`]\n`email`=random_string\n\n[mydumper]\nroutines

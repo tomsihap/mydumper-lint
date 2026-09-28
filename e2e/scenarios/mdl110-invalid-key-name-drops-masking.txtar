@@ -1,0 +1,26 @@
+MDL110, K19, F1, F12: "key[bar baz]=1" is not a valid GLib key name (a '['
+may only start a locale suffix of letters, digits, '-', '_', '.' and '@'), so
+GLib rejects the file: mydumper ignores all of it, connects through [client],
+exits 0 and dumps users.email in plaintext. The line also starts a bracket
+state leak (MDL112): an empty line after it would break the file as well.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL110, MDL112, MDL405
+expect config-loaded: false
+expect stderr-contains: Invalid key name
+expect exit: 0
+expect connected: true
+expect column app.users.email: plaintext
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+threads=2
+key[bar baz]=1
+[`app`.`users`]
+`email`=random_string

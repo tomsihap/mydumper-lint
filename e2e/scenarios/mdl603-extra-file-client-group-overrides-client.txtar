@@ -1,0 +1,25 @@
+MDL603, C2 (hypothesis), F14: the extra file has its own [client] section
+with the host only. It becomes the client library's defaults file, whose host
+is used, while user and password of the defaults file's [client] are ignored:
+the server refuses the connection.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --defaults-extra-file /work/extra.cnf --database app
+lint: MDL405, MDL603
+expect config-loaded: true
+expect exit: nonzero
+expect connected: false
+expect stderr-contains: Access denied
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+-- extra.cnf --
+[client]
+host=mysql
+-- .mydumper-lint.yaml --
+load-sets:
+  - defaults-file: defaults.cnf
+    extra-files: [extra.cnf]

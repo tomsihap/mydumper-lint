@@ -1,0 +1,31 @@
+MDL113, F1, F12: mydumper v0.19.1-x has no config pre-processor: it hands the
+file to g_key_file_load_from_file as it is. A valueless flag ("routines")
+is then not a key/value pair, so GLib rejects the file and mydumper ignores
+all of it: it logs "Failed to load config file", runs with its defaults (no
+routines, users.email in plaintext), connects through [client] and exits 0.
+From v0.19.3-1 the pre-processor turns the same line into "routines= 1"
+(mdl308-bare-flag-accepted-from-v0.19.3). With the default matrix, this
+scenario runs on the newest v0.19.1-x image.
+-- scenario --
+tool: mydumper
+versions: < v0.19.3-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL113, MDL405
+expect config-loaded: false
+expect stderr-contains: Failed to load config file /work/defaults.cnf
+expect exit: 0
+expect connected: true
+expect routines-dumped: false
+expect column app.users.email: plaintext
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+routines
+threads=2
+
+[`app`.`users`]
+`email`=random_string
