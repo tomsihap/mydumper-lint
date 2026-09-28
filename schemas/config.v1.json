@@ -1,0 +1,327 @@
+{
+  "$id": "https://github.com/tomsihap/mydumper-lint/blob/main/schemas/config.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "conventions": {
+      "description": "Project conventions (MDL901-905), or off.",
+      "oneOf": [
+        {
+          "const": "off"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "filename-pattern": {
+              "description": "Go regular expression for file names, with named groups.",
+              "type": "string"
+            },
+            "forbidden": {
+              "additionalProperties": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "description": "Keys forbidden per group (* for all); the groups key lists forbidden groups.",
+              "type": "object"
+            },
+            "required": {
+              "additionalProperties": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "description": "Keys required per group.",
+              "type": "object"
+            },
+            "table-schema": {
+              "description": "Template for the database of table sections.",
+              "type": "string"
+            },
+            "values": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "group.key: value template ({name} from the file name groups).",
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
+    "exclude": {
+      "description": "Globs of files and directories to skip.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "fail-on": {
+      "description": "Lowest severity that makes the command fail (default error).",
+      "enum": [
+        "error",
+        "warning",
+        "info",
+        "none"
+      ],
+      "type": "string"
+    },
+    "fix": {
+      "additionalProperties": false,
+      "description": "Fixer settings.",
+      "properties": {
+        "extend-safe": {
+          "description": "Rules whose unsafe fixes are applied with --fix.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "include": {
+      "description": "Globs of files to lint when walking directories (default **/*.cnf).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "load-sets": {
+      "description": "Files mydumper loads together, for cross-file rules.",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "defaults-file": {
+            "description": "The --defaults-file.",
+            "type": "string"
+          },
+          "extra-files": {
+            "description": "Globs of --defaults-extra-file files used with it.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "mydumper-build": {
+      "additionalProperties": false,
+      "description": "How mydumper was built; the default is the official image (MySQL client, SSL).",
+      "properties": {
+        "client": {
+          "description": "Client library mydumper is built against.",
+          "enum": [
+            "mysql",
+            "mariadb"
+          ],
+          "type": "string"
+        },
+        "ssl": {
+          "description": "Whether mydumper is built with SSL support.",
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "mydumper-version": {
+      "description": "Target mydumper version: v0.19.3-3, 0.19.3, 0.19, latest or latest-prerelease.",
+      "type": "string"
+    },
+    "overrides": {
+      "description": "Settings for files matching globs; later entries win.",
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "conventions": {
+            "description": "Conventions for these files, or off.",
+            "oneOf": [
+              {
+                "const": "off"
+              },
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "filename-pattern": {
+                    "description": "Go regular expression for file names, with named groups.",
+                    "type": "string"
+                  },
+                  "forbidden": {
+                    "additionalProperties": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "description": "Keys forbidden per group (* for all); the groups key lists forbidden groups.",
+                    "type": "object"
+                  },
+                  "required": {
+                    "additionalProperties": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "description": "Keys required per group.",
+                    "type": "object"
+                  },
+                  "table-schema": {
+                    "description": "Template for the database of table sections.",
+                    "type": "string"
+                  },
+                  "values": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "group.key: value template ({name} from the file name groups).",
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "fail-on": {
+            "description": "Failure threshold for these files.",
+            "enum": [
+              "error",
+              "warning",
+              "info",
+              "none"
+            ],
+            "type": "string"
+          },
+          "files": {
+            "description": "Globs the override applies to.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "mydumper-build": {
+            "additionalProperties": false,
+            "description": "mydumper build for these files.",
+            "properties": {
+              "client": {
+                "description": "Client library mydumper is built against.",
+                "enum": [
+                  "mysql",
+                  "mariadb"
+                ],
+                "type": "string"
+              },
+              "ssl": {
+                "description": "Whether mydumper is built with SSL support.",
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "mydumper-version": {
+            "description": "Target mydumper version for these files.",
+            "type": "string"
+          },
+          "preview": {
+            "description": "Preview rules for these files.",
+            "type": "boolean"
+          },
+          "rules": {
+            "additionalProperties": false,
+            "description": "Rule selection for these files (replaces the lists it sets).",
+            "properties": {
+              "extend-select": {
+                "description": "Rules added to the selection, e.g. opt-in rules.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "ignore": {
+                "description": "Rules removed from the selection.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "select": {
+                "description": "Rule IDs, names, prefixes (MDL1) or ALL.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "severity": {
+                "additionalProperties": {
+                  "enum": [
+                    "off",
+                    "info",
+                    "warning",
+                    "error"
+                  ]
+                },
+                "description": "Severity per rule ID or name.",
+                "type": "object"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "preview": {
+      "description": "Enable preview rules.",
+      "type": "boolean"
+    },
+    "rules": {
+      "additionalProperties": false,
+      "description": "Rule selection.",
+      "properties": {
+        "extend-select": {
+          "description": "Rules added to the selection, e.g. opt-in rules.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "ignore": {
+          "description": "Rules removed from the selection.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "select": {
+          "description": "Rule IDs, names, prefixes (MDL1) or ALL.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "severity": {
+          "additionalProperties": {
+            "enum": [
+              "off",
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "description": "Severity per rule ID or name.",
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "title": "mydumper-lint configuration (.mydumper-lint.yaml)",
+  "type": "object"
+}
