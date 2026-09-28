@@ -1,0 +1,40 @@
+# pre-commit hooks (design §12.4): https://pre-commit.com/#creating-new-hooks
+#
+# language: golang builds this module with `go install` in a pre-commit-managed
+# environment (no local Go toolchain version to match, just Go itself), giving
+# a "mydumper-lint" binary on PATH — cmd/mydumper-lint is this module's only
+# main package. The docker_image variant instead runs the released container
+# image, for consumers who would rather not build or install anything.
+#
+# Usage, in a consumer's .pre-commit-config.yaml:
+#   repos:
+#     - repo: https://github.com/tomsihap/mydumper-lint
+#       rev: vX.Y.Z
+#       hooks:
+#         - id: mydumper-lint       # report only
+#         # - id: mydumper-lint-fix   # also apply safe fixes
+#         # - id: mydumper-lint-docker
+
+- id: mydumper-lint
+  name: mydumper-lint
+  description: Lint mydumper and myloader configuration files.
+  language: golang
+  entry: mydumper-lint check
+  files: \.cnf$
+  pass_filenames: true
+
+- id: mydumper-lint-fix
+  name: mydumper-lint --fix
+  description: Lint mydumper and myloader configuration files, applying safe fixes.
+  language: golang
+  entry: mydumper-lint check --fix
+  files: \.cnf$
+  pass_filenames: true
+
+- id: mydumper-lint-docker
+  name: mydumper-lint (Docker)
+  description: Lint mydumper and myloader configuration files with the mydumper-lint container image.
+  language: docker_image
+  entry: ghcr.io/tomsihap/mydumper-lint:latest check
+  files: \.cnf$
+  pass_filenames: true
