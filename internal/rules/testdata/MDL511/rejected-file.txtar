@@ -1,0 +1,9 @@
+# A rejected file is reported by the MDL1xx rules: nothing to add.
+-- options --
+mydumper-version: v0.21.2-3
+-- input.cnf --
+[`app`.`users`]
+`email`=random_string
+key]=1
+-- diagnostics --
+(none)

@@ -44,10 +44,11 @@ func (f fakeTarget) OptionNames(string) []string {
 	sort.Strings(names)
 	return names
 }
-func (f fakeTarget) TableKey(k string) bool        { return k == "where" }
-func (f fakeTarget) MasqueradeFunctions() []string { return []string{"constant", "random_string"} }
-func (f fakeTarget) Products() []string            { return DefaultReaders.Products }
-func (f fakeTarget) ProductOptionGroups() []string { return []string{"mydumper"} }
+func (f fakeTarget) TableKey(k string) bool         { return k == "where" }
+func (f fakeTarget) MasqueradeFunctions() []string  { return []string{"constant", "random_string"} }
+func (f fakeTarget) Products() []string             { return DefaultReaders.Products }
+func (f fakeTarget) ProductOptionGroups() []string  { return []string{"mydumper"} }
+func (f fakeTarget) TableSectionsIgnored() []string { return nil }
 
 func buildWith(s string, t Target, cs goption.Charset) *Model {
 	f := source.New("t.cnf", []byte(s))

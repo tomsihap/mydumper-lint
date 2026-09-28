@@ -1,0 +1,34 @@
+MDL511, F17: mydumper v0.21.2-2 and v0.21.2-3 read the table sections before
+creating the hash tables that store them. GLib refuses every insertion (one
+GLib-CRITICAL line on stderr), the file otherwise loads and the dump succeeds,
+but users.email is dumped in plaintext. Every other version masks it. The
+knowledge base derives the affected versions from the source
+(table_sections_ignored); this scenario checks it both ways.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+expect column app.users.email: masked
+when kb:!table-sections-ignored
+expect stderr-lacks: assertion 'hash_table != NULL' failed
+end
+when kb:table-sections-ignored
+lint: MDL405, MDL511
+expect column app.users.email: plaintext
+expect stderr-contains: g_hash_table_insert_internal: assertion 'hash_table != NULL' failed
+end
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+threads=2
+
+[`app`.`users`]
+`email`=random_string

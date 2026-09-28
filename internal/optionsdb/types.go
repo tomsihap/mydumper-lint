@@ -32,7 +32,11 @@ type Version struct {
 	// ProductOptionGroups lists the tools that read their per-product option
 	// groups ([mydumper_mysql_8_0], F16): mydumper from v0.21.2-2, myloader never.
 	ProductOptionGroups []string `json:"product_option_groups,omitempty"`
-	ImageVerified       bool     `json:"image_verified"` // cross-check with the official image passed (§5.4)
+	// TableSectionsIgnored lists the tools that load the table sections
+	// before creating the tables that store them, so that every table
+	// section is lost (F17): mydumper v0.21.2-2 and v0.21.2-3.
+	TableSectionsIgnored []string `json:"table_sections_ignored,omitempty"`
+	ImageVerified        bool     `json:"image_verified"` // cross-check with the official image passed (§5.4)
 }
 
 // Range is an inclusive range of version tags. An empty To means "up to the

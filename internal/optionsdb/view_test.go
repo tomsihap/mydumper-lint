@@ -15,6 +15,7 @@ type target interface {
 	MasqueradeFunctions() []string
 	Products() []string
 	ProductOptionGroups() []string
+	TableSectionsIgnored() []string
 }
 
 var _ target = (*View)(nil)

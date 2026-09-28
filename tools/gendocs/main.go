@@ -15,6 +15,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 
@@ -93,7 +94,14 @@ func generate(root string) (map[string][]byte, error) {
 	}
 	out["docs/versions.md"] = []byte("# Supported mydumper versions\n\n" +
 		"Generated from the embedded knowledge base (`internal/optionsdb`). " +
-		"`mydumper-lint versions` prints the same table.\n\n" + versionsTable(db))
+		"`mydumper-lint versions` prints the same table.\n\n" + versionsTable(db) +
+		"\n- **Unknown options:** what mydumper does with an option it does not know in its groups: " +
+		"ignore it, or abort at startup.\n" +
+		"- **Pre-processor:** whether mydumper rewrites valueless lines (`routines` becomes `routines= 1`) " +
+		"before GLib reads the file.\n" +
+		"- **Product groups:** whether mydumper reads `[mydumper_<product>…]` groups; no myloader version " +
+		"reads `[myloader_<product>…]`.\n" +
+		"- **Image checked:** whether the official image's `--version` and `--help` matched the knowledge base.\n")
 	schema, err := config.Schema()
 	if err != nil {
 		return nil, err
@@ -374,16 +382,21 @@ func onlyRule(ds []byte, id string) []byte {
 func versionsTable(db *optionsdb.DB) string {
 	def, _ := db.Resolve("latest")
 	var b strings.Builder
-	b.WriteString("| Version | Released | Status | Unknown options | Pre-processor | Image checked |\n|---|---|---|---|---|---|\n")
+	b.WriteString("| Version | Released | Status | Unknown options | Pre-processor | Product groups | Image checked | Known issue |\n|---|---|---|---|---|---|---|---|\n")
 	for i := len(db.Versions) - 1; i >= 0; i-- {
 		v := db.Versions[i]
 		tag := "`" + v.Tag + "`"
 		if def.Version != nil && v.Tag == def.Version.Tag {
 			tag += " (default)"
 		}
-		fmt.Fprintf(&b, "| %s | %s | %s | %s | %s | %s |\n", tag, orDash(v.Date),
+		issue := "—"
+		if slices.Contains(v.TableSectionsIgnored, "mydumper") {
+			issue = "mydumper loses every table section ([MDL511](rules/MDL511.md))"
+		}
+		fmt.Fprintf(&b, "| %s | %s | %s | %s | %s | %s | %s | %s |\n", tag, orDash(v.Date),
 			pick(v.Prerelease, "pre-release", "stable"), pick(v.IgnoreUnknownOptions, "ignored", "fatal"),
-			pick(v.Preprocessor, "yes", "no"), pick(v.ImageVerified, "yes", "no"))
+			pick(v.Preprocessor, "yes", "no"), pick(slices.Contains(v.ProductOptionGroups, "mydumper"), "yes", "no"),
+			pick(v.ImageVerified, "yes", "no"), issue)
 	}
 	return b.String()
 }

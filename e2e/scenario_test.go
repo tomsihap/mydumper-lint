@@ -125,6 +125,8 @@ func (c cond) holds(tag optionsdb.Tag, view *optionsdb.View) bool {
 	var v bool
 	if name, ok := strings.CutPrefix(c.Fact, "masquerade="); ok {
 		v = slices.Contains(view.MasqueradeFunctions(), name)
+	} else if c.Fact == "table-sections-ignored" {
+		v = slices.Contains(view.TableSectionsIgnored(), "mydumper")
 	} else {
 		v = view.IgnoreUnknownOptions()
 	}
@@ -155,10 +157,10 @@ func parseConds(s string) ([]cond, error) {
 			}
 			name, isMasq := strings.CutPrefix(fact, "masquerade=")
 			switch {
-			case fact == "ignore-unknown-options":
+			case fact == "ignore-unknown-options", fact == "table-sections-ignored":
 			case isMasq && regexp.MustCompile(`^[a-z_]+$`).MatchString(name):
 			default:
-				return nil, fmt.Errorf("unknown knowledge-base fact %q (want ignore-unknown-options or masquerade=<function>)", fact)
+				return nil, fmt.Errorf("unknown knowledge-base fact %q (want ignore-unknown-options, table-sections-ignored or masquerade=<function>)", fact)
 			}
 			c.Fact = fact
 			out = append(out, c)

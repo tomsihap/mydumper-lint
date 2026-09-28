@@ -160,3 +160,8 @@ func (v *View) Products() []string { return slices.Clone(v.products) }
 // ProductOptionGroups returns the tools that read their per-product option
 // groups ([mydumper_mysql_8_0], F16): mydumper from v0.21.2-2, myloader never.
 func (v *View) ProductOptionGroups() []string { return slices.Clone(v.version.ProductOptionGroups) }
+
+// TableSectionsIgnored returns the tools that lose every table section
+// because they load them before creating their store (F17): mydumper
+// v0.21.2-2 and v0.21.2-3.
+func (v *View) TableSectionsIgnored() []string { return slices.Clone(v.version.TableSectionsIgnored) }

@@ -38,6 +38,7 @@ func buildDB(rels []release, xs []*extraction, verified map[string]bool) (*optio
 			LoaderFingerprint:    xs[i].fingerprint,
 			Preprocessor:         xs[i].preprocessor,
 			ProductOptionGroups:  xs[i].productGroups,
+			TableSectionsIgnored: xs[i].tablesLost,
 			ImageVerified:        verified[r.tag],
 		})
 	}
@@ -223,6 +224,10 @@ func changes(rels []release, xs []*extraction) []string {
 		}
 		if prev.ignoreUnknown != cur.ignoreUnknown {
 			parts = append(parts, fmt.Sprintf("ignore_unknown_options %v -> %v", prev.ignoreUnknown, cur.ignoreUnknown))
+		}
+		if !slices.Equal(prev.tablesLost, cur.tablesLost) {
+			parts = append(parts, fmt.Sprintf("table sections lost by [%s] -> [%s] (F17: review MDL511)",
+				strings.Join(prev.tablesLost, " "), strings.Join(cur.tablesLost, " ")))
 		}
 		if !slices.Equal(prev.productGroups, cur.productGroups) {
 			parts = append(parts, fmt.Sprintf("product option groups read by [%s] -> [%s]",

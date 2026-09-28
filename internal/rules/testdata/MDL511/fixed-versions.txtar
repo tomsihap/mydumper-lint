@@ -1,0 +1,8 @@
+# v0.21.2-4 creates the store first again.
+-- options --
+mydumper-version: v0.21.2-4
+-- input.cnf --
+[`app`.`users`]
+`email`=random_string
+-- diagnostics --
+(none)

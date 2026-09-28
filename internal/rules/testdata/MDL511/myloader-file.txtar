@@ -1,0 +1,10 @@
+# A file for myloader only: myloader v0.21.2-2 reads its table sections.
+-- options --
+mydumper-version: v0.21.2-3
+-- input.cnf --
+[myloader]
+threads=2
+[`app`.`users`]
+object_to_import=1
+-- diagnostics --
+(none)

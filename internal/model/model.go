@@ -125,6 +125,7 @@ type Target interface {
 	MasqueradeFunctions() []string
 	Products() []string
 	ProductOptionGroups() []string
+	TableSectionsIgnored() []string
 }
 
 // Options configures Build.

@@ -21,6 +21,10 @@ expect stderr-contains: Invalid key name
 expect exit: 0
 expect connected: true
 expect column app.users.email: plaintext
+when kb:table-sections-ignored
+# F17: this mydumper loses every table section (MDL511).
+lint: MDL110, MDL112, MDL405, MDL510, MDL511
+end
 -- defaults.cnf --
 [client]
 host=mysql

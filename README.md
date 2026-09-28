@@ -341,6 +341,7 @@ column in plaintext… Each rule has a page with an example taken from its tests
 | [MDL508](docs/rules/MDL508.md) | `masquerade-file-missing` | warning (opt-in) | — | A `<file X>` of a masking format does not exist. |
 | [MDL509](docs/rules/MDL509.md) | `table-group-not-dumped` | info (opt-in) | — | A table section names a table the `regex` of [mydumper] excludes. |
 | [MDL510](docs/rules/MDL510.md) | `extra-file-section-dropped` | error | — | The defaults file is rejected, so the extra file's table sections and variable groups are ignored. |
+| [MDL511](docs/rules/MDL511.md) | `table-sections-lost` | error | — | This mydumper version ignores every table section, masking included. |
 
 **Connection (MySQL client library)**
 

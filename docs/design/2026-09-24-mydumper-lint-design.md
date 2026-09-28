@@ -259,6 +259,7 @@ with `g_option_context_parse_strv`.
 | F9 | A key that starts with `` ` `` and contains a second `` ` `` is a masked column. A key starting with `` ` `` without a second one falls through to the generic branch and is ignored. | src |
 | F10 | The masking function is selected by **prefix** among `random_format`, `random_string`, `random_int`, `random_uuid`, `apply`, `constant`, `regex`, and `null` (in master, absent from v0.19.3-3). An unknown function logs `Function not found: Using default` (at `--verbose 3`) and falls back to the identity function. **AMENDED:** up to v0.21.2-4 identity returns the value: **the column is exported in plaintext**; from v0.21.3-1 (new masking API) identity writes nothing: **the column is exported empty**, silently. | src; e2e mdl502-* |
 | F11 | Syntax errors in masking arguments (`<file …>`, `<string N>`, `<number N>`, `<regex '…'>`, a missing quote or `>`, the element count of `apply` and `regex`) and in the modifiers `WITH_MEM`, `REPLACE_NULL`, `UNIQUE`, `MAX_LENGTH` trigger `g_error`: the dump aborts. | src |
+| F17 | **NEW.** mydumper v0.21.2-2 and v0.21.2-3 read the table sections (`create_main_connection` → `load_per_table_info_from_key_file`) before `initialize_start_dump` creates the hash tables that store them. GLib refuses every insertion (`GLib-CRITICAL … g_hash_table_insert_internal: assertion 'hash_table != NULL' failed`), the file otherwise loads, the dump succeeds, and every table section is lost: masked columns are dumped in plaintext, `where`, `limit` and the other keys do not apply. v0.21.2-4 restores the order; myloader is never affected. The generator derives it per version (`table_sections_ignored`: which comes first, following calls from `main` in source order, the loading or the creation of the store). | src (every tag); verified: e2e mdl511-table-sections-lost on all 27 image versions |
 
 ### 3.6 Recognized groups
 
@@ -513,7 +514,8 @@ The file is sorted and fully deterministic.
    myloader, other `src/` files ⇒ both. Detect
    `g_option_context_set_ignore_unknown_options(…, TRUE)`, and whether `load_config_file`
    runs the pre-processor (its `"= 1"` literal: `preprocessor`, §3.2), and which tools
-   call `load_options_for_product_from_key_file` (`product_option_groups`, F16). Extract table keys (the
+   call `load_options_for_product_from_key_file` (`product_option_groups`, F16), and which
+   load the table sections before creating their store (`table_sections_ignored`, F17). Extract table keys (the
    comparisons in `load_per_table_info_from_key_file` and the `#define`s they use), masking
    functions (`get_function_pointer_for`) and products (`get_product_name`). Fingerprint
    `load_config_file` and `parse_key_file_group`: a hash of their tokens with whitespace
@@ -688,6 +690,7 @@ target version and build.
 | MDL508 | `masquerade-file-missing` | warning, opt-in | `<file X>` not found relative to `--base-dir` | — | F11 |
 | MDL509 | `table-group-not-dumped` | info, opt-in | table section whose `db.table` does not match the `regex` of `[mydumper]` in the same file or load set (§9.3): the extra file's regex, when it has one, filters the sections of both files (F15) | — | — |
 | MDL510 | `extra-file-section-dropped` | error | **NEW.** In a load set whose defaults file GLib rejects, a table section, variable group or per-product option group of the extra file: mydumper reads these from the merged file, which does not exist, so they are ignored (masked columns dumped in plaintext) while the extra file's tool group applies | — | F15 |
+| MDL511 | `table-sections-lost` | error; warning for a section without masked columns | **NEW.** A table section, with mydumper v0.21.2-2 or v0.21.2-3 (F17): mydumper ignores it. Not reported for a file with [myloader] and no [mydumper] | — | F17 |
 
 #### MDL6xx — Connection (libmysqlclient) — NEW
 
@@ -1293,10 +1296,10 @@ argv is built like mydumper does (`[group, --key, value, …]`). Options: `routi
 
 ## Appendix C — Changes from the draft spec
 
-1. **Reference facts.** Amended K2, K4, K14, K17, F10. Added K19, K20, G7–G17, F12–F16,
+1. **Reference facts.** Amended K2, K4, K14, K17, F10. Added K19, K20, G7–G17, F12–F17,
    C1–C5, V1–V6. F5 confirmed in the source.
 2. **Rules.** New: MDL002, MDL110, MDL111, MDL112, MDL113, MDL313, MDL407, MDL408, MDL409,
-   MDL510, MDL601–MDL603.
+   MDL510, MDL511, MDL601–MDL603.
    Amended: MDL106, MDL108, MDL305, MDL312, MDL404.
 3. **Versions.** Every release ≥ v0.19.1-1 instead of three versions (two of which were
    pre-releases, with the 0.20 branch missing). One consolidated history file instead of

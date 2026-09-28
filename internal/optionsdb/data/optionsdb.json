@@ -152,6 +152,9 @@
       "product_option_groups": [
         "mydumper"
       ],
+      "table_sections_ignored": [
+        "mydumper"
+      ],
       "image_verified": true
     },
     {
@@ -163,6 +166,9 @@
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
       "preprocessor": true,
       "product_option_groups": [
+        "mydumper"
+      ],
+      "table_sections_ignored": [
         "mydumper"
       ],
       "image_verified": true

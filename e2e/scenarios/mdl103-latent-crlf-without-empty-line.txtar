@@ -14,5 +14,10 @@ expect config-loaded: true
 expect exit: 0
 expect connected: true
 expect column app.users.email: masked
+when kb:table-sections-ignored
+# F17: this mydumper loses every table section (MDL511).
+lint: MDL103, MDL405, MDL511
+expect column app.users.email: plaintext
+end
 -- defaults.cnf.esc --
 [client]\r\nhost=mysql\r\nuser=e2e\r\npassword=e2e-password\r\n[mydumper]\r\nthreads=2\r\n[`app`.`users`]\r\n`email`=random_string\r\n

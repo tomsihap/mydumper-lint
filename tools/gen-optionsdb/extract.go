@@ -58,6 +58,7 @@ type extraction struct {
 	products      []string
 	ignoreUnknown bool
 	productGroups []string          // tools that read their per-product option groups (F16)
+	tablesLost    []string          // tools that load table sections before creating their store (F17)
 	fingerprint   string            // loader fingerprint (both functions)
 	preprocessor  bool              // load_config_file rewrites valueless lines (design §3.2)
 	funcPrints    map[string]string // fingerprint of each loader function, for the report
@@ -130,13 +131,13 @@ func extract(tag string, tree srcTree) (*extraction, error) {
 	for ci, f := range perCfg[1:] {
 		if !slices.Equal(f.tableKeys, base.tableKeys) || !slices.Equal(f.masquerade, base.masquerade) ||
 			!slices.Equal(f.products, base.products) || f.ignoreUnknown != base.ignoreUnknown ||
-			!slices.Equal(f.productGroups, base.productGroups) {
+			!slices.Equal(f.productGroups, base.productGroups) || !slices.Equal(f.tablesLost, base.tablesLost) {
 			return nil, fmt.Errorf("%s: table keys, masking functions, products, product option groups or the unknown-option policy depend on the build (%s vs %s); the schema cannot represent that",
 				tag, configs[0], configs[ci+1])
 		}
 	}
 	x.tableKeys, x.masquerade, x.products, x.ignoreUnknown = base.tableKeys, base.masquerade, base.products, base.ignoreUnknown
-	x.productGroups = base.productGroups
+	x.productGroups, x.tablesLost = base.productGroups, base.tablesLost
 
 	// Options: group the configurations by definition.
 	for _, tool := range tools {
@@ -213,6 +214,7 @@ type cfgFacts struct {
 	products      []string
 	ignoreUnknown bool
 	productGroups []string // tools that read their per-product option groups (F16)
+	tablesLost    []string // tools that load table sections before creating their store (F17)
 	notes         []string
 }
 
@@ -385,6 +387,128 @@ func (p *program) reachable() (map[*funcDef]bool, error) {
 		}
 	}
 	return seen, nil
+}
+
+// event recognizes one step of an initialization sequence at body[i].
+type event func(body []token, i int) bool
+
+// callTo is a call to the function name.
+func callTo(name string) event {
+	return func(b []token, i int) bool { return b[i].isIdent(name) && i+1 < len(b) && b[i+1].is("(") }
+}
+
+// assignTo is an assignment to the variable name (not to a member).
+func assignTo(name string) event {
+	return func(b []token, i int) bool {
+		return b[i].isIdent(name) && i+1 < len(b) && b[i+1].is("=") && (i == 0 || !b[i-1].is(".") && !b[i-1].is("->"))
+	}
+}
+
+func anyOf(evs ...event) event {
+	return func(b []token, i int) bool {
+		for _, e := range evs {
+			if e(b, i) {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+// firstReached follows the program from main in source order, entering the
+// first call that leads to both events, and returns which event (0 or 1)
+// happens first (-1 when neither is reached), and whether main reaches each
+// event at all. Branches and loops are ignored: the order is the order of
+// the text, which is what matters for initialization sequences.
+func (p *program) firstReached(reach map[*funcDef]bool, evs [2]event) (int, [2]bool) {
+	var main *funcDef
+	for f := range reach {
+		if f.name == "main" {
+			main = f
+		}
+	}
+	memo := map[*funcDef]*[2]int8{} // 0 unknown, 1 yes, 2 no
+	var leadsTo func(f *funcDef, e int, visiting map[*funcDef]bool) bool
+	leadsTo = func(f *funcDef, e int, visiting map[*funcDef]bool) bool {
+		if m := memo[f]; m != nil && m[e] != 0 {
+			return m[e] == 1
+		}
+		if visiting[f] {
+			return false
+		}
+		visiting[f] = true
+		defer delete(visiting, f)
+		found := false
+		body := f.body()
+		for i := range body {
+			if evs[e](body, i) {
+				found = true
+				break
+			}
+		}
+		for _, g := range p.callees(f) {
+			if found {
+				break
+			}
+			found = leadsTo(g, e, visiting)
+		}
+		if memo[f] == nil {
+			memo[f] = &[2]int8{}
+		}
+		memo[f][e] = 2
+		if found {
+			memo[f][e] = 1
+		}
+		return found
+	}
+	var walk func(f *funcDef, seen map[*funcDef]bool) int
+	walk = func(f *funcDef, seen map[*funcDef]bool) int {
+		if seen[f] {
+			return -1
+		}
+		seen[f] = true
+		body := f.body()
+		for i, t := range body {
+			for e := range evs {
+				if evs[e](body, i) {
+					return e
+				}
+			}
+			if t.kind != tkIdent || (i > 0 && (body[i-1].is(".") || body[i-1].is("->"))) {
+				continue
+			}
+			for _, g := range p.resolveFunc(f.cu, t.text) {
+				r0, r1 := leadsTo(g, 0, map[*funcDef]bool{}), leadsTo(g, 1, map[*funcDef]bool{})
+				switch {
+				case r0 && r1:
+					return walk(g, seen)
+				case r0:
+					return 0
+				case r1:
+					return 1
+				}
+			}
+		}
+		return -1
+	}
+	if main == nil {
+		return -1, [2]bool{}
+	}
+	return walk(main, map[*funcDef]bool{}), [2]bool{leadsTo(main, 0, map[*funcDef]bool{}), leadsTo(main, 1, map[*funcDef]bool{})}
+}
+
+// callees lists, in source order, the functions f's body names (called or
+// passed as pointers), like reachable.
+func (p *program) callees(f *funcDef) []*funcDef {
+	var out []*funcDef
+	body := f.body()
+	for i, t := range body {
+		if t.kind != tkIdent || (i > 0 && (body[i-1].is(".") || body[i-1].is("->"))) {
+			continue
+		}
+		out = append(out, p.resolveFunc(f.cu, t.text)...)
+	}
+	return out
 }
 
 // call is one call expression found in a function body.
@@ -639,6 +763,22 @@ func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]str
 					facts.productGroups = append(facts.productGroups, tool)
 				}
 			}
+		}
+
+		// Table sections are stored in hash tables that initialize_conf_per_table
+		// creates. A tool that loads them first inserts into NULL tables: GLib
+		// refuses every insertion, and every table section is lost (F17).
+		// The store is created by initialize_conf_per_table (up to v0.21.3-x) or
+		// by assigning conf_per_table (from v0.21.4-1).
+		first, reached := p.firstReached(reach, [2]event{
+			callTo("load_per_table_info_from_key_file"),
+			anyOf(callTo("initialize_conf_per_table"), assignTo("conf_per_table")),
+		})
+		switch {
+		case reached[0] && !reached[1]:
+			return nil, fmt.Errorf("%s: the table sections are loaded, but their store is never created: review how they are stored (F17)", tool)
+		case first == 0:
+			facts.tablesLost = append(facts.tablesLost, tool)
 		}
 	}
 	for _, path := range sortedKeys(cus) {

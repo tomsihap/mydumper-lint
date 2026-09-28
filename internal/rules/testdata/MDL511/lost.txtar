@@ -1,0 +1,19 @@
+# F17: mydumper v0.21.2-2 reads the table sections before creating their
+# store: every section is lost, masking included.
+-- options --
+mydumper-version: v0.21.2-2
+doc-example: yes
+-- input.cnf --
+[mydumper]
+threads=2
+[`app`.`users`]
+`email`=random_string
+[`app`.`orders`]
+where=id > 10
+[`app`.`users`]
+limit=5
+-- diagnostics --
+3:2-3:15 error MDL511[table-sections-lost] mydumper v0.21.2-2 ignores this table section: it reads table sections before creating the tables that store them
+  = Its masked columns are dumped in plaintext, and its other settings do not apply.
+5:2-5:16 warning MDL511[table-sections-lost] mydumper v0.21.2-2 ignores this table section: it reads table sections before creating the tables that store them
+  = None of its settings apply to the dump; myloader still reads them.

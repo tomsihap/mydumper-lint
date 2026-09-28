@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"slices"
 	"text/tabwriter"
 
 	"github.com/tomsihap/mydumper-lint/internal/optionsdb"
@@ -18,6 +19,18 @@ type versionJSON struct {
 	Preprocessor         bool   `json:"preprocessor"`
 	ImageVerified        bool   `json:"image_verified"`
 	Default              bool   `json:"default"`
+	// ProductOptionGroups lists the tools that read [<tool>_<product>…] (F16).
+	ProductOptionGroups []string `json:"product_option_groups"`
+	// TableSectionsIgnored lists the tools that lose every table section (F17).
+	TableSectionsIgnored []string `json:"table_sections_ignored"`
+}
+
+// versionNote is the known issue of a version, or "-".
+func versionNote(v versionJSON) string {
+	if slices.Contains(v.TableSectionsIgnored, "mydumper") {
+		return "mydumper loses every table section (MDL511)"
+	}
+	return "-"
 }
 
 func runVersions(args []string, e *env) int {
@@ -51,6 +64,7 @@ func runVersions(args []string, e *env) int {
 		out = append(out, versionJSON{
 			Tag: v.Tag, Date: v.Date, Prerelease: v.Prerelease, IgnoreUnknownOptions: v.IgnoreUnknownOptions,
 			Preprocessor: v.Preprocessor, ImageVerified: v.ImageVerified, Default: v.Tag == def.Version.Tag,
+			ProductOptionGroups: nonNil(v.ProductOptionGroups), TableSectionsIgnored: nonNil(v.TableSectionsIgnored),
 		})
 	}
 	if *format == "json" {
@@ -62,7 +76,7 @@ func runVersions(args []string, e *env) int {
 		return ExitOK
 	}
 	w := tabwriter.NewWriter(e.stdout, 0, 0, 2, ' ', 0)
-	fmt.Fprintln(w, "VERSION\tRELEASED\tSTATUS\tUNKNOWN OPTIONS\tPRE-PROCESSOR\tIMAGE CHECKED")
+	fmt.Fprintln(w, "VERSION\tRELEASED\tSTATUS\tUNKNOWN OPTIONS\tPRE-PROCESSOR\tPRODUCT GROUPS\tIMAGE CHECKED\tKNOWN ISSUE")
 	for _, v := range out {
 		tag, status, unknown, pre, image := v.Tag, "stable", "fatal", "yes", "yes"
 		if v.Default {
@@ -84,12 +98,17 @@ func runVersions(args []string, e *env) int {
 		if date == "" {
 			date = "-"
 		}
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\n", tag, date, status, unknown, pre, image)
+		product := "no"
+		if slices.Contains(v.ProductOptionGroups, "mydumper") {
+			product = "yes"
+		}
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", tag, date, status, unknown, pre, product, image, versionNote(v))
 	}
 	if err := w.Flush(); err != nil {
 		return ExitError
 	}
-	fmt.Fprintf(e.stdout, "\n* default target: %s, the latest stable release. Pin yours with --mydumper-version\n"+
+	fmt.Fprintf(e.stdout, "\nPRODUCT GROUPS: whether mydumper reads [mydumper_<product>…]; myloader never reads its own.\n"+
+		"* default target: %s, the latest stable release. Pin yours with --mydumper-version\n"+
 		"  or `mydumper-version:` in .mydumper-lint.yaml; accepted forms: v0.19.3-3, 0.19.3, 0.19, latest,\n"+
 		"  latest-prerelease.\n", def.Version.Tag)
 	return ExitOK

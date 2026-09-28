@@ -1,6 +1,7 @@
 package main
 
 import (
+	"slices"
 	"strings"
 	"testing"
 )
@@ -175,4 +176,26 @@ func mustExtract(t *testing.T, tree srcTree) *extraction {
 		t.Fatal(err)
 	}
 	return x
+}
+
+// F17: the table sections are lost when a tool loads them before creating
+// the tables that store them.
+func TestTableSectionsLost(t *testing.T) {
+	tests := map[string][]string{
+		"": nil, // neither: nothing to say
+		"load_per_table_info_from_key_file(NULL); initialize_conf_per_table(&cpt);":                         {"mydumper"},
+		"initialize_conf_per_table(&cpt); load_per_table_info_from_key_file(NULL);":                         nil,
+		"conf_per_table = g_hash_table_new(NULL, NULL); load_per_table_info_from_key_file(NULL);":           nil,
+		"load_per_table_info_from_key_file(NULL); if (conf_per_table == NULL) {} conf_per_table = make(1);": {"mydumper"},
+	}
+	for hook, want := range tests {
+		x := mustExtract(t, synthTree(map[string]string{"EXTRA_HOOK": hook}))
+		if !slices.Equal(x.tablesLost, want) {
+			t.Errorf("%q: tables lost by %v, want %v", hook, x.tablesLost, want)
+		}
+	}
+	if _, err := extract("vTEST", synthTree(map[string]string{"EXTRA_HOOK": "load_per_table_info_from_key_file(NULL);"})); err == nil ||
+		!strings.Contains(err.Error(), "store is never created") {
+		t.Errorf("a store that is never created must stop the generator: %v", err)
+	}
 }

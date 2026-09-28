@@ -121,7 +121,8 @@ Blank lines and lines starting with `#` are ignored.
 
 A condition is `OP TAG` with `OP` one of `<`, `<=`, `>`, `>=`, `=`, `!=`
 (`>= v0.19.3-1`), or a fact of the knowledge base about the version:
-`kb:ignore-unknown-options`, `kb:masquerade=null`, negated with `!`
+`kb:ignore-unknown-options`, `kb:masquerade=null`, `kb:table-sections-ignored` (mydumper
+loses every table section, F17), negated with `!`
 (`kb:!ignore-unknown-options`). Blocks override the top-level `lint:` and
 single-valued observations; repeatable observations accumulate. Two blocks that
 apply to the same version must agree: a knowledge-base block and a version

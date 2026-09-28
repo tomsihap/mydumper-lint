@@ -272,6 +272,7 @@ func TestMydumperVersion(t *testing.T) {
 
 func TestVersions(t *testing.T) {
 	r := run(t, "", "versions")
+	r0 := r
 	if r.code != ExitOK || !strings.Contains(r.stdout, "v0.19.1-1") || !strings.Contains(r.stdout, "default target:") ||
 		!strings.Contains(r.stdout, " *") {
 		t.Errorf("versions: %+v", r)
@@ -292,6 +293,17 @@ func TestVersions(t *testing.T) {
 	}
 	if defaults != 1 || vs[len(vs)-1].Tag != "v0.19.1-1" || vs[len(vs)-1].Preprocessor {
 		t.Errorf("defaults=%d last=%+v", defaults, vs[len(vs)-1])
+	}
+	for _, v := range vs {
+		lost := v.Tag == "v0.21.2-2" || v.Tag == "v0.21.2-3"
+		if lost != (versionNote(v) != "-") || v.ProductOptionGroups == nil || v.TableSectionsIgnored == nil {
+			t.Errorf("%s: note %q, %+v", v.Tag, versionNote(v), v)
+		}
+	}
+	for _, line := range strings.Split(r0.stdout, "\n") {
+		if strings.HasPrefix(line, "v0.21.2-3 ") && !strings.Contains(line, "(MDL511)") {
+			t.Errorf("v0.21.2-3 has no known issue: %q", line)
+		}
 	}
 	if r := run(t, "", "versions", "--format", "xml"); r.code != ExitError {
 		t.Errorf("bad format: %+v", r)

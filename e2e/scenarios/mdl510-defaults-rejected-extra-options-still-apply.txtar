@@ -20,6 +20,10 @@ expect exit: 0
 expect connected: true
 expect threads: 3
 expect column app.users.email: plaintext
+when kb:table-sections-ignored
+# F17: this mydumper loses every table section (MDL511).
+lint: MDL110, MDL112, MDL510, MDL511
+end
 -- defaults.cnf --
 [mydumper]
 key[bar baz]=1

@@ -16,7 +16,7 @@ when kb:masquerade=null
 expect column app.users.email: null
 end
 
-when kb:!masquerade=null
+when kb:!masquerade=null, kb:!table-sections-ignored
 lint: MDL502
 end
 
@@ -30,6 +30,11 @@ end
 
 when >= v0.21.3-1, < v0.21.4-1
 expect column app.users.email: empty
+end
+
+when kb:table-sections-ignored
+# F17: this mydumper loses every table section (MDL511); null does not exist yet.
+lint: MDL502, MDL511
 end
 -- mydumper.cnf --
 [mydumper]
