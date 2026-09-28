@@ -1,0 +1,24 @@
+# F7: only [`db`.`table`] is a table section.
+-- input.cnf --
+[db.users]
+`email`=random_string
+[`db.orders`]
+where=amount > 0
+[db.a.b]
+rows=10
+-- fixed-unsafe.cnf --
+[`db`.`users`]
+`email`=random_string
+[`db`.`orders`]
+where=amount > 0
+[db.a.b]
+rows=10
+-- diagnostics --
+1:2-1:10 error MDL204[malformed-table-group] [db.users] is not a table section: write it [`db`.`table`], each name in backticks
+  = mydumper ignores this section: its where, rows and masking settings do not apply. The masked columns are dumped in plaintext.
+  fix (unsafe): Rename the section to [`db`.`users`]
+3:2-3:13 error MDL204[malformed-table-group] [`db.orders`] is not a table section: write it [`db`.`table`], each name in backticks
+  = mydumper ignores this section: its where, rows and masking settings do not apply.
+  fix (unsafe): Rename the section to [`db`.`orders`]
+5:2-5:8 error MDL204[malformed-table-group] [db.a.b] is not a table section: write it [`db`.`table`], each name in backticks
+  = mydumper ignores this section: its where, rows and masking settings do not apply.

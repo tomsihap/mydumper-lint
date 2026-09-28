@@ -267,6 +267,7 @@ type outcome struct {
 	result   *lint.Result // of the fixed content when fixing
 	output   []byte       // fixed content (--fix, --diff)
 	fixed    int
+	dropped  []diag.Diagnostic // fixes refused because they would make mydumper fail
 	version  string
 	warning  string // e.g. version resolution notice
 	err      error
@@ -329,7 +330,7 @@ func (c *checkCmd) process(path string) outcome {
 		o.err = err
 		return o
 	}
-	o.output, o.fixed = res.Output, res.Applied
+	o.output, o.fixed, o.dropped = res.Output, res.Applied, res.Dropped
 	o.result = l.Check(o.path, res.Output)
 	if c.fix && !o.isStdin && !bytes.Equal(res.Output, o.src) {
 		if err := fix.WriteAtomic(path, res.Output); err != nil {
@@ -357,6 +358,10 @@ func (c *checkCmd) finish(outcomes []outcome) int {
 			fmt.Fprintf(c.e.stderr, "mydumper-lint: %s: %v\n", o.path, o.err)
 			code = ExitError
 			continue
+		}
+		for _, d := range o.dropped {
+			fmt.Fprintf(c.e.stderr, "mydumper-lint: %s: not applied: %s fix %q, which would make mydumper fail\n",
+				o.path, d.RuleID, d.Fix.Description)
 		}
 		src := o.src
 		if o.output != nil {

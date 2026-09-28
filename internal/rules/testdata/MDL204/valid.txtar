@@ -1,0 +1,9 @@
+-- input.cnf --
+[`db`.`users`]
+`email`=random_string
+[`db`.``]
+rows=10
+[``.`t`]
+rows=5
+-- diagnostics --
+(none)

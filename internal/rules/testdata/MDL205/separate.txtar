@@ -1,0 +1,24 @@
+-- input.cnf --
+[mydumper]
+threads=4
+
+[client]
+user=u
+
+[mydumper]
+routines=1
+# end
+-- fixed-unsafe.cnf --
+[mydumper]
+threads=4
+routines=1
+# end
+
+[client]
+user=u
+
+-- diagnostics --
+7:2-7:10 warning MDL205[duplicate-group] [mydumper] is already declared on line 1: GLib merges the two sections
+  = The keys of both sections form one group; a key set in both keeps the last value.
+  note 1:2-1:10: first declaration
+  fix (unsafe): Move these lines to the end of the first section

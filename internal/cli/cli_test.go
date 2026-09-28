@@ -301,6 +301,18 @@ func TestVersions(t *testing.T) {
 	}
 }
 
+func TestFixRefusesHarmfulUnsafeFixes(t *testing.T) {
+	// Renaming [MyDumper] makes mydumper read it, and its unknown key would
+	// then abort startup (v0.19.3-3): the guard refuses that fix.
+	root := workspace(t, map[string]string{"x.cnf": "[MyDumper]\nbogus=1\n"})
+	path := filepath.Join(root, "x.cnf")
+	r := run(t, "", "check", "--mydumper-version", "0.19.3-3", "--fix", "--unsafe-fixes", path)
+	got, _ := os.ReadFile(path)
+	if string(got) != "[MyDumper]\nbogus=1\n" || !strings.Contains(r.stderr, "not applied: MDL202") {
+		t.Errorf("file %q, result %+v", got, r)
+	}
+}
+
 func TestInspect(t *testing.T) {
 	root := workspace(t, map[string]string{"bad.cnf": broken, "loc.cnf": "[mydumper]\nthreads[fr]=4\nhost=db\n"})
 	r := run(t, "", "inspect", "--format", "json", filepath.Join(root, "bad.cnf"))

@@ -1,0 +1,18 @@
+-- input.cnf --
+[mydumpr]
+threads=4
+[mydumper_variables]
+sql_mode=x
+[mydumper_oracle]
+threads=2
+[mysqldump]
+quick=1
+-- diagnostics --
+1:2-1:9 warning MDL201[unknown-group] [mydumpr] is read by nobody: did you mean [mydumper]?
+  = Every key of this group is ignored.
+3:2-3:20 warning MDL201[unknown-group] [mydumper_variables] is read by nobody: it was renamed [mydumper_session_variables] in v0.14.0-1
+  = Every key of this group is ignored.
+5:2-5:17 warning MDL201[unknown-group] [mydumper_oracle] is read by nobody: the product is not one mydumper knows (mysql, percona, mariadb, tidb, rds, google, clickhouse, dolt, unknown)
+  = Every key of this group is ignored.
+7:2-7:11 warning MDL201[unknown-group] [mysqldump] is read by nobody
+  = Every key of this group is ignored.

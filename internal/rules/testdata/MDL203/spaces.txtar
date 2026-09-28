@@ -1,0 +1,17 @@
+-- input.cnf --
+[ mydumper ]
+threads=4
+[ `db`.`t` ]
+where=1
+-- fixed-unsafe.cnf --
+[mydumper]
+threads=4
+[`db`.`t`]
+where=1
+-- diagnostics --
+1:2-1:12 error MDL203[group-name-whitespace] the group name " mydumper " has spaces around it: it is not [mydumper]
+  = Nobody reads this group: every key in it is ignored.
+  fix (unsafe): Remove the spaces
+3:2-3:12 error MDL203[group-name-whitespace] the group name " `db`.`t` " has spaces around it: it is not [`db`.`t`]
+  = Nobody reads this group: every key in it is ignored.
+  fix (unsafe): Remove the spaces

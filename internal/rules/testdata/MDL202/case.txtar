@@ -1,0 +1,21 @@
+-- input.cnf --
+[MyDumper]
+threads=4
+[Myloader_Session_Variables]
+sql_mode=x
+[CLIENT]
+user=u
+-- fixed-unsafe.cnf --
+[mydumper]
+threads=4
+[myloader_session_variables]
+sql_mode=x
+[CLIENT]
+user=u
+-- diagnostics --
+1:2-1:10 error MDL202[group-name-case] [MyDumper] is not [mydumper]: group names are case-sensitive
+  = mydumper never reads this group: every key in it is ignored.
+  fix (unsafe): Rename the group to [mydumper]
+3:2-3:28 error MDL202[group-name-case] [Myloader_Session_Variables] is not [myloader_session_variables]: group names are case-sensitive
+  = myloader never reads this group: every key in it is ignored.
+  fix (unsafe): Rename the group to [myloader_session_variables]

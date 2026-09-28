@@ -163,3 +163,37 @@ func TestWriteAtomicMissingFile(t *testing.T) {
 		t.Error("writing into a missing directory must fail")
 	}
 }
+
+// TestFixpointHealthGuard: two unsafe fixes, harmless alone, harmful together.
+// The guard keeps the first (lowest rule ID) and drops the second for good.
+func TestFixpointHealthGuard(t *testing.T) {
+	lint := func(src []byte) []diag.Diagnostic {
+		var ds []diag.Diagnostic
+		for i, c := range src {
+			if c == 'a' || c == 'b' {
+				ds = append(ds, diag.Diagnostic{
+					RuleID: map[byte]string{'a': "MDL401", 'b': "MDL402"}[c], Message: "lower",
+					Span: diag.Span{Start: i, End: i + 1},
+					Fix: &diag.Fix{
+						Applicability: diag.Unsafe, Description: "upper",
+						Edits: []diag.Edit{{Start: i, End: i + 1, New: string(c - 32)}},
+					},
+				})
+			}
+		}
+		return ds
+	}
+	health := func(src []byte) model.Health {
+		if string(src) == "AB" {
+			return model.FatalAtStartup
+		}
+		return model.OK
+	}
+	res, err := Fixpoint([]byte("ab"), lint, Options{Unsafe: true, Health: health})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(res.Output) != "Ab" || res.Applied != 1 || len(res.Dropped) != 1 || res.Dropped[0].RuleID != "MDL402" {
+		t.Errorf("output %q, applied %d, dropped %+v", res.Output, res.Applied, res.Dropped)
+	}
+}

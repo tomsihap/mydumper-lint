@@ -767,6 +767,14 @@ diff. For a loadable file, R is its real effective model, so "safe" means "mydum
 behaves exactly the same". For a rejected file, it means "mydumper now applies exactly
 what the author wrote".
 
+**AMENDED (health guard).** Unsafe fixes can also interact with GOption: renaming
+[MyDumper] makes mydumper read the group, whose invalid key then aborts startup; two
+renames that are harmless alone can be fatal together, by un-swallowing a key (G8). Each
+pass is therefore guarded: when its fixes, applied together, would lower the health, the
+pass is replayed one fix at a time and each fix that lowers it is dropped for good and
+reported (`not applied: … which would make mydumper fail`). The self-check stays as the
+last line of defense.
+
 The check exists because fixes interact with the pre-processor. For example, moving the
 trailing comment of `[mydumper] # see [docs]` above the header would create a leak
 origin (P1), and the empty line after the header would then break the file. MDL106 does

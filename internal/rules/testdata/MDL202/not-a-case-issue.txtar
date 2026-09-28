@@ -1,0 +1,6 @@
+-- input.cnf --
+[mydumper]
+threads=4
+[Mydumperx]
+-- diagnostics --
+(none)

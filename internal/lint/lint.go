@@ -89,9 +89,16 @@ func (l *Linter) Measure(src []byte) (string, model.Health) {
 	return recovered.Projection(), health
 }
 
+// health is the health of src (design §7.3).
+func (l *Linter) health(src []byte) model.Health {
+	f := source.New("", src)
+	return model.Build(keyfile.Parse(f, l.preprocess(f)), l.modelOptions()).Health
+}
+
 // Fix applies fixes until nothing changes, then runs the self-check. On a
 // self-check failure (a *fix.SelfCheckError) nothing must be written.
 func (l *Linter) Fix(path string, src []byte, opt fix.Options) (fix.Result, error) {
+	opt.Health = l.health
 	res, err := fix.Fixpoint(src, func(b []byte) []diag.Diagnostic {
 		return l.Check(path, b).Diagnostics
 	}, opt)

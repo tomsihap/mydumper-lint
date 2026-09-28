@@ -8,12 +8,12 @@ select: MDL001, MDL402
 # mydumper-lint: disable-next-line=MDL402
 
 routines=1
--- diagnostics --
-3:36-3:42 info MDL001[unused-suppression] unused suppression: MDL402 reported nothing here
-  fix (safe): Remove the suppression comment
 -- fixed.cnf --
 [mydumper]
 # see [docs]
 #
 
 routines=1
+-- diagnostics --
+3:36-3:42 info MDL001[unused-suppression] unused suppression: MDL402 reported nothing here
+  fix (safe): Remove the suppression comment

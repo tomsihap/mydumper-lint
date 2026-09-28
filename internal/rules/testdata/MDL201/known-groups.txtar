@@ -1,0 +1,16 @@
+# Known groups, and names MDL202-MDL204 report instead.
+-- input.cnf --
+[mydumper]
+threads=4
+[mydumper_mysql_8_0]
+threads=2
+[myloader_session_variables]
+sql_mode=x
+[client]
+user=u
+[`db`.`t`]
+where=1
+[MyDumper]
+[db.t]
+-- diagnostics --
+(none)
