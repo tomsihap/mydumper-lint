@@ -3,6 +3,7 @@ package glob
 
 import (
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -13,11 +14,12 @@ import (
 //   - a pattern without "/" matches the base name at any depth, like
 //     .gitignore ("*.cnf", "defaults-file.cnf").
 //
-// Both are slash-separated and relative; a leading "./" is ignored.
-// An invalid pattern matches nothing (see Validate).
+// Both are relative; the pattern is slash-separated, the name may use the
+// OS separator. A leading "./" is ignored. An invalid pattern matches nothing
+// (see Validate).
 func Match(pattern, name string) bool {
 	pattern = strings.TrimPrefix(pattern, "./")
-	name = strings.TrimPrefix(name, "./")
+	name = strings.TrimPrefix(filepath.ToSlash(name), "./")
 	if !strings.Contains(pattern, "/") {
 		ok, err := path.Match(pattern, path.Base(name))
 		return err == nil && ok

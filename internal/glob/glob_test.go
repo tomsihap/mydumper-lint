@@ -1,6 +1,9 @@
 package glob
 
-import "testing"
+import (
+	"path/filepath"
+	"testing"
+)
 
 func TestMatch(t *testing.T) {
 	tests := []struct {
@@ -43,5 +46,15 @@ func TestValidate(t *testing.T) {
 func TestMatchAny(t *testing.T) {
 	if !MatchAny([]string{"*.bak", "**/*.cnf"}, "x/a.cnf") || MatchAny(nil, "a") {
 		t.Error("MatchAny wrong")
+	}
+}
+
+// A name with the OS separator matches like its slash form (Windows paths).
+func TestMatchNativeSeparator(t *testing.T) {
+	name := filepath.Join("legacy", "sub", "old.cnf")
+	for _, p := range []string{"legacy/**/*.cnf", "legacy/sub/*.cnf", "*.cnf"} {
+		if !Match(p, name) {
+			t.Errorf("Match(%q, %q) = false", p, name)
+		}
 	}
 }

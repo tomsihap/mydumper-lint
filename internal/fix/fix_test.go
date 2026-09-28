@@ -294,6 +294,9 @@ func TestWriteAtomicUnwritableDirectory(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("root can write anywhere")
 	}
+	if runtime.GOOS == "windows" {
+		t.Skip("a read-only directory attribute does not prevent writes on Windows")
+	}
 	dir := t.TempDir()
 	path := filepath.Join(dir, "x.cnf")
 	if err := os.WriteFile(path, []byte("a"), 0o644); err != nil {

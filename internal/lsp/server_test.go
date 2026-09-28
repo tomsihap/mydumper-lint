@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -409,7 +410,7 @@ func TestPathOf(t *testing.T) {
 		"untitled:Untitled-1":    "",
 		"%%":                     "",
 	} {
-		if got := pathOf(in); got != want && !strings.HasSuffix(got, strings.TrimPrefix(want, "/")) {
+		if got := filepath.ToSlash(pathOf(in)); got != want && !strings.HasSuffix(got, strings.TrimPrefix(want, "/")) {
 			t.Errorf("pathOf(%q) = %q, want %q", in, got, want)
 		}
 	}

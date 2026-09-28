@@ -101,7 +101,7 @@ func TestCheckUsageErrors(t *testing.T) {
 		"cannot be used":     {"check", "--fix", "--diff"},
 		"unknown format":     {"check", "--format", "xml"},
 		"needs a value":      {"check", "--select"},
-		"no such file":       {"check", "does-not-exist.cnf"},
+		"does-not-exist.cnf": {"check", "does-not-exist.cnf"}, // the OS error names the file
 		`did you mean "MDL1`: {"check", "--select", "MDL1O2", "."},
 	}
 	for want, args := range tests {
@@ -193,7 +193,7 @@ func TestConfigurationDiscoveryAndOverrides(t *testing.T) {
 		"skipped/bad.cnf":     broken,
 	})
 	r := run(t, "", "check", "--format", "concise", root)
-	if strings.Contains(r.stdout, "a/bad.cnf") || !strings.Contains(r.stdout, "strict/bad.cnf") || strings.Contains(r.stdout, "skipped") {
+	if out := filepath.ToSlash(r.stdout); strings.Contains(out, "a/bad.cnf") || !strings.Contains(out, "strict/bad.cnf") || strings.Contains(out, "skipped") {
 		t.Errorf("config: %q", r.stdout)
 	}
 	if r := run(t, "", "check", "--no-config", "--format", "concise", filepath.Join(root, "a", "bad.cnf")); !strings.Contains(r.stdout, "MDL102") {

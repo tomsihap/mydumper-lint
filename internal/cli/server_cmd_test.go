@@ -141,7 +141,11 @@ func (s *lspSession) stop() int {
 }
 
 func fileURI(path string) string {
-	return (&url.URL{Scheme: "file", Path: filepath.ToSlash(path)}).String()
+	p := filepath.ToSlash(path)
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p // file:///C:/…
+	}
+	return (&url.URL{Scheme: "file", Path: p}).String()
 }
 
 func TestServerCommand(t *testing.T) {

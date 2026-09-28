@@ -51,7 +51,7 @@ func init() {
 					if _, err := os.Stat(path); err != nil {
 						p.Report(diag.Diagnostic{
 							Span:        diag.Span{Start: e.ValueSpan.Start + i, End: e.ValueSpan.Start + i + end + 1},
-							Message:     fmt.Sprintf("the file %s does not exist (resolved as %s)", quote([]byte(name)), path),
+							Message:     fmt.Sprintf("the file %s does not exist (resolved as %s)", quote([]byte(name)), filepath.ToSlash(path)),
 							Consequence: "mydumper aborts at startup: \"File not open\".",
 						})
 					}

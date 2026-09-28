@@ -95,13 +95,15 @@ func TestResolve(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c.Dir = "/repo"
-	s := c.Resolve("/repo/prod/app-extra-file.cnf")
+	// Absolute paths of this OS: on Windows "/repo" has no volume, and
+	// filepath.Rel cannot relate it to an absolute path.
+	c.Dir = filepath.Join(t.TempDir(), "repo")
+	s := c.Resolve(filepath.Join(c.Dir, "prod", "app-extra-file.cnf"))
 	if s.MydumperVersion != "0.19.3-3" || s.FailOn != "warning" || s.Conventions == nil ||
 		s.Selection.Severity["MDL306"] != diag.Off || !s.ExtendSafe["MDL306"] || !*s.Build.SSL {
 		t.Errorf("settings %+v", s)
 	}
-	legacy := c.Resolve("/repo/legacy/old.cnf")
+	legacy := c.Resolve(filepath.Join(c.Dir, "legacy", "old.cnf"))
 	if legacy.MydumperVersion != "0.19.1-1" || legacy.Conventions != nil || len(legacy.Selection.Ignore) != 1 {
 		t.Errorf("legacy settings %+v", legacy)
 	}
