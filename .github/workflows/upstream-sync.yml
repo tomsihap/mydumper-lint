@@ -1,0 +1,93 @@
+# Keeping up with upstream (design §5.7): daily, regenerate the knowledge base
+# from the mydumper tags and GitHub releases, cross-check every version
+# against its official Docker image, and open a pull request when the
+# knowledge base changed. A changed loader fingerprint (the C functions the
+# emulators encode the behavior of) gets an extra label, since it means the
+# emulators need a manual look before the pull request is safe to merge.
+#
+# Hardening as in ci.yml: every action is pinned by commit SHA (Dependabot
+# keeps the pins and their version comments current), the token has no
+# permission unless a job asks for one, and checkouts do not keep the token
+# in .git/config.
+name: Upstream sync
+
+on:
+  schedule:
+    - cron: "17 2 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: sync
+    runs-on: ubuntu-latest
+    # verify-images pulls the official image of every embedded version
+    # (~100 MB each) to cross-check it (design §5.4).
+    timeout-minutes: 60
+    permissions:
+      contents: write # push the sync branch
+      pull-requests: write # open/update the pull request
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # Fast pass from the GitHub API and the source archives (design §5.3):
+      # catches a generator failure early, before spending the time below.
+      - name: Regenerate the knowledge base
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make gen-optionsdb
+
+      # Cross-checks every embedded version against its official image
+      # (design §5.4) and rewrites the knowledge base with the results; its
+      # report (upstream tags, additions/removals, the image table, any
+      # warning) becomes the pull request body below.
+      - name: Cross-check against the official images
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make verify-images | tee /tmp/optionsdb-report.txt
+
+      - name: Check whether the knowledge base changed
+        id: diff
+        run: |
+          if git diff --quiet -- internal/optionsdb/data/optionsdb.json tools/gen-optionsdb/images.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decide whether the emulators need a manual review
+        id: review
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          if grep -q 'loader fingerprint changed' /tmp/optionsdb-report.txt; then
+            echo "labels=optionsdb,needs-emulator-review" >> "$GITHUB_OUTPUT"
+          else
+            echo "labels=optionsdb" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open a pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          add-paths: |
+            internal/optionsdb/data/optionsdb.json
+            tools/gen-optionsdb/images.json
+          commit-message: "feat(optionsdb): new mydumper versions"
+          branch: upstream-sync/optionsdb
+          title: "feat(optionsdb): new mydumper versions"
+          body-path: /tmp/optionsdb-report.txt
+          labels: ${{ steps.review.outputs.labels }}
