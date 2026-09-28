@@ -1,0 +1,169 @@
+# Composite GitHub Action (design §12.4): downloads the mydumper-lint release
+# archive for the runner's OS/arch, verifies it against checksums.txt, and
+# runs it. No secrets needed: everything is a public GitHub Releases download.
+name: "mydumper-lint"
+description: "Lint mydumper and myloader configuration files with mydumper-lint."
+author: "Thomas SIHAPANYA"
+
+branding:
+  icon: "check-circle"
+  color: "blue"
+
+inputs:
+  version:
+    description: >-
+      mydumper-lint release to install, e.g. "v0.3.0" or "0.3.0". Defaults to
+      the release matching this action's own ref, so pinning
+      `uses: tomsihap/mydumper-lint@v0.3.0` also pins the linter version; when
+      the action is referenced by a branch or a commit SHA instead, it falls
+      back to the latest release.
+    required: false
+    default: ""
+  args:
+    description: >-
+      Arguments passed to mydumper-lint, space-separated (no shell quoting:
+      each word becomes one argument).
+    required: false
+    default: "check --format github ."
+  working-directory:
+    description: "Directory mydumper-lint runs from."
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Resolve the version to install
+      id: resolve-version
+      shell: bash
+      env:
+        MDL_VERSION_INPUT: ${{ inputs.version }}
+        MDL_ACTION_REF: ${{ github.action_ref }}
+      run: |
+        set -euo pipefail
+        version="$MDL_VERSION_INPUT"
+        if [[ -z "$version" ]]; then
+          # github.action_ref is the ref used in this action's own `uses:`
+          # line (e.g. "v0.3.0"); fall back to "latest" for a branch or a SHA.
+          if [[ "$MDL_ACTION_REF" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+            version="$MDL_ACTION_REF"
+          else
+            version="latest"
+          fi
+        fi
+
+        if [[ "$version" == "latest" ]]; then
+          # Follow the redirect instead of calling the REST API: unauthenticated,
+          # unaffected by API rate limits, no token needed.
+          location=$(curl -sSLf -o /dev/null -w '%{url_effective}' \
+            "https://github.com/tomsihap/mydumper-lint/releases/latest")
+          tag="${location##*/}"
+        else
+          tag="$version"
+          [[ "$tag" == v* ]] || tag="v${tag}"
+        fi
+
+        if [[ -z "$tag" || "$tag" == "latest" ]]; then
+          echo "::error::could not resolve a release tag (got '$tag')" >&2
+          exit 1
+        fi
+
+        echo "tag=$tag" >> "$GITHUB_OUTPUT"
+        echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+
+    - name: Resolve the platform
+      id: platform
+      shell: bash
+      env:
+        RUNNER_OS_INPUT: ${{ runner.os }}
+        RUNNER_ARCH_INPUT: ${{ runner.arch }}
+      run: |
+        set -euo pipefail
+        case "$RUNNER_OS_INPUT" in
+          Linux) goos=linux ;;
+          macOS) goos=darwin ;;
+          Windows) goos=windows ;;
+          *)
+            echo "::error::unsupported runner.os '$RUNNER_OS_INPUT'" >&2
+            exit 1
+            ;;
+        esac
+        case "$RUNNER_ARCH_INPUT" in
+          X64) goarch=amd64 ;;
+          ARM64) goarch=arm64 ;;
+          *)
+            echo "::error::unsupported runner.arch '$RUNNER_ARCH_INPUT'" >&2
+            exit 1
+            ;;
+        esac
+        if [[ "$goos" == windows && "$goarch" == arm64 ]]; then
+          echo "::error::mydumper-lint has no windows/arm64 release" >&2
+          exit 1
+        fi
+        ext=tar.gz
+        [[ "$goos" == windows ]] && ext=zip
+
+        {
+          echo "goos=$goos"
+          echo "goarch=$goarch"
+          echo "ext=$ext"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Download and verify mydumper-lint
+      id: install
+      shell: bash
+      env:
+        MDL_TAG: ${{ steps.resolve-version.outputs.tag }}
+        MDL_VERSION: ${{ steps.resolve-version.outputs.version }}
+        MDL_GOOS: ${{ steps.platform.outputs.goos }}
+        MDL_GOARCH: ${{ steps.platform.outputs.goarch }}
+        MDL_EXT: ${{ steps.platform.outputs.ext }}
+        RUNNER_TEMP_DIR: ${{ runner.temp }}
+      run: |
+        set -euo pipefail
+        base="https://github.com/tomsihap/mydumper-lint/releases/download/${MDL_TAG}"
+        archive="mydumper-lint_${MDL_VERSION}_${MDL_GOOS}_${MDL_GOARCH}.${MDL_EXT}"
+        dir="${RUNNER_TEMP_DIR}/mydumper-lint-${MDL_TAG}"
+        mkdir -p "$dir"
+        cd "$dir"
+
+        curl -sSLf -o "$archive" "${base}/${archive}"
+        curl -sSLf -o checksums.txt "${base}/checksums.txt"
+
+        # Exact match on the filename field: a substring match (e.g. grep) would
+        # also catch "${archive}.spdx.json" and feed two files to the checker.
+        expected=$(awk -v f="$archive" '$2 == f' checksums.txt)
+        if [[ -z "$expected" ]]; then
+          echo "::error::${archive} is not listed in ${MDL_TAG}'s checksums.txt" >&2
+          exit 1
+        fi
+        if command -v sha256sum >/dev/null 2>&1; then
+          echo "$expected" | sha256sum -c -
+        else
+          echo "$expected" | shasum -a 256 -c -
+        fi
+
+        if [[ "$MDL_EXT" == zip ]]; then
+          unzip -q "$archive"
+        else
+          tar -xzf "$archive"
+        fi
+
+        bin="mydumper-lint"
+        [[ "$MDL_GOOS" == windows ]] && bin="mydumper-lint.exe"
+        chmod +x "$bin"
+
+        echo "bin=${dir}/${bin}" >> "$GITHUB_OUTPUT"
+
+    - name: Run mydumper-lint
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        MDL_BIN: ${{ steps.install.outputs.bin }}
+        MDL_ARGS: ${{ inputs.args }}
+      run: |
+        set -euo pipefail
+        # MDL_ARGS is intentionally word-split: it is a space-separated
+        # argument list (see the "args" input), not a single argument.
+        # shellcheck disable=SC2086
+        "$MDL_BIN" $MDL_ARGS
