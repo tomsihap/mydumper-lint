@@ -1,6 +1,7 @@
 # Composite GitHub Action (design §12.4): downloads the mydumper-lint release
-# archive for the runner's OS/arch, verifies it against checksums.txt, and
-# runs it. No secrets needed: everything is a public GitHub Releases download.
+# archive for the runner's OS/arch, verifies it against checksums.txt and its
+# build provenance attestation (made by release.yml), and runs it. No secrets
+# needed: the workflow's own token reads the public attestations.
 name: "mydumper-lint"
 description: "Lint mydumper and myloader configuration files with mydumper-lint."
 author: "Thomas SIHAPANYA"
@@ -29,6 +30,15 @@ inputs:
     description: "Directory mydumper-lint runs from."
     required: false
     default: "."
+  verify-attestation:
+    description: >-
+      Verify the archive's build provenance attestation with
+      `gh attestation verify`: it must come from this repository's release
+      workflow. checksums.txt alone only protects against corrupted
+      downloads, not against a replaced release. GitHub-hosted runners have
+      gh; set to "false" on a runner without it.
+    required: false
+    default: "true"
 
 runs:
   using: "composite"
@@ -118,6 +128,8 @@ runs:
         MDL_GOOS: ${{ steps.platform.outputs.goos }}
         MDL_GOARCH: ${{ steps.platform.outputs.goarch }}
         MDL_EXT: ${{ steps.platform.outputs.ext }}
+        MDL_VERIFY_ATTESTATION: ${{ inputs.verify-attestation }}
+        GH_TOKEN: ${{ github.token }}
         RUNNER_TEMP_DIR: ${{ runner.temp }}
       run: |
         set -euo pipefail
@@ -141,6 +153,15 @@ runs:
           echo "$expected" | sha256sum -c -
         else
           echo "$expected" | shasum -a 256 -c -
+        fi
+
+        if [[ "$MDL_VERIFY_ATTESTATION" == true ]]; then
+          if ! command -v gh >/dev/null 2>&1; then
+            echo "::error::gh is needed to verify the attestation of ${archive}; set verify-attestation: false to skip it" >&2
+            exit 1
+          fi
+          gh attestation verify "$archive" --repo tomsihap/mydumper-lint \
+            --signer-workflow tomsihap/mydumper-lint/.github/workflows/release.yml
         fi
 
         if [[ "$MDL_EXT" == zip ]]; then

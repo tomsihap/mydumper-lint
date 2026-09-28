@@ -198,9 +198,26 @@ by comments.
 
 ```yaml
 - uses: actions/checkout@v5
-- uses: tomsihap/mydumper-lint@v0   # pin a release tag or a commit SHA
+- uses: tomsihap/mydumper-lint@v0.1.0   # a release tag (or its commit SHA)
   with:
     args: check --format github .
+```
+
+The action installs the release matching its tag, and checks the archive against the
+release's checksums and its build provenance attestation (`gh attestation verify`,
+available on GitHub-hosted runners; `verify-attestation: false` skips it elsewhere).
+
+To also see the problems in GitHub code scanning, write SARIF and upload it (the job
+needs `security-events: write`):
+
+```yaml
+- uses: tomsihap/mydumper-lint@v0.1.0
+  with:
+    args: check --format github --format sarif=mydumper-lint.sarif .
+- uses: github/codeql-action/upload-sarif@v3
+  if: always()   # upload even when the check fails
+  with:
+    sarif_file: mydumper-lint.sarif
 ```
 
 **GitLab CI**, with the Code Quality widget:
