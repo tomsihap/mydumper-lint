@@ -191,3 +191,44 @@ func Ref(t *testing.T, ctx *goption.Context, name string) goption.Ref {
 	}
 	return r
 }
+
+func TestStringsOutOfRange(t *testing.T) {
+	if Health(9).String() != "Health(9)" || GroupKind(99).String() != "GroupKind(99)" || Reason(99).String() != "Reason(99)" {
+		t.Error("out-of-range names")
+	}
+}
+
+// oddTarget declares an option of a type GOption does not know and one
+// OptionNames lists without a definition: both are skipped.
+type oddTarget struct{ fakeTarget }
+
+func (o oddTarget) OptionNames(string) []string { return []string{"ghost", "weird", "threads"} }
+func (o oddTarget) Option(tool, name string) (optionsdb.OptionSpan, bool) {
+	switch name {
+	case "weird":
+		return optionsdb.OptionSpan{Arg: "pointer"}, true
+	case "ghost":
+		return optionsdb.OptionSpan{}, false
+	}
+	return o.fakeTarget.Option(tool, name)
+}
+
+func TestOptionContextSkipsWhatItCannotEmulate(t *testing.T) {
+	ctx := OptionContext(oddTarget{newFake(false)}, "mydumper", goption.CharsetASCII)
+	if len(ctx.Main.Entries) != 1 || ctx.Main.Entries[0].Long != "threads" {
+		t.Errorf("entries: %+v", ctx.Main.Entries)
+	}
+}
+
+func TestFatalAttributionAndRejectedFiles(t *testing.T) {
+	// A rejected file is parsed for the rules, but applies nothing.
+	m := buildWith("[mydumper]\nthreads=08\n  \n", newFake(false), goption.CharsetASCII)
+	if m.Health != Rejected || m.Groups[0].GOption == nil || m.Groups[0].Entries[0].Reason != ReasonFileRejected {
+		t.Errorf("rejected file: health=%v run=%v", m.Health, m.Groups[0].GOption)
+	}
+	var run GOptionRun
+	g := Group{Entries: []Entry{{Element: 1}}}
+	if run.entryAt(&g, 5) != -1 || run.entryAt(&g, 2) != 0 {
+		t.Error("entryAt")
+	}
+}

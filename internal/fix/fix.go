@@ -172,11 +172,9 @@ func Fixpoint(src []byte, lint Linter, opt Options) (Result, error) {
 // applies to src.
 func replay(src []byte, cands []diag.Diagnostic, base model.Health, health func([]byte) model.Health) ([]byte, []*diag.Fix, []diag.Diagnostic) {
 	_, order := apply(src, cands)
-	byFix := map[*diag.Fix]diag.Diagnostic{}
+	byFix := map[*diag.Fix]diag.Diagnostic{} // candidates always carry a fix
 	for _, d := range cands {
-		if d.Fix != nil {
-			byFix[d.Fix] = d
-		}
+		byFix[d.Fix] = d
 	}
 	var kept []diag.Diagnostic
 	var dropped []diag.Diagnostic

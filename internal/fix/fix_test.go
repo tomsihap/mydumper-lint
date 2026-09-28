@@ -197,3 +197,118 @@ func TestFixpointHealthGuard(t *testing.T) {
 		t.Errorf("output %q, applied %d, dropped %+v", res.Output, res.Applied, res.Dropped)
 	}
 }
+
+func TestWriteAtomicUnwritableDirectory(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("root can write anywhere")
+	}
+	dir := t.TempDir()
+	path := filepath.Join(dir, "x.cnf")
+	if err := os.WriteFile(path, []byte("a"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chmod(dir, 0o555); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chmod(dir, 0o755) }()
+	if err := WriteAtomic(path, []byte("b")); err == nil {
+		t.Error("writing into a read-only directory must fail")
+	}
+	if b, _ := os.ReadFile(path); string(b) != "a" {
+		t.Errorf("the file changed: %q", b)
+	}
+	entries, _ := os.ReadDir(dir)
+	if len(entries) != 1 {
+		t.Errorf("a temporary file was left behind: %v", entries)
+	}
+}
+
+func TestInvalidEdits(t *testing.T) {
+	src := []byte("abcdef")
+	bad := [][]diag.Edit{
+		{{Start: -1, End: 1}},
+		{{Start: 2, End: 1}},
+		{{Start: 0, End: 99}},
+		{{Start: 0, End: 3}, {Start: 2, End: 4}},
+		{{Start: 1, End: 1, New: "x"}, {Start: 1, End: 1, New: "y"}},
+	}
+	for _, edits := range bad {
+		ds := []diag.Diagnostic{{RuleID: "MDL300", Fix: &diag.Fix{Applicability: diag.Safe, Edits: edits}}}
+		if out, n := Apply(src, ds); n != 0 || string(out) != "abcdef" {
+			t.Errorf("edits %+v were applied: %q", edits, out)
+		}
+	}
+}
+
+func TestWriteAtomicRenameFailureCleansUp(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, "sub")
+	if err := os.Mkdir(target, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := WriteAtomic(target, []byte("x")); err == nil {
+		t.Error("replacing a directory must fail")
+	}
+	entries, _ := os.ReadDir(dir)
+	if len(entries) != 1 {
+		t.Errorf("a temporary file was left behind: %v", entries)
+	}
+}
+
+// failing is a temporary file whose step named fail returns an error.
+type failing struct {
+	*os.File
+	fail string
+}
+
+func (f failing) Write(b []byte) (int, error) {
+	if f.fail == "write" {
+		return 0, errors.New("write failed")
+	}
+	return f.File.Write(b)
+}
+
+func (f failing) Chmod(m os.FileMode) error {
+	if f.fail == "chmod" {
+		return errors.New("chmod failed")
+	}
+	return f.File.Chmod(m)
+}
+
+func (f failing) Sync() error {
+	if f.fail == "sync" {
+		return errors.New("sync failed")
+	}
+	return f.File.Sync()
+}
+
+func (f failing) Close() error {
+	err := f.File.Close()
+	if f.fail == "close" {
+		return errors.New("close failed")
+	}
+	return err
+}
+
+func TestWriteAtomicFailuresLeaveNothingBehind(t *testing.T) {
+	orig := createTemp
+	defer func() { createTemp = orig }()
+	for _, step := range []string{"write", "chmod", "sync", "close"} {
+		dir := t.TempDir()
+		path := filepath.Join(dir, "x.cnf")
+		if err := os.WriteFile(path, []byte("a"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		createTemp = func(d, pattern string) (tempFile, error) {
+			f, err := os.CreateTemp(d, pattern)
+			return failing{f, step}, err
+		}
+		if err := WriteAtomic(path, []byte("b")); err == nil {
+			t.Errorf("%s: want an error", step)
+		}
+		entries, _ := os.ReadDir(dir)
+		if b, _ := os.ReadFile(path); string(b) != "a" || len(entries) != 1 {
+			t.Errorf("%s: file %q, %d entries", step, b, len(entries))
+		}
+	}
+}

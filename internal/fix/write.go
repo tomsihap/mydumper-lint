@@ -19,7 +19,7 @@ func WriteAtomic(path string, data []byte) error {
 		return err
 	}
 	dir := filepath.Dir(target)
-	tmp, err := os.CreateTemp(dir, "."+filepath.Base(target)+".mydumper-lint-*")
+	tmp, err := createTemp(dir, "."+filepath.Base(target)+".mydumper-lint-*")
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,9 @@ func WriteAtomic(path string, data []byte) error {
 	if err := tmp.Chmod(info.Mode().Perm()); err != nil {
 		return err
 	}
-	preserveOwner(tmp, info)
+	if f, ok := tmp.(*os.File); ok {
+		preserveOwner(f, info)
+	}
 	if err := tmp.Sync(); err != nil {
 		return err
 	}
@@ -53,3 +55,15 @@ func WriteAtomic(path string, data []byte) error {
 	syncDir(dir)
 	return nil
 }
+
+// tempFile is the part of *os.File WriteAtomic uses; tests replace
+// createTemp to make each step fail.
+type tempFile interface {
+	Write(b []byte) (int, error)
+	Chmod(mode os.FileMode) error
+	Sync() error
+	Close() error
+	Name() string
+}
+
+var createTemp = func(dir, pattern string) (tempFile, error) { return os.CreateTemp(dir, pattern) }

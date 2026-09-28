@@ -10,7 +10,7 @@ PKGS := ./...
 
 .DEFAULT_GOAL := help
 
-.PHONY: all build test test-short cover vet fmt tidy clean help
+.PHONY: cover-check all build test test-short cover vet fmt tidy clean help
 
 all: build test ## Build and run the unit tests
 
@@ -26,6 +26,9 @@ test-short: ## Run unit tests without the race detector (fast)
 cover: ## Run tests with coverage and print the per-package summary
 	$(GO) test -count=1 -coverprofile=coverage.out $(PKGS)
 	$(GO) tool cover -func=coverage.out | tail -n 1
+
+cover-check: cover ## Enforce the coverage thresholds of design §11.9
+	$(GO) run ./tools/covercheck coverage.out
 
 vet: ## Run go vet
 	$(GO) vet $(PKGS)

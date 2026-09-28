@@ -120,3 +120,16 @@ func FuzzRunMatchesApply(f *testing.F) {
 		}
 	})
 }
+
+func TestPassthrough(t *testing.T) {
+	f := source.New("t.cnf", []byte("[g]\nroutines\n# see [x]\n\n"))
+	r := Passthrough(f)
+	if !r.Passthrough || len(r.Lines) != len(f.Lines) {
+		t.Fatalf("passthrough: %+v", r)
+	}
+	for i, l := range r.Lines {
+		if l.AppendsEqOne || l.IdealAppendsEqOne || l.BracketAt != -1 || l.StartDirty || !l.OutNewLine {
+			t.Errorf("line %d: %+v", i+1, l)
+		}
+	}
+}

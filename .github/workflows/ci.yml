@@ -72,8 +72,13 @@ jobs:
             echo '### Coverage'
             echo '```'
             go tool cover -func=coverage.out | tail -n 1
+            go run ./tools/covercheck coverage.out || true
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce the coverage thresholds (design §11.9)
+        if: matrix.coverage
+        run: go run ./tools/covercheck coverage.out
 
       - name: Upload coverage profile
         if: matrix.coverage

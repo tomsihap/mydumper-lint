@@ -1053,7 +1053,9 @@ rejection causes to MDL1xx rules.
 ### 11.9 Quality gates
 
 - **Coverage:** ≥ 95 % of statements on `preprocess`, `keyfile`, `goption`, `model` and
-  `fix`; ≥ 90 % on `rules`; ≥ 85 % overall. Enforced in CI without external services.
+  `fix`; ≥ 90 % on `rules`; ≥ 85 % overall, "overall" being the product (`internal/`
+  except `oracletest`, which only runs with an oracle). Enforced in CI without external
+  services (`tools/covercheck`, `make cover-check`).
 - **Mutation testing** (gremlins), nightly on the core packages. The score is tracked from
   M2 and becomes a blocking threshold at v0.1.0.
 - **Static analysis:** `go vet`; golangci-lint v2 with, among others, `exhaustive` (every

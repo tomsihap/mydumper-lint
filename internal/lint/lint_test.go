@@ -132,3 +132,37 @@ func fixOnce(t *testing.T, l *Linter, b []byte) {
 		}
 	}
 }
+
+func TestNewRejectsUnknownRules(t *testing.T) {
+	if _, err := New(Config{Selection: rules.Selection{Select: []string{"MDL999"}}}); err == nil {
+		t.Error("an unknown rule must be an error")
+	}
+	l := allRulesWith(t, false)
+	if len(l.Enabled()) == 0 {
+		t.Error("no rule enabled")
+	}
+}
+
+func TestCheckSet(t *testing.T) {
+	l, err := New(Config{Selection: rules.Selection{Select: []string{"MDL603", "MDL509"}, ExtendSelect: []string{"MDL509"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defaults := l.Check("defaults.cnf", []byte("[client]\nhost=db\n[mydumper]\nregex=^app\\.users$\n"))
+	extra := l.Check("extra.cnf", []byte("[mydumper]\nthreads=4\n[`app`.`orders`]\nwhere=1\n"))
+	onDefaults, onExtra := l.CheckSet(defaults, extra)
+	var ids []string
+	for _, d := range onExtra {
+		ids = append(ids, d.RuleID)
+	}
+	if len(onDefaults) != 0 || len(ids) != 2 || ids[0] != "MDL603" || ids[1] != "MDL509" {
+		t.Errorf("defaults %v, extra %v", onDefaults, ids)
+	}
+}
+
+func TestFixReportsNoFixpoint(t *testing.T) {
+	l := allRulesWith(t, false)
+	if _, err := l.Fix("x.cnf", []byte("[mydumper]\nthreads=4\n"), fix.Options{MaxPasses: -1}); err != nil {
+		t.Errorf("a clean file: %v", err)
+	}
+}
