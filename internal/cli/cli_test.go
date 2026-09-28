@@ -270,6 +270,37 @@ func TestMydumperVersion(t *testing.T) {
 	}
 }
 
+func TestVersions(t *testing.T) {
+	r := run(t, "", "versions")
+	if r.code != ExitOK || !strings.Contains(r.stdout, "v0.19.1-1") || !strings.Contains(r.stdout, "default target:") ||
+		!strings.Contains(r.stdout, " *") {
+		t.Errorf("versions: %+v", r)
+	}
+	r = run(t, "", "versions", "--format", "json")
+	var vs []versionJSON
+	if err := json.Unmarshal([]byte(r.stdout), &vs); err != nil || len(vs) < 28 {
+		t.Fatalf("versions json: %v (%d)", err, len(vs))
+	}
+	defaults := 0
+	for _, v := range vs {
+		if v.Default {
+			defaults++
+			if v.Prerelease {
+				t.Errorf("default %s is a pre-release", v.Tag)
+			}
+		}
+	}
+	if defaults != 1 || vs[len(vs)-1].Tag != "v0.19.1-1" || vs[len(vs)-1].Preprocessor {
+		t.Errorf("defaults=%d last=%+v", defaults, vs[len(vs)-1])
+	}
+	if r := run(t, "", "versions", "--format", "xml"); r.code != ExitError {
+		t.Errorf("bad format: %+v", r)
+	}
+	if r := run(t, "", "versions", "--help"); r.code != ExitOK || !strings.Contains(r.stdout, "Usage") {
+		t.Errorf("help: %+v", r)
+	}
+}
+
 func TestInspect(t *testing.T) {
 	root := workspace(t, map[string]string{"bad.cnf": broken, "loc.cnf": "[mydumper]\nthreads[fr]=4\nhost=db\n"})
 	r := run(t, "", "inspect", "--format", "json", filepath.Join(root, "bad.cnf"))
