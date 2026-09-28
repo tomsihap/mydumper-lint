@@ -193,8 +193,100 @@ func TestFixpointHealthGuard(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if string(res.Output) != "Ab" || res.Applied != 1 || len(res.Dropped) != 1 || res.Dropped[0].RuleID != "MDL402" {
-		t.Errorf("output %q, applied %d, dropped %+v", res.Output, res.Applied, res.Dropped)
+	// The second pass drops b's fix and applies nothing: it does not count.
+	if string(res.Output) != "Ab" || res.Applied != 1 || res.Passes != 1 || len(res.Dropped) != 1 || res.Dropped[0].RuleID != "MDL402" {
+		t.Errorf("output %q, applied %d, passes %d, dropped %+v", res.Output, res.Applied, res.Passes, res.Dropped)
+	}
+}
+
+// A pass whose fixes lower the health together is replayed: the neutral fix
+// is kept, only the harmful one is dropped.
+func TestFixpointHealthGuardKeepsNeutralFixes(t *testing.T) {
+	lint := func(src []byte) []diag.Diagnostic {
+		var ds []diag.Diagnostic
+		for i, c := range src {
+			if c == 'a' || c == 'b' {
+				ds = append(ds, d(map[byte]string{'a': "MDL401", 'b': "MDL402"}[c], diag.Unsafe,
+					diag.Edit{Start: i, End: i + 1, New: string(c - 32)}))
+			}
+		}
+		return ds
+	}
+	health := func(src []byte) model.Health {
+		if strings.Contains(string(src), "B") {
+			return model.FatalAtStartup
+		}
+		return model.OK
+	}
+	res, err := Fixpoint([]byte("a_b"), lint, Options{Unsafe: true, Health: health})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(res.Output) != "A_b" || res.Applied != 1 || res.Passes != 1 || len(res.Dropped) != 1 || res.Dropped[0].RuleID != "MDL402" {
+		t.Errorf("output %q, applied %d, passes %d, dropped %+v", res.Output, res.Applied, res.Passes, res.Dropped)
+	}
+}
+
+func TestFixpointCountsPasses(t *testing.T) {
+	res, err := Fixpoint([]byte("xux"), lintFunc, Options{})
+	if err != nil || res.Applied != 2 || res.Passes != 1 {
+		t.Errorf("one pass fixes both: %+v, %v", res, err)
+	}
+	res, err = Fixpoint([]byte("z"), lintFunc, Options{})
+	if err != nil || res.Applied != 0 || res.Passes != 0 || len(res.Remaining) != 1 {
+		t.Errorf("nothing to fix: %+v, %v", res, err)
+	}
+}
+
+// A fix that cannot apply (no edits, invalid edits) ends the loop at once:
+// every later pass would propose it again.
+func TestFixpointStopsOnInapplicableFixes(t *testing.T) {
+	for _, edits := range [][]diag.Edit{nil, {{Start: 5, End: 9}}} {
+		lint := func([]byte) []diag.Diagnostic { return []diag.Diagnostic{d("MDL1", diag.Safe, edits...)} }
+		res, err := Fixpoint([]byte("abc"), lint, Options{})
+		if err != nil || string(res.Output) != "abc" || res.Applied != 0 || res.Passes != 0 || len(res.Remaining) != 1 {
+			t.Errorf("edits %+v: %+v, %v", edits, res, err)
+		}
+	}
+}
+
+func TestSignature(t *testing.T) {
+	src := []byte("abcdef")
+	sig := func(edits ...diag.Edit) string {
+		return signature(src, diag.Diagnostic{RuleID: "MDL1", Message: "m", Fix: &diag.Fix{Description: "f", Edits: edits}})
+	}
+	distinct := [][2]string{
+		// what an edit replaces counts, up to both ends of the file
+		{sig(diag.Edit{Start: 0, End: 1}), sig(diag.Edit{Start: 0, End: 2})},
+		{sig(diag.Edit{Start: 4, End: 6}), sig(diag.Edit{Start: 3, End: 6})},
+		// and so does what it inserts
+		{sig(diag.Edit{Start: 2, End: 2, New: "x"}), sig(diag.Edit{Start: 2, End: 2, New: "y"})},
+	}
+	for _, p := range distinct {
+		if p[0] == p[1] {
+			t.Errorf("signatures collide: %q", p[0])
+		}
+	}
+	// the offsets do not count, so that the next pass recognizes the fix
+	if sig(diag.Edit{Start: 0, End: 1, New: "z"}) != signature([]byte("_abcdef"), diag.Diagnostic{
+		RuleID: "MDL1", Message: "m", Fix: &diag.Fix{Description: "f", Edits: []diag.Edit{{Start: 1, End: 2, New: "z"}}},
+	}) {
+		t.Error("a moved fix must keep its signature")
+	}
+	// invalid edits are ignored, not a panic
+	for _, e := range []diag.Edit{{Start: -1, End: 1}, {Start: 3, End: 2}, {Start: 0, End: 99}} {
+		if sig(e) != sig() {
+			t.Errorf("invalid edit %+v changes the signature", e)
+		}
+	}
+}
+
+func TestSelfCheckErrorMessage(t *testing.T) {
+	if got := (&SelfCheckError{Reason: "r"}).Error(); got != "fixer self-check failed: r" {
+		t.Errorf("without diff: %q", got)
+	}
+	if got := (&SelfCheckError{Reason: "r", Diff: "d"}).Error(); got != "fixer self-check failed: r\nd" {
+		t.Errorf("with diff: %q", got)
 	}
 }
 

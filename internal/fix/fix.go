@@ -146,15 +146,21 @@ func Fixpoint(src []byte, lint Linter, opt Options) (Result, error) {
 			return res, fmt.Errorf("%w after %d passes", ErrNoFixpoint, maxPasses)
 		}
 		out, applied := apply(res.Output, cands)
+		var dropped []diag.Diagnostic
 		if opt.Health != nil {
 			if base := opt.Health(res.Output); opt.Health(out) < base {
-				var dropped []diag.Diagnostic
 				out, applied, dropped = replay(res.Output, cands, base, opt.Health)
 				for _, d := range dropped {
 					refused[signature(res.Output, d)] = true
 				}
 				res.Dropped = append(res.Dropped, dropped...)
 			}
+		}
+		if len(applied) == 0 && len(dropped) == 0 {
+			// Every candidate is invalid: the next pass would see the same
+			// diagnostics again.
+			res.Remaining = ds
+			return res, nil
 		}
 		res.Output, res.Applied = out, res.Applied+len(applied)
 		if len(applied) > 0 {
