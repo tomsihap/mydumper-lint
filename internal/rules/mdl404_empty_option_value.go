@@ -16,6 +16,7 @@ func init() {
 				"aborts at startup (error). For other options the value is set to the empty string, " +
 				"which is rarely what was meant: remove the line to keep the default (warning).",
 			Refs: []string{"G7"},
+			E2E:  []string{"mdl404-empty-integer-fatal"},
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {

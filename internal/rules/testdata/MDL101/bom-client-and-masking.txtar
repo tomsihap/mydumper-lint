@@ -12,5 +12,5 @@ threads=4
 user=backup
 -- diagnostics --
 1:1-1:2 error MDL101[utf8-bom] file starts with a UTF-8 byte order mark (BOM)
-  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults, exit code 0. The [client] section is still read by the MySQL client library, so the connection works and the run looks normal. The masking rules are NOT applied: masked columns are dumped in plaintext.
+  = mydumper ignores this entire file: it only logs a WARNING ("Failed to load config file") and runs with its defaults. The MySQL client library rejects the file too ("Found option without preceding group"), so the [client] settings are lost: without connection options on the command line mydumper cannot connect; with them it runs, exit code 0. The masking rules are NOT applied: masked columns are dumped in plaintext.
   fix (safe): Remove the byte order mark

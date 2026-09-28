@@ -22,7 +22,7 @@ func init() {
 				"converted.\n\nFor an option whose value is optional, such as `compress`, the failed " +
 				"conversion does not abort: the option silently receives no value.",
 			Refs: []string{"goption: g_locale_to_utf8"},
-			E2E:  []string{"mdl409-non-ascii-value-c-locale"},
+			E2E:  []string{"mdl409-non-ascii-value-c-locale", "mdl409-non-ascii-callback-value-c-locale"},
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {

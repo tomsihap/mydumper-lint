@@ -1,8 +1,9 @@
 MDL502, F10: the "null" masking function only exists in some versions (the
 knowledge base: from v0.21.4-1). Where it exists, users.email is dumped as
 NULL; elsewhere "null" is an unknown function, so the column falls back to
-identity and is dumped in plaintext (F10). The kb blocks check the knowledge
-base for every version; the version blocks check the boundary it records.
+identity (F10): plaintext up to v0.21.2-4, empty in v0.21.3-1 and v0.21.3-2.
+The kb block checks the knowledge base for every version; the version blocks
+check the boundaries.
 -- scenario --
 tool: mydumper
 versions: >= v0.19.1-1
@@ -17,15 +18,18 @@ end
 
 when kb:!masquerade=null
 lint: MDL502
-expect column app.users.email: plaintext
 end
 
 when >= v0.21.4-1
 expect column app.users.email: null
 end
 
-when < v0.21.4-1
+when < v0.21.3-1
 expect column app.users.email: plaintext
+end
+
+when >= v0.21.3-1, < v0.21.4-1
+expect column app.users.email: empty
 end
 -- mydumper.cnf --
 [mydumper]

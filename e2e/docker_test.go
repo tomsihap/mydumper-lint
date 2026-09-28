@@ -357,7 +357,21 @@ func (s *suite) runTool(ctx context.Context, ref, tool, dir string, env, args []
 	}
 	full = append(full, "--entrypoint", tool, ref)
 	full = append(full, args...)
-	r, err := s.docker(ctx, s.timeout, full...)
+	var r cmdResult
+	var err error
+	for attempt := range 4 {
+		r, err = s.docker(ctx, s.timeout, full...)
+		// Docker Desktop's file sharing can lag behind a directory created
+		// on the host a moment earlier; the daemon then fails to mount it
+		// (and docker exits 127, not 125). The tool never ran: retry.
+		if !mountRace(r.Stderr) {
+			break
+		}
+		time.Sleep(time.Duration(attempt+1) * 500 * time.Millisecond)
+	}
+	if mountRace(r.Stderr) {
+		return r, fmt.Errorf("docker run: the daemon could not mount %s: %s", dir, firstLine(r.Stderr))
+	}
 	// Exit code 125 is docker's own failure (no image, no network…); 0 with an
 	// error is a timeout. Either way the tool did not run to completion.
 	if err != nil && (r.ExitCode == 0 || r.ExitCode == 125) {
@@ -365,6 +379,12 @@ func (s *suite) runTool(ctx context.Context, ref, tool, dir string, env, args []
 		return r, err
 	}
 	return r, nil // a non-zero exit code of the tool is an observation, not an error
+}
+
+// mountRace reports the daemon error of a bind mount whose source directory
+// Docker Desktop cannot see yet.
+func mountRace(stderr string) bool {
+	return strings.Contains(stderr, "error while creating mount source path")
 }
 
 // sql runs a statement as root on the MySQL service and returns its output.

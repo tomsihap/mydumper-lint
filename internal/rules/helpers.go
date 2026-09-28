@@ -16,15 +16,49 @@ import (
 func rejectionConsequence(p *Pass) string {
 	var b strings.Builder
 	b.WriteString("mydumper ignores this entire file: it only logs a WARNING " +
-		"(\"Failed to load config file\") and runs with its defaults, exit code 0.")
-	if hasGroup(p, "client") {
-		b.WriteString(" The [client] section is still read by the MySQL client library," +
+		"(\"Failed to load config file\") and runs with its defaults")
+	switch {
+	case !hasGroup(p, "client"):
+		b.WriteString(", exit code 0.")
+	case mysqlRejects(p):
+		b.WriteString(". The MySQL client library rejects the file too (\"Found option without preceding" +
+			" group\"), so the [client] settings are lost: without connection options on the command" +
+			" line mydumper cannot connect; with them it runs, exit code 0.")
+	default:
+		b.WriteString(", exit code 0. The [client] section is still read by the MySQL client library," +
 			" so the connection works and the run looks normal.")
 	}
 	if hasMaskedColumn(p) {
 		b.WriteString(" The masking rules are NOT applied: masked columns are dumped in plaintext.")
 	}
 	return b.String()
+}
+
+// mysqlRejects reports whether the MySQL client library, which re-reads the
+// file for the connection (F12), rejects it: an option before the first
+// group, where a UTF-8 BOM makes the first line an option, or a group line
+// without ']' (C5). Its parser skips whitespace, then ignores empty lines,
+// '#' and ';' comments and '!' directives.
+func mysqlRejects(p *Pass) bool {
+	inGroup := false
+	for n := 1; n <= len(p.File.Lines); n++ {
+		c := p.File.Content(n)
+		i := 0
+		for i < len(c) && (c[i] == ' ' || c[i] == '\t' || c[i] == '\r' || c[i] == '\v' || c[i] == '\f') {
+			i++
+		}
+		switch {
+		case i == len(c) || c[i] == '#' || c[i] == ';' || c[i] == '!':
+		case c[i] == '[':
+			if bytes.IndexByte(c[i:], ']') < 0 {
+				return true
+			}
+			inGroup = true
+		case !inGroup:
+			return true
+		}
+	}
+	return false
 }
 
 func hasGroup(p *Pass, name string) bool {

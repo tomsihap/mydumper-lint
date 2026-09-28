@@ -1,0 +1,13 @@
+MDL404, G7: "threads=" passes an empty value to an integer option, which
+GLib cannot parse: mydumper aborts at startup.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL404
+expect config-loaded: true
+expect exit: nonzero
+expect stderr-contains: Cannot parse integer value
+-- mydumper.cnf --
+[mydumper]
+threads=

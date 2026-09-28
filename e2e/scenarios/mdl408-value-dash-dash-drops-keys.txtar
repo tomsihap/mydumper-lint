@@ -1,0 +1,17 @@
+MDL408, G9: routines takes no value, so "routines=--" puts "--" alone in
+GLib's argument vector, where it ends option parsing: every following key of
+the group is silently ignored. Here no-data is dropped, so the data IS dumped
+(compare mdl402-no-data-zero-skips-data, where no-data applies).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL408
+expect config-loaded: true
+expect exit: 0
+expect routines-dumped: true
+expect data-dumped: true
+-- mydumper.cnf --
+[mydumper]
+routines=--
+no-data=1

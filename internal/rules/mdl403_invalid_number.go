@@ -20,7 +20,7 @@ func init() {
 				"with `option parsing failed`.\n\nTrailing spaces are reported by MDL302, empty values " +
 				"by MDL404.",
 			Refs: []string{"G5", "G7"},
-			E2E:  []string{"mdl403-invalid-integer"},
+			E2E:  []string{"mdl403-invalid-octal-threads-fatal"},
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {

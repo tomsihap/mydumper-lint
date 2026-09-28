@@ -1,17 +1,20 @@
-MDL101, K15, F1: a UTF-8 byte order mark makes the first line "\ufeff[client]",
-which GLib rejects, so mydumper ignores the whole file and exits 0 with
-users.email in plaintext. The linter also claims (F12) that the connection
-still works through [client]: the MySQL client library must then skip the BOM.
-The BOM is also text before '[' on the first line, so the pre-processor does
-not reset its state after it (P1, MDL112).
+MDL101, K15, F1, C5: a UTF-8 byte order mark makes the first line "\ufeff[client]",
+which GLib rejects, so mydumper ignores the whole file. The MySQL client
+library re-reads the file for the connection (F12) and rejects it too: the BOM
+line is an option before any group ("Found option without preceding group"),
+so the [client] settings are lost and mydumper, given no connection options on
+the command line, cannot connect. (mdl101-bom-cli-connection-drops-masking
+shows the masking loss when the command line provides the connection.) The
+BOM is also text before '[' on the first line, so the pre-processor does not
+reset its state after it (P1, MDL112).
 -- scenario --
 tool: mydumper
 versions: >= v0.19.1-1
 args: --defaults-file /work/defaults.cnf --database app
 lint: MDL101, MDL112, MDL405
 expect config-loaded: false
-expect exit: 0
-expect connected: true
-expect column app.users.email: plaintext
+expect exit: nonzero
+expect connected: false
+expect stderr-contains: Found option without preceding group
 -- defaults.cnf.esc --
 \xef\xbb\xbf[client]\nhost=mysql\nuser=e2e\npassword=e2e-password\n\n[mydumper]\nthreads=2\n\n[`app`.`users`]\n`email`=random_string\n

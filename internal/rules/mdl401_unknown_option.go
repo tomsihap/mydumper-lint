@@ -23,7 +23,7 @@ func init() {
 				"the other tool (`outputdir` in [myloader]), or an option added or removed in another " +
 				"version. The fix renames the key when exactly one option matches after normalization.",
 			Refs: []string{"F6", "G3", "G4", "G13"},
-			E2E:  []string{"mdl401-unknown-option-strict", "mdl401-unknown-option-lenient"},
+			E2E:  []string{"mdl401-unknown-option-fatal-or-ignored"},
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {

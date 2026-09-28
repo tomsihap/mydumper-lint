@@ -19,7 +19,7 @@ func init() {
 				"line (the fix comments it out). Values such as `true` or `yes` are harmless but " +
 				"misleading (info); any other value is ignored too (warning).",
 			Refs: []string{"G1", "G2", "G12"},
-			E2E:  []string{"mdl402-routines-false"},
+			E2E:  []string{"mdl402-routines-zero-dumps-routines", "mdl402-no-data-zero-skips-data"},
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {

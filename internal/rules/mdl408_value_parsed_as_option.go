@@ -21,7 +21,7 @@ func init() {
 				"as its value. `routines=--` is worse: `--` ends option parsing, and every following key " +
 				"of the group is silently ignored.",
 			Refs: []string{"G8", "G9"},
-			E2E:  []string{"mdl408-value-dash-dash"},
+			E2E:  []string{"mdl408-value-dash-dash-drops-keys", "mdl408-value-short-option-swallows-key"},
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {

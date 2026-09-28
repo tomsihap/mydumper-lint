@@ -18,6 +18,7 @@ func init() {
 				"`threads=010` sets 8 threads, not 10. Write the number without the leading zero, or " +
 				"keep it if octal is really meant (no fix: both readings are plausible).",
 			Refs: []string{"G7"},
+			E2E:  []string{"mdl407-octal-threads"},
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {

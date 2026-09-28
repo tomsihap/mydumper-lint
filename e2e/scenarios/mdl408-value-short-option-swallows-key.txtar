@@ -1,0 +1,16 @@
+MDL408, G8: routines takes no value, so GLib parses the value "-t" as the short
+option of threads, which takes the next element of the vector, "--outputdir",
+as its value: "Cannot parse integer value", and mydumper aborts at startup.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/mydumper.cnf --host mysql --user e2e --password e2e-password --database app
+lint: MDL408
+expect config-loaded: true
+expect exit: nonzero
+expect stderr-contains: Cannot parse integer value
+expect stderr-contains: for -t
+-- mydumper.cnf --
+[mydumper]
+routines=-t
+outputdir=/work/dump

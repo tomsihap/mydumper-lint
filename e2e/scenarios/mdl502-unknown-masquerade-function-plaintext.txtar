@@ -1,7 +1,9 @@
 MDL502, F10: a misspelled masking function ("radnom_string") matches no known
 function prefix; mydumper logs "Function not found: Using default" (only at
---verbose 3) and falls back to identity: users.email is dumped in plaintext,
-exit 0.
+--verbose 3) and uses its identity function. Up to v0.21.2-4 that function
+returns the value: users.email is dumped in plaintext. From v0.21.3-1 it
+writes nothing into the output buffer: the column is dumped EMPTY. Exit 0
+either way.
 -- scenario --
 tool: mydumper
 versions: >= v0.19.1-1
@@ -10,7 +12,14 @@ lint: MDL502
 expect config-loaded: true
 expect exit: 0
 expect stderr-contains: Function not found: Using default
+
+when < v0.21.3-1
 expect column app.users.email: plaintext
+end
+
+when >= v0.21.3-1
+expect column app.users.email: empty
+end
 -- mydumper.cnf --
 [mydumper]
 threads=2
