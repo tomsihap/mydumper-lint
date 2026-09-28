@@ -1111,12 +1111,13 @@ need Go and Docker: `make build`, `test`, `lint`, `fuzz`, `oracle`, `e2e`, `gen`
 
 | Workflow | Trigger | Content |
 |---|---|---|
-| `ci.yml` | push, pull request | build (Linux, macOS, Windows); unit and golden tests with `-race`; coverage gates; golangci-lint; govulncheck; generated files up to date; 60 s fuzz smoke; oracle conformance on GLib 2.68 |
+| `ci.yml` | push, pull request | build (Linux, macOS, Windows); unit and golden tests with `-race`; coverage gates; golangci-lint; govulncheck; generated files up to date; 60 s fuzz smoke; oracle conformance on GLib 2.68; the playground's WebAssembly build and examples |
 | `oracle.yml` | pull requests touching the emulators, the oracle or testdata | conformance and 60 s differential fuzzing on the three GLib versions |
 | `e2e.yml` | pull requests touching rules, model, goption, optionsdb or e2e | e2e on the 4 sentinel versions |
 | `nightly.yml` | schedule | long fuzzing, mutation testing, full e2e matrix, upstream integration |
 | `upstream-sync.yml` | daily schedule | new mydumper tags ⇒ generator, cross-check, e2e ⇒ pull request |
 | `release.yml` | tag | goreleaser, signatures, attestations, Docker image |
+| `pages.yml` | push to main (playground sources), dispatch | builds and tests the WebAssembly playground, publishes it to GitHub Pages |
 | `scorecard.yml`, `codeql.yml` | schedule, pull request | OpenSSF Scorecard, CodeQL |
 
 Hardening: actions pinned by commit SHA; `permissions: {}` by default, with least
@@ -1235,6 +1236,17 @@ against the dry-run artifacts.
 actions for VS Code, Neovim, and JetBrains IDEs through LSP4IJ); a WASM playground on
 GitHub Pages; an upstream issue or pull request for mydumper describing the facts of §3
 (F1, P1, G1, G7–G9, F10) and proposing a `--strict-config` option.
+
+*Playground (done).* `web/playground`, published by `.github/workflows/pages.yml`. The
+page loads `cmd/mydumper-lint-wasm` (`GOOS=js GOARCH=wasm`, about 2 MB compressed), which
+runs the command line itself in memory (`internal/playground`: `check`, `check --fix`,
+`check --diff`, `inspect`, with `--no-config`), so the page and the binary cannot
+disagree. It works on the file's exact bytes: a textarea turns CRLF into LF and cannot
+hold a BOM or a NUL, so opened files are checked byte for byte, and CRLF and BOM are
+explicit toggles for typed text. Share links carry the file compressed in the URL
+fragment, which browsers do not send to servers. No external resource, a strict Content
+Security Policy, no analytics. `make playground-test` runs the page's examples through
+the WebAssembly build with Node and `internal/playground` under `js/wasm`.
 
 ---
 

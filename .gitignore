@@ -19,3 +19,7 @@
 .vscode/
 *.swp
 .DS_Store
+
+# Playground build output (make playground)
+/web/playground/mydumper-lint.wasm
+/web/playground/wasm_exec.js

@@ -155,6 +155,29 @@ jobs:
       - name: govulncheck
         run: make vuln
 
+  playground:
+    name: playground (WebAssembly)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # mk/playground.mk: builds the WebAssembly binary, runs the page's
+      # examples through it with Node, and internal/playground under js/wasm.
+      - name: Build and test the playground
+        run: make playground-test
+
   actionlint:
     name: actionlint
     runs-on: ubuntu-latest

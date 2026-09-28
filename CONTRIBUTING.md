@@ -58,6 +58,7 @@ The pipeline follows what mydumper does with a file (design §4):
 | `internal/fix` | Applying fixes, the fixpoint loop, the health guard and the self-check, atomic writes. |
 | `internal/lint` | Ties the pipeline together. |
 | `internal/cli`, `internal/report`, `internal/config` | Command line, output formats, `.mydumper-lint.yaml`. |
+| `internal/playground`, `cmd/mydumper-lint-wasm`, `web/playground` | The browser playground: the command line run in memory, its WebAssembly bridge, and the static page. |
 | `tools/oracle` | The GLib oracle (C, GPL-3.0-or-later, test only). |
 | `tools/gen-optionsdb` | Generates the knowledge base from the upstream sources. |
 | `tools/gendocs` | Generates `docs/rules`, `docs/versions.md`, the README tables and the config schema. |
@@ -80,6 +81,7 @@ something new about mydumper or GLib.
 | End to end | `e2e/scenarios/*.txtar` | `make e2e` (Docker), `make e2e-all` for every version |
 | Upstream examples | `internal/lint/upstream_integration_test.go` | `make integration` (network): every tag's example file lints with no error |
 | Mutation testing | the core packages | `make mutation` (slow; nightly): gremlins, with a blocking efficacy threshold |
+| Playground | `web/playground/examples.test.mjs`, `internal/playground` | `make playground-test` (needs Node): the page's examples through the WebAssembly build; `make playground-serve` to try the page on http://localhost:8765 |
 
 A golden case is a [txtar](https://pkg.go.dev/golang.org/x/tools/txtar) file:
 

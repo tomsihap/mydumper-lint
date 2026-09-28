@@ -1,0 +1,80 @@
+# Publishes the browser playground (web/playground, design §14 M6) to GitHub
+# Pages: mydumper-lint compiled to WebAssembly and a static page, nothing
+# else. The page runs the linter in the visitor's browser; it sends no file
+# anywhere.
+#
+# Enable it once in the repository settings (Pages, source: GitHub Actions).
+# Pages needs a public repository on free plans.
+#
+# Hardening as in ci.yml: actions pinned by commit SHA, no permission unless a
+# job asks for one, checkouts without the token in .git/config.
+name: Playground
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cmd/**"
+      - "internal/**"
+      - "web/playground/**"
+      - "go.mod"
+      - "go.sum"
+      - "mk/playground.mk"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build the playground
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # git describe names the build
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build and test the playground
+        run: make playground-test
+
+      - name: Assemble the site
+        run: |
+          mkdir -p _site
+          cp web/playground/index.html web/playground/style.css web/playground/app.js \
+             web/playground/examples.js web/playground/wasm_exec.js web/playground/mydumper-lint.wasm _site/
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    name: deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

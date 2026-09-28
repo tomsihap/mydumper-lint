@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>mydumper-lint playground</title>
+<meta name="description" content="Check a mydumper or myloader configuration file in your browser: what mydumper really does with it, and how to fix it. Nothing is uploaded.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%232563eb'/%3E%3Cpath d='M4 8.5l2.5 2.5L12 5' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script src="wasm_exec.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1>mydumper-lint <span>playground</span></h1>
+    <p>Paste or open a <code>mydumper</code> / <code>myloader</code> configuration file: see what mydumper really does with it, and how to fix it.</p>
+  </div>
+  <nav>
+    <a href="https://github.com/tomsihap/mydumper-lint#readme">Install</a>
+    <a href="https://github.com/tomsihap/mydumper-lint/tree/main/docs/rules">Rules</a>
+    <a href="https://github.com/tomsihap/mydumper-lint">GitHub</a>
+  </nav>
+</header>
+
+<main>
+  <section class="editor-pane" aria-label="Configuration file">
+    <div class="toolbar">
+      <label>mydumper
+        <select id="version" disabled><option>loading…</option></select>
+      </label>
+      <label>Example
+        <select id="example"><option value="">Choose…</option></select>
+      </label>
+      <button id="open" type="button">Open file…</button>
+      <input id="file" type="file" accept=".cnf,.conf,.ini,.txt,text/plain" hidden>
+      <span class="spacer"></span>
+      <div class="toggles" role="group" aria-label="Bytes the editor cannot show">
+        <label title="Write CRLF line endings, like a file edited on Windows"><input id="crlf" type="checkbox"> CRLF</label>
+        <label title="Start the file with a UTF-8 byte order mark"><input id="bom" type="checkbox"> BOM</label>
+      </div>
+      <button id="share" type="button" title="Copy a link that contains this file">Share</button>
+    </div>
+    <div class="file-name">
+      <label for="name">File</label>
+      <input id="name" value="backup.cnf" spellcheck="false" autocomplete="off">
+      <span id="bytes-note" class="note" hidden></span>
+    </div>
+    <div class="editor">
+      <pre id="gutter" class="gutter" aria-hidden="true">1</pre>
+      <textarea id="source" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" aria-label="Configuration file content"></textarea>
+    </div>
+    <p class="privacy">Everything runs in your browser (WebAssembly): the file is never uploaded. A share link carries the file itself in the part after <code>#</code>, which browsers do not send to servers; anyone with the link can read it, so remove passwords first.</p>
+  </section>
+
+  <section class="result-pane" aria-label="Analysis">
+    <div id="verdict" class="verdict loading" role="status" aria-live="polite">
+      <strong>Loading mydumper-lint…</strong>
+      <span>about 2 MB, once</span>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-problems" aria-controls="panel-problems" aria-selected="true">Problems <span id="count" class="count"></span></button>
+      <button role="tab" id="tab-fixes" aria-controls="panel-fixes" aria-selected="false">Fixes</button>
+      <button role="tab" id="tab-sees" aria-controls="panel-sees" aria-selected="false">What mydumper sees</button>
+      <button role="tab" id="tab-cli" aria-controls="panel-cli" aria-selected="false">Command line</button>
+    </div>
+    <div id="panel-problems" class="panel" role="tabpanel" aria-labelledby="tab-problems"></div>
+    <div id="panel-fixes" class="panel" role="tabpanel" aria-labelledby="tab-fixes" hidden>
+      <div class="fix-bar">
+        <label><input id="unsafe" type="checkbox"> Include unsafe fixes <span class="hint">(they change what mydumper does: review them)</span></label>
+        <span class="spacer"></span>
+        <button id="apply" type="button">Apply to the editor</button>
+        <button id="download" type="button">Download</button>
+      </div>
+      <div id="fix-notes"></div>
+      <pre id="diff" class="diff"></pre>
+    </div>
+    <div id="panel-sees" class="panel" role="tabpanel" aria-labelledby="tab-sees" hidden></div>
+    <div id="panel-cli" class="panel" role="tabpanel" aria-labelledby="tab-cli" hidden>
+      <p>The same check from a terminal:</p>
+      <div class="copyable"><pre id="command"></pre><button type="button" data-copy="command">Copy</button></div>
+      <p>Install with <code>go install github.com/tomsihap/mydumper-lint/cmd/mydumper-lint@latest</code>, or download a release. <code>--fix</code> applies the safe fixes, <code>--diff</code> shows them.</p>
+      <p class="muted" id="build"></p>
+    </div>
+  </section>
+</main>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

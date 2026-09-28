@@ -37,6 +37,12 @@ mydumper.cnf:9:10: error MDL402[boolean-flag-value] `routines=0` turns routines 
 Found 2 errors, 0 warnings, 0 infos in 1 file (1 fixable with --fix, 1 more with --unsafe-fixes).
 ```
 
+**Try it without installing anything:** the
+[playground](https://tomsihap.github.io/mydumper-lint/) runs mydumper-lint in your
+browser (WebAssembly). Paste or open a file, pick your mydumper version, and see the
+problems, the fixes and what mydumper really reads. The file never leaves your
+browser.
+
 ## Contents
 
 - [Install](#install)
