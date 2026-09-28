@@ -1,0 +1,13 @@
+# Known options, a group alias, connection keys: nothing to report.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+threads=4
+daemon-snapshot-count=2
+host=db
+user=backup
+[myloader]
+directory=/backup
+-- diagnostics --
+(none)

@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/tomsihap/mydumper-lint/internal/goption"
 	"github.com/tomsihap/mydumper-lint/internal/keyfile"
 	"github.com/tomsihap/mydumper-lint/internal/optionsdb"
 )
@@ -112,6 +113,7 @@ func (r Reason) String() string {
 type Target interface {
 	IgnoreUnknownOptions() bool
 	Option(tool, name string) (optionsdb.OptionSpan, bool)
+	OptionNames(tool string) []string
 	TableKey(key string) bool
 	MasqueradeFunctions() []string
 	Products() []string
@@ -123,6 +125,11 @@ type Options struct {
 	// see keyfile.LanguageNames. Nil means ["C"].
 	Languages []string
 	Target    Target
+	// Charset is the character set of mydumper's locale, which decides
+	// whether GOption accepts non-ASCII values. The zero value is the C
+	// locale (no LANG), like the Languages default: the official images and
+	// cron jobs run that way.
+	Charset goption.Charset
 }
 
 // Entry is one key of a group, in file order.
@@ -131,6 +138,10 @@ type Entry struct {
 	Line       int
 	Effective  bool
 	Reason     Reason
+	// Element is the index of "--key" in the group's GOption vector
+	// (Group.GOption.Argv), the value following it; 0 when the key is not
+	// passed to GOption.
+	Element int
 }
 
 // Group is one group as GLib returns it (duplicate headers merged).
@@ -140,12 +151,15 @@ type Group struct {
 	Tool    string // mydumper or myloader, for option and variable groups
 	Lines   []int  // header lines
 	Entries []Entry
+	// GOption is how GLib parses an option group when the target is known;
+	// nil otherwise.
+	GOption *GOptionRun
 }
 
 // Model is the effective configuration of one file.
 type Model struct {
 	Health Health
-	Fatal  string // the startup error when Health is FatalAtStartup
+	Fatal  string // the startup error when Health is FatalAtStartup, prefixed with the tool
 	Groups []Group
 }
 
@@ -252,6 +266,9 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 			entry.Effective = entry.Reason == ReasonEffective
 			m.Groups[i].Entries = append(m.Groups[i].Entries, entry)
 		}
+	}
+	if opt.Target != nil && m.Health == OK {
+		applyGOption(m, opt.Target, opt.Charset)
 	}
 	return m
 }

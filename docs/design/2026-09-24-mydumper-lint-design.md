@@ -245,6 +245,8 @@ with `g_option_context_parse_strv`.
 | G13 | Unknown option: ignored or fatal depending on the version (F6). | gopt:18 |
 | G14 | Argument types used by mydumper from v0.19.3-3 to master: NONE, STRING, FILENAME, INT, CALLBACK; flags OPTIONAL_ARG and REVERSE. The emulator supports every GLib scalar type, so future versions need no emulator change. | src |
 | G15 | CALLBACK options (26 in v0.19.3-3, 28 in master) validate values with option-specific code (`compress`, `rows`, …). GOption only hands over the raw value. | src |
+| G16 | **NEW.** GOption converts the values of STRING options and of callbacks without the FILENAME flag from the locale's charset (`g_locale_to_utf8`); mydumper calls `setlocale(LC_ALL, "")`. In the C locale (LANG unset: cron, the official images) any byte ≥ 0x80 fails: `Invalid byte sequence in conversion input` ⇒ fatal. In a UTF-8 locale only invalid UTF-8 fails. An optional-argument callback whose value fails to convert is called with no value, and parsing continues. FILENAME options are never converted. The model assumes the C locale, like K14's language list. | oracle: x:string-non-ascii-c-locale, random differential; to verify: e2e |
+| G17 | **NEW.** When parsing fails, GLib reverts what the parse changed in its own way: flags touched become false (their previous value is never saved), numbers get the value before their last assignment, strings and arrays their value before the parse. Callback calls are not undone. Irrelevant to mydumper (it aborts), reproduced for conformance. | oracle: random differential |
 
 ### 3.5 Table sections and masking
 
@@ -662,6 +664,7 @@ target version and build.
 | MDL406 | `invalid-regex` | warning | regex-typed option that does not compile with regexp2 (best effort: mydumper compiles it with PCRE). Raw value (F4) | — | F4 |
 | MDL407 | `octal-integer` | **NEW.** warning | integer written as `0` followed by octal digits: `010` means 8 (`08` and `09` are MDL403) | — (both readings are plausible) | G7 |
 | MDL408 | `value-parsed-as-option` | **NEW.** error | value starting with `-` for an option without argument or with an optional argument: GOption parses it as options (G8); the value `--` silently drops every following key of the group (G9) | — | G8, G9 |
+| MDL409 | `non-ascii-option-value` | **NEW.** warning; error when the value is not valid UTF-8 | value of a converted option (G16) with non-ASCII bytes: mydumper aborts at startup without a UTF-8 locale; an optional-value callback silently receives no value | — | G16 |
 
 #### MDL5xx — Table sections and masking
 

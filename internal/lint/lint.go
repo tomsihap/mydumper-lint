@@ -5,6 +5,7 @@ package lint
 import (
 	"github.com/tomsihap/mydumper-lint/internal/diag"
 	"github.com/tomsihap/mydumper-lint/internal/fix"
+	"github.com/tomsihap/mydumper-lint/internal/goption"
 	"github.com/tomsihap/mydumper-lint/internal/keyfile"
 	"github.com/tomsihap/mydumper-lint/internal/model"
 	"github.com/tomsihap/mydumper-lint/internal/preprocess"
@@ -21,6 +22,8 @@ type Config struct {
 	// NoPreprocessor is set for mydumper versions that load the file with GLib
 	// directly (v0.19.1-x): no "= 1" rewrite, no bracket state leak.
 	NoPreprocessor bool
+	// Charset is the character set of mydumper's locale (model.Options).
+	Charset goption.Charset
 }
 
 // Linter checks and fixes files with one configuration. It is safe for
@@ -52,7 +55,7 @@ type Result struct {
 }
 
 func (l *Linter) modelOptions() model.Options {
-	return model.Options{Languages: l.cfg.Languages, Target: l.cfg.Target}
+	return model.Options{Languages: l.cfg.Languages, Target: l.cfg.Target, Charset: l.cfg.Charset}
 }
 
 // preprocess runs mydumper's pre-processor, or not, as the target version does.

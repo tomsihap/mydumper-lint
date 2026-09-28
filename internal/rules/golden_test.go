@@ -110,11 +110,15 @@ func runGolden(t *testing.T, path string) {
 	if err != nil {
 		t.Fatalf("fix --unsafe-fixes: %v", err)
 	}
-	// Idempotence: fixing the fixed output changes nothing.
-	for _, out := range [][]byte{safe.Output, unsafe.Output} {
-		again, err := l.Fix("input.cnf", out, fix.Options{Unsafe: true})
-		if err != nil || !bytes.Equal(again.Output, out) {
-			t.Errorf("fix is not idempotent: %q then %q (err %v)", out, again.Output, err)
+	// Idempotence: fixing the fixed output again, with the same options,
+	// changes nothing.
+	for _, run := range []struct {
+		out    []byte
+		unsafe bool
+	}{{safe.Output, false}, {unsafe.Output, true}} {
+		again, err := l.Fix("input.cnf", run.out, fix.Options{Unsafe: run.unsafe})
+		if err != nil || !bytes.Equal(again.Output, run.out) {
+			t.Errorf("fix is not idempotent (unsafe=%v): %q then %q (err %v)", run.unsafe, run.out, again.Output, err)
 		}
 	}
 	if !bytes.Equal(safe.Output, input) {

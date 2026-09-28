@@ -1,0 +1,10 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+routines=1
+events
+no-data=
+triggers=-G
+-- diagnostics --
+(none)

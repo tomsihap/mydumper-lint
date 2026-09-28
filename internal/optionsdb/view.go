@@ -11,6 +11,7 @@ import (
 // a linter needs for its target. A View is immutable and safe for concurrent
 // use.
 type View struct {
+	db       *DB
 	version  Version
 	build    Build
 	options  map[string]map[string]*OptionSpan // tool → name → span
@@ -32,6 +33,7 @@ func (db *DB) View(tag string, b Build) (*View, error) {
 		return nil, fmt.Errorf("mydumper %s is not an embedded version (resolve it first)", tag)
 	}
 	v := &View{
+		db:      db,
 		version: db.Versions[vi],
 		build:   b,
 		options: map[string]map[string]*OptionSpan{},
@@ -101,6 +103,11 @@ func (v *View) Option(tool, name string) (OptionSpan, bool) {
 	}
 	return cloneSpan(*s), true
 }
+
+// History returns every span of tool's option name across the embedded
+// versions and builds (DB.History), for messages such as "added in
+// v0.20.1-1".
+func (v *View) History(tool, name string) []OptionSpan { return v.db.History(tool, name) }
 
 // OptionByShort returns the long name of the option whose short name is
 // short (one character, without the dash).

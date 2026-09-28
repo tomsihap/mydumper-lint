@@ -1,0 +1,8 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[myloader]
+outputdir=/backup
+-- diagnostics --
+2:1-2:10 error MDL401[unknown-option] `outputdir` is not a myloader option in v0.19.3-3: `outputdir` is a mydumper option; put it in [mydumper]
+  = myloader aborts at startup: "option parsing failed: Unknown option --outputdir, try --help".

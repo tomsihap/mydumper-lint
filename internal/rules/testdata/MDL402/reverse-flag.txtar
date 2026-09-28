@@ -1,0 +1,13 @@
+# G12: a reverse flag is applied by its presence.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+tz-utc=0
+-- fixed-unsafe.cnf --
+[mydumper]
+#tz-utc=0
+-- diagnostics --
+2:8-2:9 error MDL402[boolean-flag-value] `tz-utc=0` turns tz-utc on: the option takes no value, so GLib ignores `0`
+  = tz-utc takes effect, the opposite of what `0` says.
+  fix (unsafe): Comment the line out to leave the option off

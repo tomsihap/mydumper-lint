@@ -1,0 +1,9 @@
+# An optional value cannot start with a dash.
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[mydumper]
+compress=-G
+-- diagnostics --
+2:10-2:12 error MDL408[value-parsed-as-option] `compress` has an optional value, which cannot start with `-`, so GLib parses `-G` as an option
+  = The value is not used as a value: it sets `triggers`.

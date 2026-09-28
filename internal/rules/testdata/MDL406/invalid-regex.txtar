@@ -1,0 +1,8 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+regex=^(db1|db2\.
+-- diagnostics --
+2:7-2:18 warning MDL406[invalid-regex] `regex` is not a valid regular expression: error parsing regexp: missing closing ) in `^(db1|db2\.`
+  = mydumper aborts when it compiles the expression ("Regular expression fail").

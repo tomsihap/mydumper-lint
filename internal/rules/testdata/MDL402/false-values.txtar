@@ -1,0 +1,23 @@
+# G1, G2: the flag is enabled whatever the value.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+routines=0
+triggers=false
+  events=OFF
+-- fixed-unsafe.cnf --
+[mydumper]
+#routines=0
+#triggers=false
+  #events=OFF
+-- diagnostics --
+2:10-2:11 error MDL402[boolean-flag-value] `routines=0` turns routines on: the option takes no value, so GLib ignores `0`
+  = routines takes effect, the opposite of what `0` says.
+  fix (unsafe): Comment the line out to leave the option off
+3:10-3:15 error MDL402[boolean-flag-value] `triggers=false` turns triggers on: the option takes no value, so GLib ignores `false`
+  = triggers takes effect, the opposite of what `false` says.
+  fix (unsafe): Comment the line out to leave the option off
+4:10-4:13 error MDL402[boolean-flag-value] `events=OFF` turns events on: the option takes no value, so GLib ignores `OFF`
+  = events takes effect, the opposite of what `OFF` says.
+  fix (unsafe): Comment the line out to leave the option off

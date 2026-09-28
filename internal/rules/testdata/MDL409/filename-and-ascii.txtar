@@ -1,0 +1,7 @@
+# Filename options are not converted.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf.esc --
+[mydumper]\noutputdir=/backup/caf\xc3\xa9\ndatabase=cafe\n
+-- diagnostics --
+(none)

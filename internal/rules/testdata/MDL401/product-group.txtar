@@ -1,0 +1,8 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper_mysql]
+bogus=1
+-- diagnostics --
+2:1-2:6 error MDL401[unknown-option] `bogus` is not a mydumper option in v0.19.3-3
+  = mydumper aborts at startup: "option parsing failed: Unknown option --bogus, try --help". [mydumper_mysql] is only read when the server matches it.

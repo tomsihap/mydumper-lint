@@ -1,0 +1,11 @@
+# Valid for strtol; trailing whitespace is MDL302s.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+threads=010
+chunk-filesize=0x40
+statement-size=+100
+long-query-guard=4 
+-- diagnostics --
+(none)

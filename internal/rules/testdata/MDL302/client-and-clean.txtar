@@ -1,0 +1,10 @@
+# libmysqlclient trims [client] values; clean values pass.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[client]
+user=backup 
+[mydumper]
+threads=4
+-- diagnostics --
+(none)

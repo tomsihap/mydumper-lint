@@ -1,0 +1,10 @@
+# 07 is 7 in both readings; hexadecimal is explicit.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+threads=07
+chunk-filesize=0x10
+statement-size=100
+-- diagnostics --
+(none)

@@ -14,10 +14,7 @@
 // official mydumper images are x86-64 Linux builds).
 package goption
 
-import (
-	"strings"
-	"unicode/utf8"
-)
+import "strings"
 
 // Arg is the type of an option's argument (GOptionArg).
 type Arg uint8
@@ -671,21 +668,9 @@ func (p *parser) callback(a Applied, entry *Entry, value string) bool {
 
 // convert is g_locale_to_utf8's verdict on a value.
 func (p *parser) convert(at int, value string) bool {
-	ok := true
-	switch p.c.Charset {
-	case CharsetASCII:
-		for i := 0; i < len(value); i++ {
-			if value[i] >= 0x80 {
-				ok = false
-				break
-			}
-		}
-	case CharsetUTF8:
-		ok = utf8.ValidString(value)
-	case CharsetOther:
-	}
+	ok := Converts(value, p.c.Charset)
 	if !ok {
-		p.setError(at, "Invalid byte sequence in conversion input")
+		p.setError(at, errConversion)
 	}
 	return ok
 }

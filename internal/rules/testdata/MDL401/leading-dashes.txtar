@@ -1,0 +1,13 @@
+# mydumper adds the dashes itself (case 3 of the rule).
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+--threads=4
+-- fixed-unsafe.cnf --
+[mydumper]
+threads=4
+-- diagnostics --
+2:1-2:10 error MDL401[unknown-option] `--threads` is not a mydumper option in v0.19.3-3: write `threads` without the dashes: mydumper adds `--` itself
+  = mydumper aborts at startup: "option parsing failed: Unknown option ----threads, try --help".
+  fix (unsafe): Rename the key to `threads`

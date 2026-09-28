@@ -1,0 +1,12 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+t=4
+-- fixed-unsafe.cnf --
+[mydumper]
+threads=4
+-- diagnostics --
+2:1-2:2 error MDL401[unknown-option] `t` is not a mydumper option in v0.19.3-3: `t` is the short name of `threads`; configuration files need the long name
+  = mydumper aborts at startup: "option parsing failed: Unknown option --t, try --help".
+  fix (unsafe): Rename the key to `threads`

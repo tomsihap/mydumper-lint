@@ -1,0 +1,8 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+threads=010
+-- diagnostics --
+2:9-2:12 warning MDL407[octal-integer] `010` is octal: `threads` gets 8, not 10
+  = threads uses 8.

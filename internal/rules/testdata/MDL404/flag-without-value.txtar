@@ -1,0 +1,8 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+routines=
+threads=4
+-- diagnostics --
+(none)

@@ -1,0 +1,7 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+regex=^(?!(mysql|sys)\.)
+-- diagnostics --
+(none)

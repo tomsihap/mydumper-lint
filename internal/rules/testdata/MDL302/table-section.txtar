@@ -1,0 +1,11 @@
+# SQL-valued keys are skipped; other table keys are not.
+-- input.cnf --
+[`db`.`t`]
+where=a > 1 
+limit=10 
+-- fixed-unsafe.cnf.esc --
+[`db`.`t`]\nwhere=a > 1 \nlimit=10\n
+-- diagnostics --
+3:9-3:10 error MDL302[trailing-whitespace-in-value] the value of `limit` ends with whitespace, which GLib keeps
+  = The whitespace becomes part of the value.
+  fix (unsafe): Remove the trailing whitespace

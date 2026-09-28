@@ -1,0 +1,9 @@
+# G10: a required value is taken verbatim, dash or not.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+outputdir=-backup
+routines=1
+-- diagnostics --
+(none)

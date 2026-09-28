@@ -1,0 +1,14 @@
+# Trailing whitespace: fatal for an integer, part of the value for a path.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf.esc --
+[mydumper]\nthreads=4 \noutputdir=/backup\t\nroutines=1 \n
+-- diagnostics --
+2:10-2:11 error MDL302[trailing-whitespace-in-value] the value of `threads` ends with whitespace, which GLib keeps
+  = mydumper aborts at startup: "option parsing failed: Cannot parse integer value “4 ” for --threads, try --help".
+  fix (unsafe): Remove the trailing whitespace
+3:18-3:19 error MDL302[trailing-whitespace-in-value] the value of `outputdir` ends with whitespace, which GLib keeps
+  = The whitespace becomes part of the value.
+  fix (unsafe): Remove the trailing whitespace
+-- fixed-unsafe.cnf.esc --
+[mydumper]\nthreads=4\noutputdir=/backup\nroutines=1 \n

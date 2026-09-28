@@ -1,0 +1,9 @@
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+routines=true
+events=2
+-- diagnostics --
+2:10-2:14 info MDL402[boolean-flag-value] `routines` takes no value: `true` is ignored; write `routines=1`
+3:8-3:9 warning MDL402[boolean-flag-value] `events` takes no value: `2` is ignored and the option takes effect

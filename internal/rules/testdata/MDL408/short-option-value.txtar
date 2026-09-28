@@ -1,0 +1,10 @@
+# G8: -t (threads) takes the next key as its value.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+routines=-t
+outputdir=/backup
+-- diagnostics --
+2:10-2:12 error MDL408[value-parsed-as-option] `routines` takes no value, so GLib parses `-t` as an option
+  = mydumper aborts at startup: "option parsing failed: Cannot parse integer value “--outputdir” for -t, try --help".

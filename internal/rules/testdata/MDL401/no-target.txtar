@@ -1,0 +1,6 @@
+# Without a mydumper version, option names are not checked.
+-- input.cnf --
+[mydumper]
+bogus=1
+-- diagnostics --
+(none)

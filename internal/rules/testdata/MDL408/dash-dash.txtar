@@ -1,0 +1,11 @@
+# G9: every following key is ignored.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+routines=--
+threads=4
+outputdir=/backup
+-- diagnostics --
+2:10-2:12 error MDL408[value-parsed-as-option] `routines` takes no value, so GLib reads `--` as the end of the options
+  = mydumper ignores every key after this one in [mydumper]: `threads`, `outputdir`.

@@ -1,0 +1,18 @@
+# G7: strtol base 0 rejects these.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+threads=08
+chunk-filesize=1e3
+statement-size=10k
+long-query-guard=99999999999
+-- diagnostics --
+2:9-2:11 error MDL403[invalid-number] `08` is not a valid value for `threads`: a leading 0 makes the number octal, where 8 and 9 are not digits (GLib: Cannot parse integer value “08” for --threads)
+  = mydumper aborts at startup: "option parsing failed: Cannot parse integer value “08” for --threads, try --help".
+3:16-3:19 error MDL403[invalid-number] `1e3` is not a valid value for `chunk-filesize`: exponents are not accepted (GLib: Cannot parse integer value “1e3” for --chunk-filesize)
+  = mydumper aborts at startup: "option parsing failed: Cannot parse integer value “1e3” for --chunk-filesize, try --help".
+4:16-4:19 error MDL403[invalid-number] `10k` is not a valid value for `statement-size`: unit suffixes are not accepted: write the plain number (GLib: Cannot parse integer value “10k” for --statement-size)
+  = mydumper aborts at startup: "option parsing failed: Cannot parse integer value “10k” for --statement-size, try --help".
+5:18-5:29 error MDL403[invalid-number] `99999999999` is not a valid value for `long-query-guard`: too large for the option (GLib: Integer value “99999999999” for --long-query-guard out of range)
+  = mydumper aborts at startup: "option parsing failed: Integer value “99999999999” for --long-query-guard out of range, try --help".

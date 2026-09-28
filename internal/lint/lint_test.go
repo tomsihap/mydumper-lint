@@ -8,6 +8,7 @@ import (
 	"github.com/tomsihap/mydumper-lint/internal/diag"
 	"github.com/tomsihap/mydumper-lint/internal/fix"
 	"github.com/tomsihap/mydumper-lint/internal/model"
+	"github.com/tomsihap/mydumper-lint/internal/optionsdb"
 	"github.com/tomsihap/mydumper-lint/internal/rules"
 )
 
@@ -21,11 +22,35 @@ func allRulesWith(t testing.TB, noPreprocessor bool) *Linter {
 	return l
 }
 
-func bothLoaders(t testing.TB) []*Linter {
-	return []*Linter{allRulesWith(t, false), allRulesWith(t, true)}
+// fuzzLinters covers both loaders without a target, and targets with the
+// three behaviors that matter: no pre-processor (v0.19.1-3), unknown options
+// fatal (v0.19.3-3) and ignored (v1.0.5-1).
+func fuzzLinters(t testing.TB) []*Linter {
+	out := []*Linter{allRulesWith(t, false), allRulesWith(t, true)}
+	db, err := optionsdb.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tag := range []string{"v0.19.1-3", "v0.19.3-3", "v1.0.5-1"} {
+		v, err := db.View(tag, optionsdb.DefaultBuild)
+		if err != nil {
+			t.Fatal(err)
+		}
+		l, err := New(Config{
+			Selection: rules.Selection{Select: []string{"ALL"}, Preview: true},
+			Target:    v, Version: tag, NoPreprocessor: !v.Version().Preprocessor,
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		out = append(out, l)
+	}
+	return out
 }
 
 var seeds = []string{
+	"[mydumper]\nroutines=-t\nthreads=4\n", "[mydumper]\nroutines=--\nthreads=08\nChunk_Filesize=1 \n",
+	"[myloader]\noutputdir=/x\ncompress=-G\ndatabase=caf\xc3\xa9\n", "[mydumper_mysql]\nt=4\nroutines=0\nregex=^(a\n",
 	"[mydumper]\nthreads=4\n  \nroutines\n", "\xef\xbb\xbf[mydumper]\nk=v", "[g] # c\n# see [x]\n\n\n\nk=1\r\n\r\n",
 	"k=1\n[mydumper]\nregex=^(a[bc])\nroutines\n=x\n", "  [mydumper]\n\n\tthreads=4  \n# c \n\x00x\n\vk=1\n",
 	"[a[b]\nfoo]=1\n[`db`.`t`]\n`c[0]`=x\n\n", "[mydumper]\r\nk=v\r\n \r\n", "[mydumper]\nroutines",
@@ -36,7 +61,7 @@ func FuzzCheck(f *testing.F) {
 	for _, s := range seeds {
 		f.Add([]byte(s))
 	}
-	linters := bothLoaders(f)
+	linters := fuzzLinters(f)
 	f.Fuzz(func(t *testing.T, b []byte) {
 		for _, l := range linters {
 			checkDiagnostics(t, b, l.Check("fuzz.cnf", b))
@@ -67,7 +92,7 @@ func FuzzFix(f *testing.F) {
 	for _, s := range seeds {
 		f.Add([]byte(s))
 	}
-	linters := bothLoaders(f)
+	linters := fuzzLinters(f)
 	f.Fuzz(func(t *testing.T, b []byte) {
 		for _, l := range linters {
 			fixOnce(t, l, b)
