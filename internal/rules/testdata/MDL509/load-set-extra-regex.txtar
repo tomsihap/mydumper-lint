@@ -1,0 +1,19 @@
+# The extra file's regex replaces the defaults file's (F15) and filters the
+# table sections of both files: the defaults file's [`app`.`logs`] is dead.
+-- options --
+load-set: yes
+-- defaults.cnf --
+[mydumper]
+regex=^app\.
+[`app`.`logs`]
+where=id>0
+[`app`.`users`]
+where=id>0
+-- input.cnf --
+[mydumper]
+regex=^app\.users$
+-- diagnostics --
+(none)
+on defaults.cnf:
+3:2-3:14 info MDL509[table-group-not-dumped] app.logs does not match the regex ^app\.users$ (from input.cnf): mydumper never dumps it
+  = The settings of this section never apply.

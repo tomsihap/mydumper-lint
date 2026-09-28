@@ -1,0 +1,35 @@
+MDL510, F15: the asymmetry of the merge. mydumper parses the extra file's
+[mydumper] group on its own, so its options apply even when GLib rejects the
+defaults file (3 threads), while the extra file's table section, read only
+from the merged file, is ignored: users.email is dumped in plaintext. The
+connection comes from the command line, since the extra file's [mydumper]
+group makes it the client library's defaults file (F14).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --defaults-extra-file /work/extra.cnf
+args: --host mysql --user e2e --password e2e-password --database app --verbose 3
+lint: MDL110, MDL112, MDL510
+when < v0.19.3-1
+# No pre-processor, hence no bracket state leak (MDL112).
+lint: MDL110, MDL510
+end
+expect config-loaded defaults.cnf: false
+expect config-loaded extra.cnf: true
+expect exit: 0
+expect connected: true
+expect threads: 3
+expect column app.users.email: plaintext
+-- defaults.cnf --
+[mydumper]
+key[bar baz]=1
+-- extra.cnf --
+[mydumper]
+threads=3
+
+[`app`.`users`]
+`email`=random_string
+-- .mydumper-lint.yaml --
+load-sets:
+  - defaults-file: defaults.cnf
+    extra-files: [extra.cnf]

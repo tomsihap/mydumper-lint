@@ -39,9 +39,10 @@ func toJSON(r *rules.Rule) ruleJSON {
 	}
 }
 
-func nonNil(s []string) []string {
+// nonNil makes JSON print [] rather than null.
+func nonNil[T any](s []T) []T {
 	if s == nil {
-		return []string{}
+		return []T{}
 	}
 	return s
 }

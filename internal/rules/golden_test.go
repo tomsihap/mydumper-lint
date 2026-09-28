@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 	"testing"
@@ -121,24 +122,33 @@ func runGolden(t *testing.T, path string) {
 		t.Fatal(err)
 	}
 	res := l.Check(name, input)
+	// A load set's cross-file diagnostics on the defaults file follow those
+	// of input.cnf, under "on defaults.cnf:".
+	var onDefaultsText string
+	var onDefaults []diag.Diagnostic
 	if loadSet {
 		defaults, ok, err := a.Get("defaults.cnf")
 		if !ok || err != nil {
 			t.Fatalf("load-set needs a defaults.cnf section (err %v)", err)
 		}
-		_, onExtra := l.CheckSet(l.Check("defaults.cnf", defaults), res)
+		dres := l.Check("defaults.cnf", defaults)
+		var onExtra []diag.Diagnostic
+		onDefaults, onExtra = l.CheckSet(dres, res)
 		res.Diagnostics = append(res.Diagnostics, onExtra...)
 		diag.Sort(res.Diagnostics)
+		if len(onDefaults) > 0 {
+			onDefaultsText = "on defaults.cnf:\n" + formatDiagnostics(dres.File, onDefaults)
+		}
 	}
 	n := 0
-	for _, d := range res.Diagnostics {
+	for _, d := range append(slices.Clone(res.Diagnostics), onDefaults...) {
 		if d.RuleID == ruleID {
 			n++
 		}
 	}
 	results[ruleID] = append(results[ruleID], caseResult{rule: ruleID, diagnostics: n})
 
-	got := map[string][]byte{"diagnostics": []byte(formatDiagnostics(res.File, res.Diagnostics))}
+	got := map[string][]byte{"diagnostics": []byte(formatDiagnostics(res.File, res.Diagnostics) + onDefaultsText)}
 	safe, err := l.Fix(name, input, fix.Options{})
 	if err != nil {
 		t.Fatalf("fix: %v", err)

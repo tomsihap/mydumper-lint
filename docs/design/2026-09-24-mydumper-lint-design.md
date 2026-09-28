@@ -686,7 +686,8 @@ target version and build.
 | MDL506 | `sql-unbalanced` | error | SQL-valued keys (`columns_on_select`, `columns_on_insert`, `where`, `columns_on_select_replace*`): unbalanced parentheses, quotes or `/* */` comments | — | — |
 | MDL507 | `columns-count-mismatch` | warning | different numbers of top-level columns in `columns_on_select` and `columns_on_insert` of the same section | — | — |
 | MDL508 | `masquerade-file-missing` | warning, opt-in | `<file X>` not found relative to `--base-dir` | — | F11 |
-| MDL509 | `table-group-not-dumped` | info, opt-in | table section whose `db.table` does not match the `regex` of `[mydumper]` in the same file or load set (§9.3) | — | — |
+| MDL509 | `table-group-not-dumped` | info, opt-in | table section whose `db.table` does not match the `regex` of `[mydumper]` in the same file or load set (§9.3): the extra file's regex, when it has one, filters the sections of both files (F15) | — | — |
+| MDL510 | `extra-file-section-dropped` | error | **NEW.** In a load set whose defaults file GLib rejects, a table section, variable group or per-product option group of the extra file: mydumper reads these from the merged file, which does not exist, so they are ignored (masked columns dumped in plaintext) while the extra file's tool group applies | — | F15 |
 
 #### MDL6xx — Connection (libmysqlclient) — NEW
 
@@ -815,6 +816,7 @@ mydumper-lint check [flags] [PATH ...]           default command
 mydumper-lint rules [--format text|json]         list rules (stable, preview, opt-in)
 mydumper-lint explain <ID|name>                  full documentation of a rule
 mydumper-lint inspect <FILE>                     what mydumper sees (effective model)
+mydumper-lint inspect --load-set <DEFAULTS> <EXTRA>   what one invocation applies from both
 mydumper-lint versions                           embedded mydumper versions, default target
 mydumper-lint config {path|show|schema} [FILE]   resolved configuration, JSON Schema
 mydumper-lint completion {bash|zsh|fish|powershell}
@@ -857,6 +859,12 @@ Prints (JSON or text): `loadable`, the GLib error, the pre-processed lines (inse
 leaks highlighted), groups and entries, and for each entry `effective` with its reason
 (§4.5), plus the resolved version and build. Its core fields match the oracle's `--json`
 output, which drives differential testing (§11.4).
+
+With `--load-set DEFAULTS EXTRA` it prints the model of one invocation instead (§9.3,
+`model.BuildSet`): each entry with its file and line, and the reasons only a load set
+has, `overridden-by-extra-file` and `defaults-file-rejected`; then which file, and which
+groups, the MySQL client library reads for each tool (F12–F14). The version comes from
+the configuration of the defaults file.
 
 ---
 
@@ -917,9 +925,16 @@ overrides:
 
 One mydumper invocation loads a defaults file and, optionally, an extra file. A load set
 declares such pairs so that rules can analyze what the invocation actually sees: MDL603
-(client group overridden), MDL509 (table sections against the `regex` set in the defaults
-file), and `inspect --load-set` for the merged model. Without load sets, every file is
-linted on its own.
+(client group overridden), MDL509 (table sections against the `regex` of the other
+file), MDL510 (the extra file's sections lost with a rejected defaults file), and
+`inspect --load-set` for the merged model. Without load sets, every file is linted on
+its own.
+
+The merged model follows F15: the tool groups of both files are parsed in turn (an
+option the extra file sets again replaces the defaults file's value; callbacks are
+called twice and left alone), and the other groups come from the defaults file with the
+extra file merged into it key by key, per-product option groups parsed by GOption on
+the merged vector.
 
 ---
 
@@ -1273,7 +1288,8 @@ argv is built like mydumper does (`[group, --key, value, …]`). Options: `routi
 
 1. **Reference facts.** Amended K2, K4, K14, K17, F10. Added K19, K20, G7–G17, F12–F16,
    C1–C5, V1–V6. F5 confirmed in the source.
-2. **Rules.** New: MDL002, MDL110, MDL111, MDL112, MDL313, MDL407, MDL408, MDL601–MDL603.
+2. **Rules.** New: MDL002, MDL110, MDL111, MDL112, MDL113, MDL313, MDL407, MDL408, MDL409,
+   MDL510, MDL601–MDL603.
    Amended: MDL106, MDL108, MDL305, MDL312, MDL404.
 3. **Versions.** Every release ≥ v0.19.1-1 instead of three versions (two of which were
    pre-releases, with the 0.20 branch missing). One consolidated history file instead of

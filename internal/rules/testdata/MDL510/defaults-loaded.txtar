@@ -1,0 +1,11 @@
+# The defaults file loads: the extra file's sections are merged and apply.
+-- options --
+load-set: yes
+-- defaults.cnf --
+[client]
+host=db
+-- input.cnf --
+[`app`.`users`]
+`email`=random_string
+-- diagnostics --
+(none)

@@ -1,0 +1,12 @@
+# The extra file is rejected too: MDL1xx rules report it; nothing to add.
+-- options --
+load-set: yes
+-- defaults.cnf --
+[mydumper]
+key[bar baz]=1
+-- input.cnf --
+[`app`.`users`]
+`email`=random_string
+key]=1
+-- diagnostics --
+(none)

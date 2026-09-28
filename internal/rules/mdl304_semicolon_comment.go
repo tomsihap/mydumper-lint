@@ -61,7 +61,8 @@ func init() {
 					d.Consequence = "mydumper passes it as an unknown option and aborts at startup: \"option parsing failed: Unknown option\"."
 				case model.ReasonEffective, model.ReasonFileRejected, model.ReasonLocalized, model.ReasonShadowed,
 					model.ReasonConnectionKey, model.ReasonUnknownTableKey, model.ReasonMasqueradeIdentity,
-					model.ReasonConsumedAsValue, model.ReasonAfterEndOfOptions:
+					model.ReasonConsumedAsValue, model.ReasonAfterEndOfOptions,
+					model.ReasonOverriddenByExtraFile, model.ReasonDefaultsFileRejected:
 					d.Consequence = "The line is read as the key " + key + "."
 				}
 				d.Fix = &diag.Fix{

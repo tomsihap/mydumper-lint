@@ -290,9 +290,21 @@ func example(root, id string) (string, error) {
 			}
 		}
 	}
-	b.WriteString("❌ Before:\n\n" + fence(a, "input.cnf"))
+	if _, ok, _ := a.Get("defaults.cnf"); ok || escaped(a, "defaults.cnf") {
+		// A load set: input.cnf is the extra file of defaults.cnf.
+		b.WriteString("The defaults file, `defaults.cnf` (`--defaults-file`):\n\n" + fence(a, "defaults.cnf"))
+		b.WriteString("\n❌ Before, the extra file (`--defaults-extra-file`):\n\n" + fence(a, "input.cnf"))
+	} else {
+		b.WriteString("❌ Before:\n\n" + fence(a, "input.cnf"))
+	}
 	ds, _, _ := a.Get("diagnostics")
-	b.WriteString("\n```text\n" + string(onlyRule(ds, id)) + "```\n")
+	const onDefaults = "on defaults.cnf:\n"
+	own, other, _ := bytes.Cut(ds, []byte(onDefaults))
+	shown := onlyRule(own, id)
+	if o := onlyRule(other, id); len(o) > 0 {
+		shown = append(append(shown, onDefaults...), o...)
+	}
+	b.WriteString("\n```text\n" + string(shown) + "```\n")
 	for _, name := range []string{"fixed.cnf", "fixed-unsafe.cnf"} {
 		if _, ok, _ := a.Get(name); ok {
 			label := "✅ After `mydumper-lint check --fix`:"

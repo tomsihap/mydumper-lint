@@ -84,6 +84,9 @@ const (
 	ReasonMasqueradeIdentity        // unknown masking function: column exported in plaintext (F10)
 	ReasonConsumedAsValue           // swallowed as the value of an option parsed from a value (G8)
 	ReasonAfterEndOfOptions         // after a "--" value that ended option parsing (G9)
+	// Load sets only (BuildSet, F15):
+	ReasonOverriddenByExtraFile // a defaults-file entry whose value the extra file replaces
+	ReasonDefaultsFileRejected  // an extra-file entry read from the merged file, which does not exist
 )
 
 var reasonNames = [...]string{
@@ -99,6 +102,9 @@ var reasonNames = [...]string{
 	ReasonMasqueradeIdentity: "masquerade-fallback-identity",
 	ReasonConsumedAsValue:    "consumed-as-option-value",
 	ReasonAfterEndOfOptions:  "after-end-of-options",
+
+	ReasonOverriddenByExtraFile: "overridden-by-extra-file",
+	ReasonDefaultsFileRejected:  "defaults-file-rejected",
 }
 
 func (r Reason) String() string {
@@ -151,6 +157,7 @@ type Entry struct {
 	// visible one), 0 when none is visible.
 	LastLine int
 	passed   bool // GLib lists it and mydumper passes it to GOption
+	src      int  // index in keyfile.Result.Entries
 }
 
 // Group is one group as GLib returns it (duplicate headers merged).
@@ -292,7 +299,7 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 		for _, ei := range byGroup[gi] {
 			e := kf.Entries[ei]
 			last := lastLine[ei]
-			entry := Entry{Key: e.Key, Value: lastValue[ei], Line: e.Line, LastLine: last, Shadowed: last != 0 && e.Line != last}
+			entry := Entry{Key: e.Key, Value: lastValue[ei], Line: e.Line, LastLine: last, Shadowed: last != 0 && e.Line != last, src: ei}
 			entry.Reason = reason(m, m.Groups[i], e, languages, last, opt.Target)
 			kind := m.Groups[i].Kind
 			entry.passed = (kind == GroupToolOptions || kind == GroupProductOptions) &&

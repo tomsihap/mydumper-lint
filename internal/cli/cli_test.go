@@ -361,6 +361,68 @@ func TestInspect(t *testing.T) {
 	}
 }
 
+func TestInspectLoadSet(t *testing.T) {
+	root := workspace(t, map[string]string{
+		"defaults.cnf":  "[client]\nhost=db\n[mydumper]\nthreads=2\nkey[bar baz]=1\n",
+		"extra.cnf":     "[mydumper]\nthreads=3\n[`app`.`users`]\n`email`=random_string\n",
+		"good.cnf":      "[client]\nhost=db\n[`app`.`users`]\n`email`=random_string\n",
+		"bad-extra.cnf": "[`app`.`users`]\n`email`=bogus\nkey]=1\n",
+	})
+	d, x := filepath.Join(root, "defaults.cnf"), filepath.Join(root, "extra.cnf")
+	r := run(t, "", "inspect", "--mydumper-version", "v1.0.5-1", "--load-set", d, x)
+	for _, want := range []string{
+		"GLib REJECTS the file (line 5: Invalid key name: key[bar baz])",
+		"its table sections, variable groups and per-product groups are ignored",
+		`threads = "3"  (` + x + ":2)",
+		"<- defaults-file-rejected",
+		"mydumper: [client] and [mydumper] of " + x,
+		"myloader: [client] of " + d,
+	} {
+		if !strings.Contains(r.stdout, want) {
+			t.Errorf("inspect --load-set: missing %q in\n%s", want, r.stdout)
+		}
+	}
+	r = run(t, "", "inspect", "--load-set", "--format", "json", filepath.Join(root, "good.cnf"), x)
+	var doc inspectSetDoc
+	if err := json.Unmarshal([]byte(r.stdout), &doc); err != nil || !doc.Defaults.Loadable || doc.Health != "ok" || len(doc.Connections) != 2 {
+		t.Fatalf("inspect --load-set json: %v %+v", err, doc)
+	}
+	if c := doc.Connections[1]; c.Tool != "myloader" || c.File != filepath.Join(root, "good.cnf") || len(c.Groups) != 1 {
+		t.Errorf("myloader connection: %+v", c)
+	}
+	r = run(t, "[mydumper]\nbogus=1\n", "inspect", "--load-set", "--mydumper-version", "v0.19.3-3", filepath.Join(root, "good.cnf"), "-")
+	if !strings.Contains(r.stdout, "mydumper aborts at startup: mydumper: option parsing failed: Unknown option --bogus") ||
+		!strings.Contains(r.stdout, "(<stdin>:2)") {
+		t.Errorf("inspect --load-set fatal: %s", r.stdout)
+	}
+	r = run(t, "", "inspect", "--load-set", "--mydumper-version", "v0.19.1-3", d, filepath.Join(root, "bad-extra.cnf"))
+	if !strings.Contains(r.stdout, "no pre-processor") || !strings.Contains(r.stdout, "nothing applies") {
+		t.Errorf("inspect --load-set, both rejected: %s", r.stdout)
+	}
+	r = run(t, "", "inspect", "--load-set", "--mydumper-version", "v1.0.5-1", filepath.Join(root, "bad-extra.cnf"), filepath.Join(root, "bad-extra.cnf"))
+	if !strings.Contains(r.stdout, "no defaults file") && !strings.Contains(r.stdout, "[client] of") {
+		t.Errorf("inspect --load-set connections: %s", r.stdout)
+	}
+	for _, args := range [][]string{
+		{"inspect", "--load-set", d},
+		{"inspect", "--load-set", "-", "-"},
+		{"inspect", "--load-set", d, filepath.Join(root, "missing.cnf")},
+	} {
+		if r := run(t, "", args...); r.code != ExitError {
+			t.Errorf("%v: %+v", args, r)
+		}
+	}
+	r = run(t, "", "inspect", "--load-set", "--mydumper-version", "v1.0.5-1", filepath.Join(root, "good.cnf"), filepath.Join(root, "good.cnf"))
+	if !strings.Contains(r.stdout, "overridden-by-extra-file") {
+		t.Errorf("inspect --load-set, same file twice: %s", r.stdout)
+	}
+	empty := workspace(t, map[string]string{"a.cnf": "", "b.cnf": "[`db`.`t`]\nwhere=1\n"})
+	r = run(t, "", "inspect", "--load-set", filepath.Join(empty, "a.cnf"), filepath.Join(empty, "a.cnf"))
+	if !strings.Contains(r.stdout, "(no groups)") || !strings.Contains(r.stdout, "mydumper: no defaults file") {
+		t.Errorf("inspect --load-set, empty files: %s", r.stdout)
+	}
+}
+
 func TestRulesAndExplain(t *testing.T) {
 	r := run(t, "", "rules")
 	if !strings.Contains(r.stdout, "MDL102") || !strings.Contains(r.stdout, "whitespace-only-line") {

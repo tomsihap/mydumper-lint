@@ -78,6 +78,7 @@ mydumper-lint check conf/prod.cnf      # lint one file
 mydumper-lint check --fix .            # apply the safe fixes
 mydumper-lint check --diff .           # show the fixes as a diff, write nothing
 mydumper-lint inspect conf/prod.cnf    # what mydumper actually sees in a file
+mydumper-lint inspect --load-set conf/defaults.cnf conf/sales-extra.cnf  # and in a pair
 mydumper-lint explain MDL102           # the full documentation of a rule
 mydumper-lint rules                    # every rule
 mydumper-lint versions                 # the mydumper versions mydumper-lint knows
@@ -89,6 +90,10 @@ mydumper-lint versions                 # the mydumper versions mydumper-lint kno
 `inspect` is the fastest way to understand a file: whether GLib loads it (and the
 exact message mydumper logs if not), the lines the pre-processor rewrites, the groups
 and keys GLib returns, and for every key whether it has an effect, and why not.
+With `--load-set`, give it the file of `--defaults-file` and the file of
+`--defaults-extra-file`: it shows what one run applies from both (mydumper merges the
+extra file into the defaults file, so a rejected defaults file also loses the extra
+file's masking) and which file the MySQL client library reads for the connection.
 
 ## Target your mydumper version
 
@@ -153,7 +158,7 @@ rules:
 fix:
   extend-safe: [MDL302]        # apply this unsafe fix with --fix
 
-load-sets:                     # files one mydumper run loads together
+load-sets:                     # files one mydumper run loads together (MDL509, MDL510, MDL603)
   - defaults-file: defaults.cnf
     extra-files: ["*-extra.cnf"]
 
@@ -318,6 +323,7 @@ column in plaintext… Each rule has a page with an example taken from its tests
 | [MDL507](docs/rules/MDL507.md) | `columns-count-mismatch` | warning | — | `columns_on_select` and `columns_on_insert` list different numbers of columns. |
 | [MDL508](docs/rules/MDL508.md) | `masquerade-file-missing` | warning (opt-in) | — | A `<file X>` of a masking format does not exist. |
 | [MDL509](docs/rules/MDL509.md) | `table-group-not-dumped` | info (opt-in) | — | A table section names a table the `regex` of [mydumper] excludes. |
+| [MDL510](docs/rules/MDL510.md) | `extra-file-section-dropped` | error | — | The defaults file is rejected, so the extra file's table sections and variable groups are ignored. |
 
 **Connection (MySQL client library)**
 

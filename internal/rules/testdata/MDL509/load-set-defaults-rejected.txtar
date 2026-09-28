@@ -1,0 +1,13 @@
+# A rejected defaults file sets no regex: the extra file's sections are not
+# checked against it.
+-- options --
+load-set: yes
+-- defaults.cnf --
+[mydumper]
+regex=^app\.users$
+key]=1
+-- input.cnf --
+[`app`.`orders`]
+where=id>0
+-- diagnostics --
+(none)

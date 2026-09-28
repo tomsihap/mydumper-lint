@@ -19,7 +19,8 @@ func init() {
 			Summary: "A table section names a table the `regex` of [mydumper] excludes.",
 			Why: "mydumper dumps only the tables whose `db.table` matches `regex`. A table section " +
 				"for another table is dead: often a leftover of a copied file, or a sign the regex is " +
-				"wrong. In a load set, the regex of the extra file wins over the defaults file's. " +
+				"wrong. In a load set, the regex of the extra file wins over the defaults file's, and " +
+				"applies to the table sections of both files. " +
 				"Opt-in, because the regex is often set on the command line instead.",
 		},
 		Check: func(p *Pass) {
@@ -28,12 +29,15 @@ func init() {
 			}
 		},
 		CheckSet: func(s *Set) {
-			// The extra file's own regex is checked by Check; without one, the
-			// defaults file's regex applies to its table sections too.
-			if re, _ := mydumperRegex(s.Extra.KF); re != nil {
+			// The last regex parsed wins (F15): the extra file's, else the
+			// defaults file's. Each file's own regex is checked by Check.
+			if re, value := mydumperRegex(s.Extra.KF); re != nil && s.Extra.KF.Loadable {
+				if s.Defaults.KF.Loadable {
+					reportExcludedTables(s.Defaults, func(d diag.Diagnostic) { s.Report(s.Defaults, d) }, re, value+" (from "+s.Extra.File.Path+")")
+				}
 				return
 			}
-			if re, value := mydumperRegex(s.Defaults.KF); re != nil {
+			if re, value := mydumperRegex(s.Defaults.KF); re != nil && s.Defaults.KF.Loadable {
 				reportExcludedTables(s.Extra, func(d diag.Diagnostic) { s.Report(s.Extra, d) }, re, value+" (from "+s.Defaults.File.Path+")")
 			}
 		},

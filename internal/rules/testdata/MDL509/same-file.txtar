@@ -1,5 +1,6 @@
 -- options --
 select: MDL509
+doc-example: yes
 -- input.cnf --
 [mydumper]
 regex=^app\.(users|orders)$

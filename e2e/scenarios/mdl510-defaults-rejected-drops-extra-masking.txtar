@@ -1,0 +1,38 @@
+MDL510, F15, F1, F12: mydumper merges the extra file into the defaults file
+and reads the table sections from the merged file. When GLib rejects the
+defaults file there is nothing to merge into: the extra file loads, but its
+table section is ignored and users.email is dumped in plaintext. The defaults
+file's [client] still provides the connection (the extra file has neither
+[mydumper] nor [client], F14). mdl603-control-extra-file-without-tool-or-client-group
+is the control: the same extra file masks the column when the defaults file
+loads.
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --defaults-extra-file /work/extra.cnf --database app
+lint: MDL110, MDL112, MDL405, MDL510
+when < v0.19.3-1
+# No pre-processor, hence no bracket state leak (MDL112).
+lint: MDL110, MDL405, MDL510
+end
+expect config-loaded defaults.cnf: false
+expect config-loaded extra.cnf: true
+expect stderr-contains: Invalid key name
+expect exit: 0
+expect connected: true
+expect column app.users.email: plaintext
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper]
+key[bar baz]=1
+-- extra.cnf --
+[`app`.`users`]
+`email`=random_string
+-- .mydumper-lint.yaml --
+load-sets:
+  - defaults-file: defaults.cnf
+    extra-files: [extra.cnf]

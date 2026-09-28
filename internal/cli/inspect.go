@@ -18,11 +18,18 @@ import (
 )
 
 const inspectHelp = `Usage: mydumper-lint inspect [flags] FILE
+       mydumper-lint inspect --load-set [flags] DEFAULTS_FILE EXTRA_FILE
 
 Show what mydumper sees in a configuration file: whether GLib loads it (and
 the exact error mydumper logs if not), the lines mydumper's pre-processor
 rewrites, the groups and keys GLib returns, and for every key whether it has
 an effect and why not. Use - to read stdin.
+
+With --load-set, show what one invocation applies from the file passed to
+--defaults-file and the file passed to --defaults-extra-file: mydumper parses
+each file's [mydumper] or [myloader] group in turn, merges the extra file into
+the defaults file for everything else, and hands one of them to the MySQL
+client library. The configuration file of DEFAULTS_FILE decides the version.
 
 Flags:
 `
@@ -86,6 +93,7 @@ func runInspect(args []string, e *env) int {
 	configPath := fs.String("config", "", "Configuration `file` to use.")
 	noConfig := fs.Bool("no-config", false, "Ignore configuration files.")
 	lang := fs.String("lang", "", "Value of LANG in mydumper's environment (localized keys depend on it).")
+	loadSet := fs.Bool("load-set", false, "Inspect a load set: DEFAULTS_FILE, then EXTRA_FILE.")
 	paths, err := parse(fs, args)
 	if errors.Is(err, errHelp) {
 		fmt.Fprint(e.stdout, inspectHelp+flagUsage(fs))
@@ -94,24 +102,25 @@ func runInspect(args []string, e *env) int {
 	if err != nil {
 		return usageError(e, "inspect", err)
 	}
-	if len(paths) != 1 {
+	switch {
+	case *loadSet && len(paths) != 2:
+		return usageError(e, "inspect", errors.New("--load-set expects the defaults file, then the extra file"))
+	case *loadSet && paths[0] == "-" && paths[1] == "-":
+		return usageError(e, "inspect", errors.New("only one of the files can be stdin"))
+	case !*loadSet && len(paths) != 1:
 		return usageError(e, "inspect", errors.New("expected exactly one file"))
 	}
 	if *format != "text" && *format != "json" {
 		return usageError(e, "inspect", fmt.Errorf("--format must be text or json, not %q", *format))
 	}
-	path := paths[0]
-	var src []byte
-	if path == "-" {
-		src, err = io.ReadAll(e.stdin)
-		path = "<stdin>"
-	} else {
-		src, err = os.ReadFile(path)
+	srcs := make([][]byte, len(paths))
+	for i := range paths {
+		if paths[i], srcs[i], err = readInput(e, paths[i]); err != nil {
+			fmt.Fprintf(e.stderr, "mydumper-lint: %v\n", err)
+			return ExitError
+		}
 	}
-	if err != nil {
-		fmt.Fprintf(e.stderr, "mydumper-lint: %v\n", err)
-		return ExitError
-	}
+	path, src := paths[0], srcs[0]
 	var cfg *config.Config
 	switch {
 	case *configPath != "":
@@ -141,7 +150,12 @@ func runInspect(args []string, e *env) int {
 		}
 		return ""
 	})
-	doc := buildInspect(path, src, t, languages)
+	var doc any
+	if *loadSet {
+		doc = buildInspectSet(path, src, paths[1], srcs[1], t, languages)
+	} else {
+		doc = buildInspect(path, src, t, languages)
+	}
 	if *format == "json" {
 		enc := json.NewEncoder(e.stdout)
 		enc.SetIndent("", "  ")
@@ -150,8 +164,33 @@ func runInspect(args []string, e *env) int {
 		}
 		return ExitOK
 	}
-	printInspect(e.stdout, doc)
+	switch d := doc.(type) {
+	case inspectSetDoc:
+		printInspectSet(e.stdout, d)
+	case inspectDoc:
+		printInspect(e.stdout, d)
+	}
 	return ExitOK
+}
+
+// readInput reads a file, or stdin for "-", and returns the name to show.
+func readInput(e *env, path string) (string, []byte, error) {
+	if path == "-" {
+		src, err := io.ReadAll(e.stdin)
+		return "<stdin>", src, err
+	}
+	src, err := os.ReadFile(path)
+	return path, src, err
+}
+
+// parseForInspect reads a file the way mydumper does for the version.
+func parseForInspect(path string, src []byte, preprocessor bool) *keyfile.Result {
+	f := source.New(path, src)
+	pre := preprocess.Run(f)
+	if !preprocessor {
+		pre = preprocess.Passthrough(f)
+	}
+	return keyfile.Parse(f, pre)
 }
 
 func buildInspect(path string, src []byte, t target.Target, languages []string) inspectDoc {
