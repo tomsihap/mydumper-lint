@@ -49,6 +49,7 @@ func dumpExtraction(w io.Writer, x *extraction) {
 	fmt.Fprintf(w, "  ignore_unknown_options %v\n", x.ignoreUnknown)
 	fmt.Fprintf(w, "  loader_fingerprint %s\n", x.fingerprint)
 	fmt.Fprintf(w, "  products %s\n", strings.Join(x.products, " "))
+	fmt.Fprintf(w, "  product option groups read by %s\n", strings.Join(x.productGroups, " "))
 	fmt.Fprintf(w, "  table keys %s\n", factList(x.tableKeys))
 	fmt.Fprintf(w, "  masking functions %s\n", factList(x.masquerade))
 	for _, n := range x.notes {

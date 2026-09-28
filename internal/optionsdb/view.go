@@ -156,3 +156,7 @@ func (v *View) MasqueradeFunctions() []string { return slices.Clone(v.masq) }
 // Products returns the lowercase product names used in per-product groups
 // (§3.6), sorted.
 func (v *View) Products() []string { return slices.Clone(v.products) }
+
+// ProductOptionGroups returns the tools that read their per-product option
+// groups ([mydumper_mysql_8_0], F16): mydumper from v0.21.2-2, myloader never.
+func (v *View) ProductOptionGroups() []string { return slices.Clone(v.version.ProductOptionGroups) }

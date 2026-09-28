@@ -113,6 +113,7 @@ type Pass struct {
 	optKeys  []optionKey       // optionKeys' cache
 	optDone  bool
 	headers  []keyfile.Group // validHeaders' cache
+	readers  *model.Readers  // readers' cache
 }
 
 // groupKind returns who reads the group of header gi (an index in
@@ -121,7 +122,7 @@ func (p *Pass) groupKind(gi int) model.GroupKind {
 	if p.kinds == nil {
 		p.kinds = make([]model.GroupKind, len(p.KF.Groups))
 		for i, g := range p.KF.Groups {
-			p.kinds[i], _ = model.ClassifyGroup(g.Name, products(p))
+			p.kinds[i], _ = model.ClassifyGroup(g.Name, readers(p))
 		}
 	}
 	return p.kinds[gi]

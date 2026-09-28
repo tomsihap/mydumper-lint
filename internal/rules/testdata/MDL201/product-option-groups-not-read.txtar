@@ -1,0 +1,22 @@
+# F16: mydumper reads its per-product option groups from v0.21.2-2 only, and
+# myloader never reads them. Variable groups with a product suffix are read by
+# both tools in every version.
+-- options --
+mydumper-version: v0.19.3-3
+select: MDL201
+-- input.cnf --
+[mydumper_mysql]
+no-data=1
+[myloader_mysql_8]
+threads=2
+[myloader_session_variables_mysql]
+sql_mode=
+[mydumper_oracle]
+threads=2
+-- diagnostics --
+1:2-1:16 warning MDL201[unknown-group] [mydumper_mysql] is read by nobody: mydumper v0.19.3-3 does not read per-product option groups (mydumper reads them from v0.21.2-2, myloader never)
+  = Every key of this group is ignored.
+3:2-3:18 warning MDL201[unknown-group] [myloader_mysql_8] is read by nobody: myloader v0.19.3-3 does not read per-product option groups (mydumper reads them from v0.21.2-2, myloader never)
+  = Every key of this group is ignored.
+7:2-7:17 warning MDL201[unknown-group] [mydumper_oracle] is read by nobody: the product is not one mydumper knows (clickhouse, dolt, mariadb, mysql, percona, tidb, unknown)
+  = Every key of this group is ignored.

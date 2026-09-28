@@ -26,7 +26,7 @@ func init() {
 				if lower == g.Name || lower == "client" || knownGroup(p, g.Name) || !knownGroup(p, lower) {
 					continue
 				}
-				_, tool := model.ClassifyGroup(lower, products(p))
+				_, tool := model.ClassifyGroup(lower, readers(p))
 				if tool == "" {
 					tool = "mydumper"
 				}

@@ -1,0 +1,27 @@
+F16: mydumper reads its per-product option groups ([mydumper_mysql], then
+[mydumper_mysql_8], …) from v0.21.2-2 only; earlier versions ignore them. The
+e2e server is MySQL 8.4, so [mydumper_mysql] matches it: its no-data applies
+from v0.21.2-2 (no data file), and not before (the data is dumped).
+-- scenario --
+tool: mydumper
+versions: >= v0.19.1-1
+args: --defaults-file /work/defaults.cnf --database app
+lint: MDL405
+expect config-loaded: true
+expect exit: 0
+expect connected: true
+when < v0.21.2-2
+lint: MDL201, MDL405
+expect data-dumped: true
+end
+when >= v0.21.2-2
+expect data-dumped: false
+end
+-- defaults.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[mydumper_mysql]
+no-data=1

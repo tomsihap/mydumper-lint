@@ -7,19 +7,20 @@ import (
 	"github.com/tomsihap/mydumper-lint/internal/model"
 )
 
-// products returns the product names of the target, or nil for the known
-// list (model.ClassifyGroup).
-func products(p *Pass) []string {
-	if p.Target != nil {
-		return p.Target.Products()
+// readers returns who reads which groups for the target (model.ReadersOf),
+// computed once per pass.
+func readers(p *Pass) model.Readers {
+	if p.readers == nil {
+		r := model.ReadersOf(p.Target)
+		p.readers = &r
 	}
-	return nil
+	return *p.readers
 }
 
 // knownGroup reports whether mydumper, myloader or the MySQL client library
 // reads a group of that name (design §3.6).
 func knownGroup(p *Pass, name string) bool {
-	kind, _ := model.ClassifyGroup(name, products(p))
+	kind, _ := model.ClassifyGroup(name, readers(p))
 	return kind != model.GroupUnknown
 }
 

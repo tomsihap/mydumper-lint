@@ -25,7 +25,7 @@ func TestClassifyGroup(t *testing.T) {
 		{"MyDumper", GroupUnknown, ""},
 		{" mydumper ", GroupUnknown, ""},
 		{"mydumper_mysql", GroupProductOptions, "mydumper"},
-		{"myloader_mariadb_10_6", GroupProductOptions, "myloader"},
+		{"myloader_mariadb_10_6", GroupUnknown, ""}, // myloader never reads them (F16)
 		{"mydumper_mysql_8_0_36", GroupProductOptions, "mydumper"},
 		{"mydumper_mysql_8_0_36_1", GroupUnknown, ""},
 		{"mydumper_mysql_x", GroupUnknown, ""},
@@ -42,7 +42,7 @@ func TestClassifyGroup(t *testing.T) {
 		{"`db.t`", GroupUnknown, ""},
 	}
 	for _, tt := range tests {
-		kind, tool := ClassifyGroup(tt.name, nil)
+		kind, tool := ClassifyGroup(tt.name, DefaultReaders)
 		if kind != tt.kind || tool != tt.tool {
 			t.Errorf("ClassifyGroup(%q) = %v, %q; want %v, %q", tt.name, kind, tool, tt.kind, tt.tool)
 		}

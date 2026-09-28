@@ -6,6 +6,10 @@ tool: mydumper
 versions: >= v0.19.1-1
 args: --defaults-file /work/defaults.cnf --database app
 lint: MDL112, MDL405
+when < v0.19.3-1
+# No pre-processor before v0.19.3-1, hence no bracket state leak (MDL112).
+lint: MDL405
+end
 expect config-loaded: true
 expect exit: 0
 expect connected: true

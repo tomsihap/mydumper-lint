@@ -125,8 +125,9 @@ file ─► g_file_get_contents                      (I/O error ⇒ g_error: fat
      ─► g_key_file_load_from_data(KEEP_COMMENTS)
           └─ failure ⇒ g_warning("Failed to load config file %s: %s")
                      ⇒ the WHOLE file is ignored; execution continues
-     ─► [mydumper] / [myloader], then per-product groups (§3.6)
-          ─► parse_key_file_group ─► GOption (§3.4)
+     ─► [mydumper] / [myloader] of this file ─► parse_key_file_group ─► GOption (§3.4)
+     ─► the extra file: the same steps, then merged into this file (F15)
+     ─► per-product option groups, mydumper only (F16) ─► GOption
      ─► [<app>_session_variables…] / [<app>_global_variables…] ─► server variables
      ─► table groups [`db`.`table`] ─► per-table settings and masking (§3.5)
      ─► libmysqlclient re-reads the same file for the connection (§3.7)
@@ -140,6 +141,7 @@ file ─► g_file_get_contents                      (I/O error ⇒ g_error: fat
 | F4 | Values are read raw with `g_key_file_get_value`: no escape processing (`\s`, `\n` stay literal) and no quote removal. | verified: cases 27, 65 |
 | F5 | Group lookup is case-sensitive (`g_key_file_has_group`): `[MyDumper]` is never read. master defines a case-insensitive helper, but nothing calls it. | verified: case 34; src |
 | F6 | Unknown options: versions that call `g_option_context_set_ignore_unknown_options(…, TRUE)` ignore them silently; older versions abort at startup (`option parsing failed: Unknown option …`). v0.19.3-3 aborts; v1.0.8-1 and master ignore. The generator records the behavior per tag. | verified: gopt:18; src |
+| F15 | **NEW.** mydumper parses the tool group of each file on its own, the defaults file first, then the extra file, with the same option context: an option the extra file sets again replaces the defaults file's value. It then merges the extra file into the defaults file key by key (`g_key_file_set_value`: a key present in both takes the extra file's value, a new key or group is appended) and reads everything else from the merged file: per-product option groups (F16), server variable groups and table sections. When GLib rejects the defaults file there is nothing to merge into: the extra file's table sections, variable groups and per-product option groups are ignored, while its tool group still applies. Without a defaults file (and no `/etc/mydumper.cnf`), the extra file is loaded as the defaults file. Identical in every tag. | src (every tag); verified: e2e mdl510-defaults-rejected-drops-extra-masking, mdl510-defaults-rejected-extra-options-still-apply, mdl603-control-extra-file-without-tool-or-client-group |
 
 ### 3.2 The pre-processor
 
@@ -263,11 +265,15 @@ with `g_option_context_parse_strv`.
 | Group | Read by | Notes |
 |---|---|---|
 | `mydumper`, `myloader` | GOption (tool options) | exact case (F5) |
-| `<app>_<product>`, then `_<major>`, `_<secondary>`, `_<revision>` appended cumulatively: `mydumper_mysql`, `mydumper_mysql_8`, `mydumper_mysql_8_0`, `mydumper_mysql_8_0_36` | GOption, only when the server matches; more specific groups are parsed later and override | `<product>` is `get_product_name()` in lowercase: `mysql`, `percona`, `mariadb`, `tidb`, `rds`, `google`, `clickhouse`, `dolt`, `unknown` (src) |
+| `<app>_<product>`, then `_<major>`, `_<secondary>`, `_<revision>` appended cumulatively: `mydumper_mysql`, `mydumper_mysql_8`, `mydumper_mysql_8_0`, `mydumper_mysql_8_0_36` | GOption, **mydumper only, from v0.21.2-2** (F16), only when the server matches; more specific groups are parsed later and override | `<product>` is `get_product_name()` in lowercase: `mysql`, `percona`, `mariadb`, `tidb`, `rds`, `google`, `clickhouse`, `dolt`, `unknown` (src) |
 | `<app>_session_variables`, `<app>_global_variables`, with the same product and version suffixes | server variables; any key accepted | src |
 | `client` | libmysqlclient | §3.7 |
 | table sections | per-table settings, masking | §3.5 |
 | anything else | nobody: ignored | |
+
+| ID | Fact | Evidence |
+|---|---|---|
+| F16 | **NEW.** Per-product option groups are read by mydumper only, from v0.21.2-2 (`load_options_for_product_from_key_file`, after connecting, from the merged file of F15). mydumper up to v0.21.2-1 ignores them, and no myloader version reads `[myloader_<product>…]`: MDL201 reports such groups. Variable groups with product suffixes are read by both tools in every version. The generator records the readers per version (`product_option_groups`, §5.3). | src (every tag); verified: e2e f16-product-option-group-mydumper, f16-product-option-group-myloader |
 
 ### 3.7 The second parser: libmysqlclient
 
@@ -506,7 +512,8 @@ The file is sorted and fully deterministic.
    conditions). Attribute the tool by path: `src/mydumper/` ⇒ mydumper, `src/myloader/` ⇒
    myloader, other `src/` files ⇒ both. Detect
    `g_option_context_set_ignore_unknown_options(…, TRUE)`, and whether `load_config_file`
-   runs the pre-processor (its `"= 1"` literal: `preprocessor`, §3.2). Extract table keys (the
+   runs the pre-processor (its `"= 1"` literal: `preprocessor`, §3.2), and which tools
+   call `load_options_for_product_from_key_file` (`product_option_groups`, F16). Extract table keys (the
    comparisons in `load_per_table_info_from_key_file` and the `#define`s they use), masking
    functions (`get_function_pointer_for`) and products (`get_product_name`). Fingerprint
    `load_config_file` and `parse_key_file_group`: a hash of their tokens with whitespace
@@ -1264,8 +1271,8 @@ argv is built like mydumper does (`[group, --key, value, …]`). Options: `routi
 
 ## Appendix C — Changes from the draft spec
 
-1. **Reference facts.** Amended K2, K4, K14, K17. Added K19, K20, G7–G15, F12–F14, C1–C4,
-   V1–V6. F5 confirmed in the source.
+1. **Reference facts.** Amended K2, K4, K14, K17, F10. Added K19, K20, G7–G17, F12–F16,
+   C1–C5, V1–V6. F5 confirmed in the source.
 2. **Rules.** New: MDL002, MDL110, MDL111, MDL112, MDL313, MDL407, MDL408, MDL601–MDL603.
    Amended: MDL106, MDL108, MDL305, MDL312, MDL404.
 3. **Versions.** Every release ≥ v0.19.1-1 instead of three versions (two of which were

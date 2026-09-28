@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -56,6 +57,7 @@ type extraction struct {
 	masquerade    []factName
 	products      []string
 	ignoreUnknown bool
+	productGroups []string          // tools that read their per-product option groups (F16)
 	fingerprint   string            // loader fingerprint (both functions)
 	preprocessor  bool              // load_config_file rewrites valueless lines (design §3.2)
 	funcPrints    map[string]string // fingerprint of each loader function, for the report
@@ -127,12 +129,14 @@ func extract(tag string, tree srcTree) (*extraction, error) {
 	base := perCfg[0]
 	for ci, f := range perCfg[1:] {
 		if !slices.Equal(f.tableKeys, base.tableKeys) || !slices.Equal(f.masquerade, base.masquerade) ||
-			!slices.Equal(f.products, base.products) || f.ignoreUnknown != base.ignoreUnknown {
-			return nil, fmt.Errorf("%s: table keys, masking functions, products or the unknown-option policy depend on the build (%s vs %s); the schema cannot represent that",
+			!slices.Equal(f.products, base.products) || f.ignoreUnknown != base.ignoreUnknown ||
+			!slices.Equal(f.productGroups, base.productGroups) {
+			return nil, fmt.Errorf("%s: table keys, masking functions, products, product option groups or the unknown-option policy depend on the build (%s vs %s); the schema cannot represent that",
 				tag, configs[0], configs[ci+1])
 		}
 	}
 	x.tableKeys, x.masquerade, x.products, x.ignoreUnknown = base.tableKeys, base.masquerade, base.products, base.ignoreUnknown
+	x.productGroups = base.productGroups
 
 	// Options: group the configurations by definition.
 	for _, tool := range tools {
@@ -208,6 +212,7 @@ type cfgFacts struct {
 	masquerade    []factName
 	products      []string
 	ignoreUnknown bool
+	productGroups []string // tools that read their per-product option groups (F16)
 	notes         []string
 }
 
@@ -613,6 +618,26 @@ func analyseConfig(cfg config, cus map[string]*cfgUnit, sources map[string][]str
 					return nil, fmt.Errorf("%s: g_option_context_set_ignore_unknown_options with an unexpected value in %s", tool, f)
 				}
 				ignore[tool] = true
+			}
+		}
+
+		// per-product option groups ([mydumper_mysql_8_0], F16): read when the
+		// tool calls the loader with its own name
+		for _, f := range sortedFuncs(reach) {
+			cs, err := calls(f, "load_options_for_product_from_key_file")
+			if err != nil {
+				return nil, err
+			}
+			for _, c := range cs {
+				if err := checkCertain(c); err != nil {
+					return nil, err
+				}
+				if len(c.args) < 3 || len(c.args[2]) != 1 || c.args[2][0].text != strconv.Quote(tool) {
+					return nil, fmt.Errorf("%s: load_options_for_product_from_key_file is not called with the tool's name as the application in %s: review which groups it reads", tool, f)
+				}
+				if !slices.Contains(facts.productGroups, tool) {
+					facts.productGroups = append(facts.productGroups, tool)
+				}
 			}
 		}
 	}

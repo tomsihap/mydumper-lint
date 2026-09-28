@@ -1,0 +1,13 @@
+# From v0.21.2-2 mydumper reads [mydumper_<product>…]; myloader still never
+# reads [myloader_<product>…] (F16).
+-- options --
+mydumper-version: v1.0.5-1
+select: MDL201
+-- input.cnf --
+[mydumper_mysql_8_0]
+threads=2
+[myloader_mariadb]
+threads=2
+-- diagnostics --
+3:2-3:18 warning MDL201[unknown-group] [myloader_mariadb] is read by nobody: myloader v1.0.5-1 does not read per-product option groups (mydumper reads them from v0.21.2-2, myloader never)
+  = Every key of this group is ignored.

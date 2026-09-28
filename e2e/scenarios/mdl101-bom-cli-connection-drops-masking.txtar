@@ -9,6 +9,10 @@ tool: mydumper
 versions: >= v0.19.1-1
 args: --defaults-file /work/defaults.cnf --host mysql --user e2e --password e2e-password --database app
 lint: MDL101, MDL112
+when < v0.19.3-1
+# No pre-processor before v0.19.3-1, hence no bracket state leak (MDL112).
+lint: MDL101
+end
 expect config-loaded: false
 expect exit: 0
 expect connected: true

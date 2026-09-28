@@ -118,6 +118,7 @@ type Target interface {
 	TableKey(key string) bool
 	MasqueradeFunctions() []string
 	Products() []string
+	ProductOptionGroups() []string
 }
 
 // Options configures Build.
@@ -171,8 +172,28 @@ type Model struct {
 	Groups []Group
 }
 
-// defaultProducts is used when no target is set (design §3.6).
-var defaultProducts = []string{"mysql", "percona", "mariadb", "tidb", "rds", "google", "clickhouse", "dolt", "unknown"}
+// Readers is what decides who reads a group besides its name (design §3.6):
+// the product names of per-product groups, and the tools that read their
+// per-product option groups (F16).
+type Readers struct {
+	Products       []string // lowercase product names
+	ProductOptions []string // tools that read [<tool>_<product>…] option groups
+}
+
+// DefaultReaders applies when no target is set: the products and readers of
+// the newest versions.
+var DefaultReaders = Readers{
+	Products:       []string{"mysql", "percona", "mariadb", "tidb", "rds", "google", "clickhouse", "dolt", "unknown"},
+	ProductOptions: []string{"mydumper"},
+}
+
+// ReadersOf returns the readers of a target, or DefaultReaders for nil.
+func ReadersOf(t Target) Readers {
+	if t == nil {
+		return DefaultReaders
+	}
+	return Readers{Products: t.Products(), ProductOptions: t.ProductOptionGroups()}
+}
 
 var (
 	productGroupRE  = regexp.MustCompile(`^(mydumper|myloader)_([a-z]+)(?:_[0-9]+(?:_[0-9]+(?:_[0-9]+)?)?)?$`)
@@ -180,11 +201,11 @@ var (
 )
 
 // ClassifyGroup tells who reads the group called name, and for which tool.
-// products is the list of lowercase product names (nil: the known list).
-func ClassifyGroup(name string, products []string) (GroupKind, string) {
-	if products == nil {
-		products = defaultProducts
-	}
+// A per-product option group of a tool that does not read them
+// ([myloader_mysql], or [mydumper_mysql] before v0.21.2-2) is read by nobody
+// (F16).
+func ClassifyGroup(name string, r Readers) (GroupKind, string) {
+	products := r.Products
 	switch {
 	case name == "mydumper" || name == "myloader":
 		return GroupToolOptions, name
@@ -202,10 +223,20 @@ func ClassifyGroup(name string, products []string) (GroupKind, string) {
 		}
 		return GroupGlobalVariables, m[1]
 	}
-	if m := productGroupRE.FindStringSubmatch(name); len(m) > 2 && contains(products, m[2]) {
-		return GroupProductOptions, m[1]
+	if tool, ok := ProductOptionGroup(name, products); ok && contains(r.ProductOptions, tool) {
+		return GroupProductOptions, tool
 	}
 	return GroupUnknown, ""
+}
+
+// ProductOptionGroup reports whether name is a per-product option group of a
+// known product ([mydumper_mysql], [myloader_mariadb_10_6]) and for which
+// tool, whether or not that tool reads it.
+func ProductOptionGroup(name string, products []string) (string, bool) {
+	if m := productGroupRE.FindStringSubmatch(name); len(m) > 2 && contains(products, m[2]) {
+		return m[1], true
+	}
+	return "", false
 }
 
 // IsTableGroup is mydumper's table-section test (F7): the name starts with a
@@ -232,10 +263,7 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 	if languages == nil {
 		languages = []string{"C"}
 	}
-	var products []string
-	if opt.Target != nil {
-		products = opt.Target.Products()
-	}
+	readers := ReadersOf(opt.Target)
 	m := &Model{Health: OK}
 	if !kf.Loadable {
 		m.Health = Rejected
@@ -252,7 +280,7 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 		}
 		i, seen := pos[g.Name]
 		if !seen {
-			kind, tool := ClassifyGroup(g.Name, products)
+			kind, tool := ClassifyGroup(g.Name, readers)
 			i = len(m.Groups)
 			pos[g.Name] = i
 			m.Groups = append(m.Groups, Group{Name: g.Name, Kind: kind, Tool: tool})

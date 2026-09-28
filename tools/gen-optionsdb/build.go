@@ -37,6 +37,7 @@ func buildDB(rels []release, xs []*extraction, verified map[string]bool) (*optio
 			IgnoreUnknownOptions: xs[i].ignoreUnknown,
 			LoaderFingerprint:    xs[i].fingerprint,
 			Preprocessor:         xs[i].preprocessor,
+			ProductOptionGroups:  xs[i].productGroups,
 			ImageVerified:        verified[r.tag],
 		})
 	}
@@ -222,6 +223,10 @@ func changes(rels []release, xs []*extraction) []string {
 		}
 		if prev.ignoreUnknown != cur.ignoreUnknown {
 			parts = append(parts, fmt.Sprintf("ignore_unknown_options %v -> %v", prev.ignoreUnknown, cur.ignoreUnknown))
+		}
+		if !slices.Equal(prev.productGroups, cur.productGroups) {
+			parts = append(parts, fmt.Sprintf("product option groups read by [%s] -> [%s]",
+				strings.Join(prev.productGroups, " "), strings.Join(cur.productGroups, " ")))
 		}
 		for _, fn := range loaderFunctions {
 			if prev.funcPrints[fn] != cur.funcPrints[fn] {

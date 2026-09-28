@@ -29,7 +29,10 @@ type Version struct {
 	IgnoreUnknownOptions bool   `json:"ignore_unknown_options"` // F6
 	LoaderFingerprint    string `json:"loader_fingerprint"`     // sha256 of normalized load_config_file + parse_key_file_group
 	Preprocessor         bool   `json:"preprocessor"`           // load_config_file runs mydumper's pre-processor (§3.2)
-	ImageVerified        bool   `json:"image_verified"`         // cross-check with the official image passed (§5.4)
+	// ProductOptionGroups lists the tools that read their per-product option
+	// groups ([mydumper_mysql_8_0], F16): mydumper from v0.21.2-2, myloader never.
+	ProductOptionGroups []string `json:"product_option_groups,omitempty"`
+	ImageVerified       bool     `json:"image_verified"` // cross-check with the official image passed (§5.4)
 }
 
 // Range is an inclusive range of version tags. An empty To means "up to the

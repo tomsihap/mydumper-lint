@@ -46,7 +46,8 @@ func (f fakeTarget) OptionNames(string) []string {
 }
 func (f fakeTarget) TableKey(k string) bool        { return k == "where" }
 func (f fakeTarget) MasqueradeFunctions() []string { return []string{"constant", "random_string"} }
-func (f fakeTarget) Products() []string            { return nil }
+func (f fakeTarget) Products() []string            { return DefaultReaders.Products }
+func (f fakeTarget) ProductOptionGroups() []string { return []string{"mydumper"} }
 
 func buildWith(s string, t Target, cs goption.Charset) *Model {
 	f := source.New("t.cnf", []byte(s))

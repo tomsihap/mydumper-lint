@@ -1,0 +1,23 @@
+F16: myloader never reads per-product option groups. [myloader_mysql] is
+ignored in every version: its no-data does not apply and the rows are
+restored (myloader-control-config-applies shows no-data applied from
+[myloader]).
+-- scenario --
+tool: myloader
+versions: >= v0.19.1-1
+args: --defaults-file /work/myloader.cnf --directory /work/source-dump --database ${RESTORE_DB}
+lint: MDL201, MDL405
+expect config-loaded: true
+expect exit: 0
+expect rows ${RESTORE_DB}.users: 3
+-- myloader.cnf --
+[client]
+host=mysql
+user=e2e
+password=e2e-password
+
+[myloader]
+threads=2
+
+[myloader_mysql]
+no-data=1

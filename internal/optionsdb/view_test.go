@@ -14,6 +14,7 @@ type target interface {
 	TableKey(key string) bool
 	MasqueradeFunctions() []string
 	Products() []string
+	ProductOptionGroups() []string
 }
 
 var _ target = (*View)(nil)
