@@ -142,6 +142,10 @@ type Entry struct {
 	// (Group.GOption.Argv), the value following it; 0 when the key is not
 	// passed to GOption.
 	Element int
+	// Shadowed is set for an earlier occurrence of a duplicate key: its
+	// value is replaced by the last one (K13), even in a rejected file.
+	Shadowed bool
+	passed   bool // GLib lists it and mydumper passes it to GOption
 }
 
 // Group is one group as GLib returns it (duplicate headers merged).
@@ -261,13 +265,16 @@ func Build(kf *keyfile.Result, opt Options) *Model {
 				continue
 			}
 			k := [2]string{g.Name, e.Key}
-			entry := Entry{Key: e.Key, Value: lastValue[k], Line: e.Line}
+			entry := Entry{Key: e.Key, Value: lastValue[k], Line: e.Line, Shadowed: e.Line != lastLine[k]}
 			entry.Reason = reason(m, m.Groups[i], e, languages, lastLine[k], opt.Target)
+			kind := m.Groups[i].Kind
+			entry.passed = (kind == GroupToolOptions || kind == GroupProductOptions) &&
+				visible(e, languages) && !connectionKeys[e.Key]
 			entry.Effective = entry.Reason == ReasonEffective
 			m.Groups[i].Entries = append(m.Groups[i].Entries, entry)
 		}
 	}
-	if opt.Target != nil && m.Health == OK {
+	if opt.Target != nil {
 		applyGOption(m, opt.Target, opt.Charset)
 	}
 	return m

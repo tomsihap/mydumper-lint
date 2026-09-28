@@ -1,4 +1,6 @@
 # A line of two spaces between keys (case 01).
+-- options --
+doc-example: yes
 -- input.cnf.esc --
 [mydumper]\nthreads=4\n  \nroutines\n
 -- fixed.cnf --

@@ -28,7 +28,7 @@ func (k *optionKey) name() string { return "--" + k.entry.Long }
 
 // effective reports whether the key's own line is the one GOption parses:
 // an earlier duplicate is parsed with the last value (K13, G11).
-func (k *optionKey) effective() bool { return k.e.Reason != model.ReasonShadowed }
+func (k *optionKey) effective() bool { return !k.e.Shadowed }
 
 // optionKeys lists the keys mydumper passes to GOption: those of [mydumper],
 // [myloader] and their product groups, except host, user and password (F3)

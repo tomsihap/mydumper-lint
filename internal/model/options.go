@@ -66,10 +66,11 @@ func OptionContext(t Target, tool string, cs goption.Charset) *goption.Context {
 	return ctx
 }
 
-// applyGOption parses the option groups of a loadable file: tool groups
-// first (mydumper reads [mydumper] before the product groups), then product
-// groups. Entries get the reason GOption gives them; the first failure makes
-// the file fatal at startup.
+// applyGOption parses the option groups: tool groups first (mydumper reads
+// [mydumper] before the product groups), then product groups. In a loadable
+// file, entries get the reason GOption gives them and the first failure
+// makes the file fatal at startup. A rejected file is parsed too, for the
+// rules, without changing what it applies: nothing.
 func applyGOption(m *Model, t Target, cs goption.Charset) {
 	ctxs := map[string]*goption.Context{}
 	for _, kind := range []GroupKind{GroupToolOptions, GroupProductOptions} {
@@ -94,7 +95,7 @@ func parseGroup(m *Model, g *Group, ctx *goption.Context) {
 		e := &g.Entries[k]
 		// get_keys lists every visible key, duplicates included (K13);
 		// connection keys are not passed (F3).
-		if e.Reason != ReasonEffective && e.Reason != ReasonShadowed {
+		if !e.passed {
 			continue
 		}
 		e.Element = len(run.Argv)
@@ -102,6 +103,9 @@ func parseGroup(m *Model, g *Group, ctx *goption.Context) {
 	}
 	run.Result = ctx.Parse(run.Argv, nil)
 	g.GOption = run
+	if m.Health == Rejected {
+		return
+	}
 	res := &run.Result
 	for k := range g.Entries {
 		e := &g.Entries[k]

@@ -29,7 +29,8 @@ var update = flag.Bool("update", false, "rewrite the expected sections of golden
 //	options                optional "key: value" lines: select, ignore (comma-separated),
 //	                       mydumper-version (default: none, GLib-level rules only),
 //	                       path (the file's name), base-dir, conventions (JSON),
-//	                       load-set (input.cnf is then the extra file of defaults.cnf)
+//	                       load-set (input.cnf is then the extra file of defaults.cnf),
+//	                       doc-example (the case docs/rules shows)
 //	defaults.cnf[.esc]     the defaults file of a load set
 //	diagnostics            expected diagnostics (see formatDiagnostics)
 //	fixed.cnf[.esc]        expected output of --fix (absent: no change)
@@ -87,6 +88,7 @@ func runGolden(t *testing.T, path string) {
 				cfg.BaseDir = strings.TrimSpace(v)
 			case "load-set":
 				loadSet = true
+			case "doc-example": // tools/gendocs shows this case in the rule's page
 			case "conventions":
 				var c struct {
 					FilenamePattern string              `json:"filename-pattern"`
