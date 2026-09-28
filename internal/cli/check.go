@@ -503,7 +503,7 @@ func ruleMetas() []report.RuleMeta {
 		}
 		out = append(out, report.RuleMeta{
 			ID: r.ID, Name: r.Name, Summary: r.Summary, Severity: r.Severity, Fix: fix,
-			DocsURL: "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/" + r.ID + ".md",
+			DocsURL: r.DocsURL(),
 		})
 	}
 	return out

@@ -1,0 +1,85 @@
+{
+  "name": "mydumper-lint",
+  "displayName": "mydumper-lint",
+  "description": "Lint and fix mydumper and myloader configuration files (.cnf) as you type: what mydumper really does with them, and how to fix them.",
+  "version": "0.1.0",
+  "publisher": "tomsihap",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomsihap/mydumper-lint.git",
+    "directory": "editors/vscode"
+  },
+  "homepage": "https://github.com/tomsihap/mydumper-lint#readme",
+  "bugs": "https://github.com/tomsihap/mydumper-lint/issues",
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "keywords": [
+    "mydumper",
+    "myloader",
+    "mysql",
+    "cnf",
+    "linter"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "workspaceContains:**/*.cnf",
+    "onLanguage:ini"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "ini",
+        "extensions": [
+          ".cnf"
+        ]
+      }
+    ],
+    "configuration": {
+      "title": "mydumper-lint",
+      "properties": {
+        "mydumperLint.path": {
+          "type": "string",
+          "default": "mydumper-lint",
+          "markdownDescription": "The `mydumper-lint` executable: a name found in `PATH`, or an absolute path.",
+          "scope": "machine-overridable"
+        },
+        "mydumperLint.mydumperVersion": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The mydumper version to check against (`v0.19.3-3`, `0.19`, `latest`). Empty: the `mydumper-version` of the nearest `.mydumper-lint.yaml`, else the latest stable release."
+        },
+        "mydumperLint.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Log the messages between VS Code and the server, in the mydumper-lint output channel."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "mydumperLint.restart",
+        "title": "mydumper-lint: Restart the server"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "vsce package --out mydumper-lint.vsix"
+  },
+  "dependencies": {
+    "vscode-languageclient": "10.1.2"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "4.0.0"
+  }
+}

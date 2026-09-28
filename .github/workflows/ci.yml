@@ -178,6 +178,22 @@ jobs:
       - name: Build and test the playground
         run: make playground-test
 
+  vscode:
+    name: VS Code extension
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # mk/playground.mk: npm ci (package-lock.json), the unit tests, vsce package.
+      - name: Test and package the extension
+        run: make vscode
+
   actionlint:
     name: actionlint
     runs-on: ubuntu-latest

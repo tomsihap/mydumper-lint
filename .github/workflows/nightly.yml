@@ -60,9 +60,9 @@ jobs:
           retention-days: 14
 
   fuzz-lint:
-    name: fuzz (internal/lint, internal/model)
+    name: fuzz (internal/lint, internal/model, internal/lsp)
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 45
     permissions:
       contents: read
     steps:
@@ -86,6 +86,9 @@ jobs:
       - name: FuzzBuildSet (5m)
         run: go test ./internal/model/ -run '^$' -fuzz '^FuzzBuildSet$' -fuzztime 5m
 
+      - name: FuzzHandle (5m)
+        run: go test ./internal/lsp/ -run '^$' -fuzz '^FuzzHandle$' -fuzztime 5m
+
       - name: Upload fuzz crashers
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -94,6 +97,7 @@ jobs:
           path: |
             internal/lint/testdata/fuzz/
             internal/model/testdata/fuzz/
+            internal/lsp/testdata/fuzz/
           if-no-files-found: ignore
           retention-days: 14
 

@@ -78,6 +78,12 @@ func All() []*Rule {
 	return out
 }
 
+// DocsBase is where the generated rule pages are published.
+const DocsBase = "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/"
+
+// DocsURL returns the documentation page of the rule.
+func (m Meta) DocsURL() string { return DocsBase + m.ID + ".md" }
+
 // Lookup finds a rule by ID (case-insensitive) or name.
 func Lookup(s string) (*Rule, bool) {
 	if r, ok := registry[strings.ToUpper(s)]; ok {

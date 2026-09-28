@@ -38,6 +38,7 @@ func init() {
 		{"rules", "List the rules.", runRules},
 		{"explain", "Show the documentation of a rule.", runExplain},
 		{"inspect", "Show what mydumper sees in a file: GLib's view and the effective configuration.", runInspect},
+		{"server", "Run as a language server (LSP) for editors, on stdin and stdout.", runServer},
 		{"versions", "List the mydumper versions mydumper-lint knows, and the default target.", runVersions},
 		{"config", "Show the configuration that applies to a file, or the configuration schema.", runConfig},
 		{"completion", "Print a shell completion script (bash, zsh, fish, powershell).", runCompletion},

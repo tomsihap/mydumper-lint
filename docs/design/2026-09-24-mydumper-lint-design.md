@@ -432,8 +432,8 @@ group, applied only to matching servers), `unknown-table-key`,
 
 Offsets are bytes internally. Outputs use 1-based lines and 1-based columns counted in
 Unicode code points; an invalid UTF-8 byte counts as one column. JSON also carries byte
-offsets, SARIF declares `columnKind: "unicodeCodePoints"`, and the future LSP server will
-convert to UTF-16.
+offsets, SARIF declares `columnKind: "unicodeCodePoints"`, and the LSP server converts
+to the position encoding the editor negotiates (UTF-16 by default).
 
 ### 4.7 Determinism and performance
 
@@ -820,6 +820,7 @@ mydumper-lint rules [--format text|json]         list rules (stable, preview, op
 mydumper-lint explain <ID|name>                  full documentation of a rule
 mydumper-lint inspect <FILE>                     what mydumper sees (effective model)
 mydumper-lint inspect --load-set <DEFAULTS> <EXTRA>   what one invocation applies from both
+mydumper-lint server                             language server (LSP) on stdin/stdout, for editors
 mydumper-lint versions                           embedded mydumper versions, default target
 mydumper-lint config {path|show|schema} [FILE]   resolved configuration, JSON Schema
 mydumper-lint completion {bash|zsh|fish|powershell}
@@ -1111,7 +1112,7 @@ need Go and Docker: `make build`, `test`, `lint`, `fuzz`, `oracle`, `e2e`, `gen`
 
 | Workflow | Trigger | Content |
 |---|---|---|
-| `ci.yml` | push, pull request | build (Linux, macOS, Windows); unit and golden tests with `-race`; coverage gates; golangci-lint; govulncheck; generated files up to date; 60 s fuzz smoke; oracle conformance on GLib 2.68; the playground's WebAssembly build and examples |
+| `ci.yml` | push, pull request | build (Linux, macOS, Windows); unit and golden tests with `-race`; coverage gates; golangci-lint; govulncheck; generated files up to date; 60 s fuzz smoke; oracle conformance on GLib 2.68; the playground's WebAssembly build and examples; the VS Code extension's tests and package |
 | `oracle.yml` | pull requests touching the emulators, the oracle or testdata | conformance and 60 s differential fuzzing on the three GLib versions |
 | `e2e.yml` | pull requests touching rules, model, goption, optionsdb or e2e | e2e on the 4 sentinel versions |
 | `nightly.yml` | schedule | long fuzzing, mutation testing, full e2e matrix, upstream integration |
@@ -1247,6 +1248,20 @@ explicit toggles for typed text. Share links carry the file compressed in the UR
 fragment, which browsers do not send to servers. No external resource, a strict Content
 Security Policy, no analytics. `make playground-test` runs the page's examples through
 the WebAssembly build with Node and `internal/playground` under `js/wasm`.
+
+*Language server (done).* `mydumper-lint server` (`internal/lsp`, glued to the CLI in
+`internal/cli/server_cmd.go`): JSON-RPC 2.0 over stdio with the standard library only,
+full document synchronization, position encodings UTF-8, UTF-16 (default) and UTF-32 with
+LSP's line breaks (`\n`, `\r\n`, `\r`) mapped to the linter's byte offsets. Each document
+is linted with the settings `check` would use (nearest `.mydumper-lint.yaml`, read again
+on save or on a watched-file change); the client can override the mydumper version.
+Diagnostics carry the consequence and the rule's page; code actions offer each fix (safe
+ones preferred), a `disable-next-line` comment (appended to an existing directive rather
+than pushing it away from its line; not offered for MDL1xx), and
+`source.fixAll.mydumper-lint`, which runs the fixer's fixpoint with its self-check; hover
+shows the rule's explanation. Load sets are not analyzed in the editor yet. Clients: a
+VS Code extension (`editors/vscode`, `vscode-languageclient`), and documented setups for
+Neovim, Helix, Emacs and JetBrains IDEs (LSP4IJ) in `docs/editors.md`.
 
 ---
 

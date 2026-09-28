@@ -48,3 +48,16 @@ updates:
         update-types: [minor, patch]
     commit-message:
       prefix: chore(deps)
+
+  # The VS Code extension's client library and packaging tool.
+  - package-ecosystem: npm
+    directory: /editors/vscode
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      vscode-minor-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: chore(deps)

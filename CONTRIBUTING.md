@@ -59,6 +59,7 @@ The pipeline follows what mydumper does with a file (design §4):
 | `internal/lint` | Ties the pipeline together. |
 | `internal/cli`, `internal/report`, `internal/config` | Command line, output formats, `.mydumper-lint.yaml`. |
 | `internal/playground`, `cmd/mydumper-lint-wasm`, `web/playground` | The browser playground: the command line run in memory, its WebAssembly bridge, and the static page. |
+| `internal/lsp`, `editors/vscode` | The language server behind `mydumper-lint server` (JSON-RPC, positions, diagnostics, code actions, hover), and the VS Code extension that starts it. |
 | `tools/oracle` | The GLib oracle (C, GPL-3.0-or-later, test only). |
 | `tools/gen-optionsdb` | Generates the knowledge base from the upstream sources. |
 | `tools/gendocs` | Generates `docs/rules`, `docs/versions.md`, the README tables and the config schema. |
@@ -82,6 +83,7 @@ something new about mydumper or GLib.
 | Upstream examples | `internal/lint/upstream_integration_test.go` | `make integration` (network): every tag's example file lints with no error |
 | Mutation testing | the core packages | `make mutation` (slow; nightly): gremlins, with a blocking efficacy threshold |
 | Playground | `web/playground/examples.test.mjs`, `internal/playground` | `make playground-test` (needs Node): the page's examples through the WebAssembly build; `make playground-serve` to try the page on http://localhost:8765 |
+| Language server | `internal/lsp`, `internal/cli/server_cmd_test.go`, `editors/vscode/test` | `make test` for the server; `make vscode` (needs Node) tests and packages the VS Code extension |
 
 A golden case is a [txtar](https://pkg.go.dev/golang.org/x/tools/txtar) file:
 

@@ -20,3 +20,9 @@ playground-test: playground ## Test the WebAssembly build: its examples (Node) a
 
 playground-serve: playground ## Serve the playground on http://localhost:8765
 	python3 -m http.server 8765 --bind 127.0.0.1 --directory $(PLAYGROUND_DIR)
+
+# The VS Code extension (editors/vscode) starts `mydumper-lint server`. It needs
+# Node and npm; the package (mydumper-lint.vsix) is not committed.
+.PHONY: vscode
+vscode: ## Test and package the VS Code extension into editors/vscode/mydumper-lint.vsix
+	cd editors/vscode && npm ci --no-audit --no-fund && npm test && npm run package

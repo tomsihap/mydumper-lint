@@ -35,7 +35,7 @@ func toJSON(r *rules.Rule) ruleJSON {
 		ID: r.ID, Name: r.Name, Family: string(r.Family), Severity: r.Severity.String(), Fix: fix,
 		OptIn: r.OptIn, Preview: r.Preview, Unsuppressible: r.Unsuppressible,
 		Summary: r.Summary, Why: r.Why, Refs: nonNil(r.Refs),
-		URL: "https://github.com/tomsihap/mydumper-lint/blob/main/docs/rules/" + r.ID + ".md",
+		URL: r.DocsURL(),
 	}
 }
 

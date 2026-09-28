@@ -43,6 +43,11 @@ browser (WebAssembly). Paste or open a file, pick your mydumper version, and see
 problems, the fixes and what mydumper really reads. The file never leaves your
 browser.
 
+**In your editor:** `mydumper-lint server` is a language server. Problems appear as you
+type, with quick fixes and each rule's explanation on hover, in VS Code (extension in
+[`editors/vscode`](editors/vscode)), Neovim, Helix, Emacs and JetBrains IDEs: see
+[docs/editors.md](docs/editors.md).
+
 ## Contents
 
 - [Install](#install)
