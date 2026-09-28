@@ -47,3 +47,53 @@
 {"name":"x:string-non-ascii-c-locale","ok":false,"error":"Invalid byte sequence in conversion input","values":{"where":null},"callbacks":{},"leftover":["mydumper","--where","name='caf\u00c3\u00a9'"]}
 {"name":"x:callback-non-ascii-c-locale","ok":false,"error":"Invalid byte sequence in conversion input","values":{},"callbacks":{"regex":[]},"leftover":["mydumper","--regex","^caf\u00c3\u00a9\\."]}
 {"name":"x:filename-non-ascii","ok":true,"error":null,"values":{"outputdir":"/backup/caf\u00c3\u00a9"},"callbacks":{},"leftover":["mydumper"]}
+{"name":"e:int-00","ok":true,"error":null,"values":{"n":"2147483647"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int-01","ok":true,"error":null,"values":{"n":"-2147483648"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int-02","ok":false,"error":"Integer value \u00e2\u0080\u009c2147483648\u00e2\u0080\u009d for --n out of range","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","2147483648"]}
+{"name":"e:int-03","ok":false,"error":"Integer value \u00e2\u0080\u009c-2147483649\u00e2\u0080\u009d for --n out of range","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","-2147483649"]}
+{"name":"e:int-04","ok":true,"error":null,"values":{"n":"255"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int-05","ok":true,"error":null,"values":{"n":"171"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int-06","ok":true,"error":null,"values":{"n":"2147483647"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int-07","ok":false,"error":"Integer value \u00e2\u0080\u009c0x80000000\u00e2\u0080\u009d for --n out of range","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","0x80000000"]}
+{"name":"e:int-08","ok":false,"error":"Cannot parse integer value \u00e2\u0080\u009c0xg\u00e2\u0080\u009d for --n","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","0xg"]}
+{"name":"e:int-09","ok":false,"error":"Cannot parse integer value \u00e2\u0080\u009c0x\u00e2\u0080\u009d for --n","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","0x"]}
+{"name":"e:int-10","ok":false,"error":"Cannot parse integer value \u00e2\u0080\u009c019\u00e2\u0080\u009d for --n","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","019"]}
+{"name":"e:int-11","ok":true,"error":null,"values":{"n":"-16"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int64-00","ok":true,"error":null,"values":{"n":"9223372036854775807"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int64-01","ok":true,"error":null,"values":{"n":"-9223372036854775808"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int64-02","ok":false,"error":"Integer value \u00e2\u0080\u009c9223372036854775808\u00e2\u0080\u009d for --n out of range","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","9223372036854775808"]}
+{"name":"e:int64-03","ok":true,"error":null,"values":{"n":"9223372036854775807"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int64-04","ok":true,"error":null,"values":{"n":"-9223372036854775808"},"callbacks":{},"leftover":["g"]}
+{"name":"e:int64-05","ok":false,"error":"Integer value \u00e2\u0080\u009c0xffffffffffffffff\u00e2\u0080\u009d for --n out of range","values":{"n":"0"},"callbacks":{},"leftover":["g","--n","0xffffffffffffffff"]}
+{"name":"e:double-00","ok":true,"error":null,"values":{"d":"1"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-01","ok":true,"error":null,"values":{"d":"1000000000"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-02","ok":true,"error":null,"values":{"d":"100000"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-03","ok":true,"error":null,"values":{"d":"0.02"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-04","ok":true,"error":null,"values":{"d":"9.9999999999999997e+89"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-05","ok":true,"error":null,"values":{"d":"0"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-06","ok":true,"error":null,"values":{"d":"0"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-07","ok":true,"error":null,"values":{"d":"-3"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-08","ok":true,"error":null,"values":{"d":"2.2250738585072014e-308"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-09","ok":false,"error":"Cannot parse double value \u00e2\u0080\u009c1e\u00e2\u0080\u009d for --d","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","1e"]}
+{"name":"e:double-10","ok":false,"error":"Cannot parse double value \u00e2\u0080\u009c1e+\u00e2\u0080\u009d for --d","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","1e+"]}
+{"name":"e:double-11","ok":false,"error":"Cannot parse double value \u00e2\u0080\u009cnan(abc\u00e2\u0080\u009d for --d","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","nan(abc"]}
+{"name":"e:double-12","ok":true,"error":null,"values":{"d":"nan"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-13","ok":false,"error":"Double value \u00e2\u0080\u009c1e-310\u00e2\u0080\u009d for --d out of range","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","1e-310"]}
+{"name":"e:double-14","ok":false,"error":"Double value \u00e2\u0080\u009c4.9e-324\u00e2\u0080\u009d for --d out of range","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","4.9e-324"]}
+{"name":"e:double-15","ok":true,"error":null,"values":{"d":"-inf"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-16","ok":true,"error":null,"values":{"d":"inf"},"callbacks":{},"leftover":["g"]}
+{"name":"e:double-17","ok":false,"error":"Cannot parse double value \u00e2\u0080\u009c0x\u00e2\u0080\u009d for --d","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","0x"]}
+{"name":"e:double-18","ok":false,"error":"Cannot parse double value \u00e2\u0080\u009c0xp1\u00e2\u0080\u009d for --d","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","0xp1"]}
+{"name":"e:double-19","ok":false,"error":"Cannot parse double value \u00e2\u0080\u009c.e1\u00e2\u0080\u009d for --d","values":{"d":"0"},"callbacks":{},"leftover":["g","--d",".e1"]}
+{"name":"e:double-20","ok":false,"error":"Double value \u00e2\u0080\u009c1e400\u00e2\u0080\u009d for --d out of range","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","1e400"]}
+{"name":"e:double-21","ok":false,"error":"Double value \u00e2\u0080\u009c-1e400\u00e2\u0080\u009d for --d out of range","values":{"d":"0"},"callbacks":{},"leftover":["g","--d","-1e400"]}
+{"name":"e:separator-then-dash","ok":true,"error":null,"values":{"threads":"4","routines":false},"callbacks":{},"leftover":["g","--","-x","y"]}
+{"name":"e:separator-then-plain","ok":true,"error":null,"values":{"threads":"4","routines":false},"callbacks":{},"leftover":["g","y"]}
+{"name":"e:separator-at-end","ok":true,"error":null,"values":{"threads":"0","routines":true},"callbacks":{},"leftover":["g"]}
+{"name":"e:separator-after-unknown-short","ok":true,"error":null,"values":{"threads":"0","routines":false},"callbacks":{},"leftover":["g","-z","--","y"]}
+{"name":"e:separator-twice","ok":true,"error":null,"values":{"threads":"0","routines":false},"callbacks":{},"leftover":["g","--","--","y"]}
+{"name":"e:dash-alone","ok":true,"error":null,"values":{"threads":"0","routines":true},"callbacks":{},"leftover":["g","-"]}
+{"name":"e:callback-no-arg","ok":true,"error":null,"values":{"routines":true},"callbacks":{"cb":[null]},"leftover":["g","v"]}
+{"name":"e:callback-no-arg-inline","ok":true,"error":null,"values":{},"callbacks":{"cb":[null]},"leftover":["g"]}
+{"name":"e:alias-empty-prefix","ok":false,"error":"Unknown option ---snapshot-count","values":{"threads":"0","snapshot-count":"0"},"callbacks":{},"leftover":["g","---snapshot-count","3"]}
+{"name":"e:alias-prefix","ok":true,"error":null,"values":{"threads":"0","snapshot-count":"3"},"callbacks":{},"leftover":["g"]}

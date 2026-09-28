@@ -133,3 +133,13 @@ func TestPassthrough(t *testing.T) {
 		}
 	}
 }
+
+// A line whose '=' is its first byte has one: neither pre-processor appends
+// "= 1" to it, so it is no leak.
+func TestEqualsAtStart(t *testing.T) {
+	f := source.New("t.cnf", []byte("[g]\n=x\n"))
+	info := Run(f).Lines[1]
+	if info.AppendsEqOne || info.IdealAppendsEqOne || info.LeakOrigin != 0 {
+		t.Errorf("line 2: %+v", info)
+	}
+}

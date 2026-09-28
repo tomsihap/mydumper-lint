@@ -1,0 +1,374 @@
+# Edges of GOption's argument parsing and of strtol/strtod that unit tests
+# alone cannot settle: integer bounds, hexadecimal case, double exponents,
+# subnormals and nan(...), the "--" separator, callbacks without argument,
+# and the group alias prefix. Expected output recorded with the oracle.
+
+case e:int-00
+strict true
+option n - int -
+arg g
+arg --n
+arg 2147483647
+
+case e:int-01
+strict true
+option n - int -
+arg g
+arg --n
+arg -2147483648
+
+case e:int-02
+strict true
+option n - int -
+arg g
+arg --n
+arg 2147483648
+
+case e:int-03
+strict true
+option n - int -
+arg g
+arg --n
+arg -2147483649
+
+case e:int-04
+strict true
+option n - int -
+arg g
+arg --n
+arg 0xff
+
+case e:int-05
+strict true
+option n - int -
+arg g
+arg --n
+arg 0XaB
+
+case e:int-06
+strict true
+option n - int -
+arg g
+arg --n
+arg 0x7fffffff
+
+case e:int-07
+strict true
+option n - int -
+arg g
+arg --n
+arg 0x80000000
+
+case e:int-08
+strict true
+option n - int -
+arg g
+arg --n
+arg 0xg
+
+case e:int-09
+strict true
+option n - int -
+arg g
+arg --n
+arg 0x
+
+case e:int-10
+strict true
+option n - int -
+arg g
+arg --n
+arg 019
+
+case e:int-11
+strict true
+option n - int -
+arg g
+arg --n
+arg "  -0x10"
+
+case e:int64-00
+strict true
+option n - int64 -
+arg g
+arg --n
+arg 9223372036854775807
+
+case e:int64-01
+strict true
+option n - int64 -
+arg g
+arg --n
+arg -9223372036854775808
+
+case e:int64-02
+strict true
+option n - int64 -
+arg g
+arg --n
+arg 9223372036854775808
+
+case e:int64-03
+strict true
+option n - int64 -
+arg g
+arg --n
+arg 0x7fffffffffffffff
+
+case e:int64-04
+strict true
+option n - int64 -
+arg g
+arg --n
+arg -0x8000000000000000
+
+case e:int64-05
+strict true
+option n - int64 -
+arg g
+arg --n
+arg 0xffffffffffffffff
+
+case e:double-00
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e0
+
+case e:double-01
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e9
+
+case e:double-02
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e+5
+
+case e:double-03
+strict true
+option d - double -
+arg g
+arg --d
+arg 2E-2
+
+case e:double-04
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e90
+
+case e:double-05
+strict true
+option d - double -
+arg g
+arg --d
+arg 0.0
+
+case e:double-06
+strict true
+option d - double -
+arg g
+arg --d
+arg 0.000
+
+case e:double-07
+strict true
+option d - double -
+arg g
+arg --d
+arg -0x1.8p1
+
+case e:double-08
+strict true
+option d - double -
+arg g
+arg --d
+arg 2.2250738585072014e-308
+
+case e:double-09
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e
+
+case e:double-10
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e+
+
+case e:double-11
+strict true
+option d - double -
+arg g
+arg --d
+arg nan(abc
+
+case e:double-12
+strict true
+option d - double -
+arg g
+arg --d
+arg nan(a_1)
+
+case e:double-13
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e-310
+
+case e:double-14
+strict true
+option d - double -
+arg g
+arg --d
+arg 4.9e-324
+
+case e:double-15
+strict true
+option d - double -
+arg g
+arg --d
+arg -inf
+
+case e:double-16
+strict true
+option d - double -
+arg g
+arg --d
+arg +Infinity
+
+case e:double-17
+strict true
+option d - double -
+arg g
+arg --d
+arg 0x
+
+case e:double-18
+strict true
+option d - double -
+arg g
+arg --d
+arg 0xp1
+
+case e:double-19
+strict true
+option d - double -
+arg g
+arg --d
+arg .e1
+
+case e:double-20
+strict true
+option d - double -
+arg g
+arg --d
+arg 1e400
+
+case e:double-21
+strict true
+option d - double -
+arg g
+arg --d
+arg -1e400
+
+case e:separator-then-dash
+# a leftover after -- that starts with '-' keeps the separator
+strict false
+option threads t int -
+option routines R none -
+arg g
+arg --threads
+arg 4
+arg --
+arg -x
+arg y
+
+case e:separator-then-plain
+strict false
+option threads t int -
+option routines R none -
+arg g
+arg --threads
+arg 4
+arg --
+arg y
+
+case e:separator-at-end
+strict false
+option threads t int -
+option routines R none -
+arg g
+arg --routines
+arg --
+
+case e:separator-after-unknown-short
+# lenient: an unknown short option keeps the separator
+strict false
+option threads t int -
+option routines R none -
+arg g
+arg -z
+arg --
+arg y
+
+case e:separator-twice
+strict false
+option threads t int -
+option routines R none -
+arg g
+arg --
+arg --
+arg y
+
+case e:dash-alone
+strict false
+option threads t int -
+option routines R none -
+arg g
+arg -
+arg --routines
+
+case e:callback-no-arg
+strict true
+option cb - callback no_arg
+option routines R none -
+arg g
+arg --cb
+arg v
+arg --routines
+
+case e:callback-no-arg-inline
+strict true
+option cb - callback no_arg
+arg g
+arg --cb=v
+
+case e:alias-empty-prefix
+strict true
+option threads t int -
+group daemongroup
+option snapshot-count X int -
+arg g
+arg ---snapshot-count
+arg 3
+
+case e:alias-prefix
+strict true
+option threads t int -
+group daemongroup
+option snapshot-count X int -
+arg g
+arg --dae-snapshot-count
+arg 3

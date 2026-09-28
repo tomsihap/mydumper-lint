@@ -78,6 +78,8 @@ something new about mydumper or GLib.
 | Differential fuzzing | `internal/oracletest`, `internal/goption` | `make oracle-diff` (Docker), or `MYDUMPER_LINT_ORACLE=bin/oracle go test ./internal/oracletest/` |
 | Fixer fuzzing | `internal/lint` (`FuzzFix`, `FuzzCheck`) | `go test ./internal/lint -run '^$' -fuzz '^FuzzFix$' -fuzztime 2m` |
 | End to end | `e2e/scenarios/*.txtar` | `make e2e` (Docker), `make e2e-all` for every version |
+| Upstream examples | `internal/lint/upstream_integration_test.go` | `make integration` (network): every tag's example file lints with no error |
+| Mutation testing | the core packages | `make mutation` (slow; nightly): gremlins, with a blocking efficacy threshold |
 
 A golden case is a [txtar](https://pkg.go.dev/golang.org/x/tools/txtar) file:
 

@@ -1063,7 +1063,9 @@ Proves every runtime consequence a rule claims, against the real binaries. Build
 
 The upstream `mydumper.cnf` and `myloader.cnf` of every embedded tag, downloaded at test
 time and never vendored (they are GPL), must lint with 0 errors against their own
-version. Build tag `integration`.
+version. Build tag `integration` (`make integration`, nightly). No tag has a
+`myloader.cnf` today; every tag's `mydumper.cnf` lints with 0 errors. Since v1.0.0-1 it
+declares `[myloader_<product>…]` groups, which no myloader reads (F16): MDL201 warns.
 
 ### 11.8 Meta-tests
 
@@ -1079,7 +1081,12 @@ rejection causes to MDL1xx rules.
   except `oracletest`, which only runs with an oracle). Enforced in CI without external
   services (`tools/covercheck`, `make cover-check`).
 - **Mutation testing** (gremlins), nightly on the core packages. The score is tracked from
-  M2 and becomes a blocking threshold at v0.1.0.
+  M2 and becomes a blocking threshold at v0.1.0: 90 % efficacy on `preprocess`, `keyfile`,
+  `goption`, `model` and `fix` (`make mutation`). Measured at v0.1.0: 91.3, 92.3, 97.3,
+  96.0 and 93.9 %; every surviving mutant was reviewed and is equivalent (a capacity hint,
+  a bound on an unreachable input, a loop the recovery fixpoint heals). GOption edge
+  cases the unit tests could not settle alone were recorded from GLib
+  (`testdata/goption-cases/04_edges.cases`).
 - **Static analysis:** `go vet`; golangci-lint v2 with, among others, `exhaustive` (every
   switch over causes, kinds and reasons stays complete), `gosec`, `errorlint`, `revive`,
   `gocritic`, `nolintlint`; `govulncheck`.

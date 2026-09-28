@@ -164,6 +164,29 @@ myloader: extra [client] []
 `,
 		},
 		{
+			name:     "a new key repeated in the extra file is merged once, with its last value",
+			defaults: "[`app`.`users`]\nwhere=id>1\n",
+			extra:    "[`app`.`orders`]\nwhere=1\nwhere=2\n",
+			want: "[`app`.`users`] defaults:2 where=id>1 effective\n" +
+				"[`app`.`orders`] extra:2 where=2 shadowed-by-duplicate\n" +
+				"[`app`.`orders`] extra:3 where=2 effective\n" +
+				`health ok
+mydumper: no file
+myloader: no file
+`,
+		},
+		{
+			name:     "keys localized for the default language list are merged",
+			defaults: "[`app`.`users`]\nwhere[C]=1\n",
+			extra:    "[`app`.`users`]\nwhere[C]=2\n",
+			want: "[`app`.`users`] defaults:2 where[C]=1 overridden-by-extra-file\n" +
+				"[`app`.`users`] extra:2 where[C]=2 unknown-table-key\n" +
+				`health ok
+mydumper: no file
+myloader: no file
+`,
+		},
+		{
 			name:     "localized keys of the extra file are not merged",
 			defaults: "[`app`.`users`]\nwhere=id>1\n",
 			extra:    "[`app`.`users`]\nwhere[fr]=id>2\n",
