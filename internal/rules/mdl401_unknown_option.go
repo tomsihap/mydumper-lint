@@ -27,8 +27,8 @@ func init() {
 		},
 		Check: func(p *Pass) {
 			for _, k := range optionKeys(p) {
-				if k.entry != nil {
-					continue
+				if _, include := includeDirective(k.e.Key); k.entry != nil || include {
+					continue // include directives: MDL602
 				}
 				key := k.e.Key
 				msg := fmt.Sprintf("%s is not a %s option", quote([]byte(key)), k.g.Tool)

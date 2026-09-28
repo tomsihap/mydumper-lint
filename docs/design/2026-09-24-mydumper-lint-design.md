@@ -282,7 +282,7 @@ option-file syntax, a different grammar.
 | F14 | The extra file goes through the same logic after the defaults file: it replaces the defaults file as the client defaults file when it contains the tool group or `[client]`, or when it fails to load. | src |
 | C1 | With no group set, libmysqlclient reads only the `[client]` family of groups. Combined with F3 and F13: `host`, `user` and `password` in `[mydumper]` are read by nobody when the file also has `[client]`. | to verify: e2e |
 | C2 | `MYSQL_READ_DEFAULT_FILE` reads that one file only. Combined with F14: the defaults file's `[client]` is ignored once the extra file takes over. | to verify: e2e |
-| C3 | `!include` and `!includedir` are MySQL directives. GKeyFile loads them as a key (`!include /x.cnf` = `1`), which mydumper sees as an unknown option. | verified (GKeyFile side): case 59; to verify: e2e (client side) |
+| C3 | `!include` and `!includedir` are MySQL directives. GKeyFile loads them as a key (`!include /x.cnf` = `1`), which mydumper sees as an unknown option in its option groups. libmysqlclient follows the directive: the included file's connection settings apply. | verified: case 59; e2e mdl602-include-directive-in-{tool,client}-group |
 | C4 | The MySQL parser strips quotes and interprets escapes; GKeyFile does neither (F4). The same line means different things to the two parsers. | to verify: e2e |
 
 ### 3.8 Versions, builds and images
@@ -688,7 +688,7 @@ hypothesis turns out false is dropped.
 | ID | Name | Severity | Trigger | Fix | Ref. |
 |---|---|---|---|---|---|
 | MDL601 | `connection-keys-ignored` | error | `host`, `user` or `password` in a tool group of a file that also has `[client]`: read by nobody | unsafe: move them to `[client]` | F3, F13, C1 |
-| MDL602 | `mysql-include-directive` | error | `!include` or `!includedir`: a MySQL directive that mydumper sees as an unknown option | — | C3, F6 |
+| MDL602 | `mysql-include-directive` | **AMENDED.** error in option groups; warning elsewhere | `!include` or `!includedir`: a MySQL directive. In option groups mydumper sees an unknown option (F6); elsewhere only libmysqlclient follows it, so [mydumper] or table sections of the included file are ignored | — | C3, F6 |
 | MDL603 | `client-group-overridden` | warning | cross-file (load set, §9.3): the extra file becomes the client defaults file, so the defaults file's `[client]` is ignored | — | F14, C2 |
 
 #### MDL9xx — Project conventions

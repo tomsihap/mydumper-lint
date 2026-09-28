@@ -1,0 +1,9 @@
+# In an option group it is an unknown option (F6).
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[mydumper]
+!includedir /etc/mysql/conf.d
+-- diagnostics --
+2:1-2:30 error MDL602[mysql-include-directive] `!includedir` is a MySQL directive: mydumper reads it as a key and never opens the included file; only the MySQL client library does
+  = mydumper aborts at startup: "option parsing failed: Unknown option --!includedir /etc/mysql/conf.d, try --help".

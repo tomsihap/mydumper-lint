@@ -1,0 +1,8 @@
+-- options --
+mydumper-version: v1.0.5-1
+-- input.cnf --
+[mydumper]
+!include /etc/mysql/backup.cnf
+-- diagnostics --
+2:1-2:31 error MDL602[mysql-include-directive] `!include` is a MySQL directive: mydumper reads it as a key and never opens the included file; only the MySQL client library does
+  = mydumper ignores the line as an unknown option; the included file only reaches the MySQL client library.

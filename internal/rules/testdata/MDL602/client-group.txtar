@@ -1,0 +1,11 @@
+# In [client] only libmysqlclient follows the directive.
+-- options --
+mydumper-version: v0.19.3-3
+-- input.cnf --
+[client]
+!include /etc/mysql/backup.cnf
+[mydumper]
+threads=2
+-- diagnostics --
+2:1-2:31 warning MDL602[mysql-include-directive] `!include` is a MySQL directive: mydumper reads it as a key and never opens the included file; only the MySQL client library does
+  = The connection settings of the included file apply, but any [mydumper], [myloader] or table section in it is ignored.

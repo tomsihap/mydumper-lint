@@ -18,7 +18,9 @@ func init() {
 		},
 		Check: func(p *Pass) {
 			for _, e := range p.KF.Entries {
-				if e.Key != "password" || e.Value == "" || !p.KF.Groups[e.Group].Valid {
+				// Even under a rejected header: the secret is in the file, and
+				// the MySQL client library may still read it (F12).
+				if e.Key != "password" || e.Value == "" {
 					continue
 				}
 				p.Report(diag.Diagnostic{

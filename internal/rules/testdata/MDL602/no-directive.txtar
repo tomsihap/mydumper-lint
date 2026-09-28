@@ -1,0 +1,8 @@
+-- input.cnf --
+[client]
+user=backup
+# !include /etc/mysql/backup.cnf
+[mydumper]
+included=1
+-- diagnostics --
+(none)
