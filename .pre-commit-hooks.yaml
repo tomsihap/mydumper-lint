@@ -4,7 +4,10 @@
 # environment (no local Go toolchain version to match, just Go itself), giving
 # a "mydumper-lint" binary on PATH — cmd/mydumper-lint is this module's only
 # main package. The docker_image variant instead runs the released container
-# image, for consumers who would rather not build or install anything.
+# image, for consumers who would rather not build or install anything. Its
+# image is pinned to this release's version, which release-please rewrites in
+# the release pull request (extra-files in release-please-config.json), so a
+# hook at `rev: vX.Y.Z` always runs the image built from vX.Y.Z, never :latest.
 #
 # Usage, in a consumer's .pre-commit-config.yaml:
 #   repos:
@@ -35,6 +38,6 @@
   name: mydumper-lint (Docker)
   description: Lint mydumper and myloader configuration files with the mydumper-lint container image.
   language: docker_image
-  entry: ghcr.io/tomsihap/mydumper-lint:latest check
+  entry: ghcr.io/tomsihap/mydumper-lint:0.0.0 check # x-release-please-version
   files: \.cnf$
   pass_filenames: true
