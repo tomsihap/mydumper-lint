@@ -178,7 +178,8 @@ attached to the release). The extension's version is the release's: release-plea
 
 Publishing the extension waits for the approval of the `marketplace` environment's
 reviewer (**Review deployments** on the workflow run), then publishes to the Visual Studio
-Marketplace and Open VSX with no stored token. The packages come from the GitHub release,
+Marketplace and Open VSX (trusted publishing; a token for the Marketplace until it
+supports it, step 1 below). The packages come from the GitHub release,
 checked against their provenance attestation, and vsce and ovsx from the commit the
 workflow runs on. To publish a release's packages again (a store was not ready, a fix to
 publishing), run **Actions › Release › Run workflow** with `vscode_tag` set to its tag
@@ -187,8 +188,13 @@ publishing), run **Actions › Release › Run workflow** with `vscode_tag` set 
 One-time setup, in this order (until the last step, releases skip publishing):
 
 1. Visual Studio Marketplace (https://marketplace.visualstudio.com/manage): the publisher
-   `tomsihap` (`publisher` in `package.json`), then a trusted publisher for the repository
-   `tomsihap/mydumper-lint`, workflow `release.yml`, environment `marketplace`.
+   `tomsihap` (`publisher` in `package.json`). The Marketplace does not accept trusted
+   publishing yet ([microsoft/vsmarketplace#1422](https://github.com/microsoft/vsmarketplace/issues/1422)):
+   meanwhile, create an Azure DevOps personal access token (organization **All accessible
+   organizations**, scope **Marketplace › Manage**) and store it as the secret `VSCE_PAT`
+   of the `marketplace` environment. Once the Marketplace supports it, register a trusted
+   publisher (repository `tomsihap/mydumper-lint`, workflow `release.yml`, environment
+   `marketplace`) and delete the secret: the job then publishes with `vsce --oidc`.
 2. Open VSX (https://open-vsx.org, signed in with GitHub): the Eclipse Foundation
    publisher agreement, the namespace `tomsihap`, then the same trusted publisher
    (https://open-vsx.org/user-settings/trusted-publishers).

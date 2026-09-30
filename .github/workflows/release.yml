@@ -129,9 +129,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ needs.release-please.outputs.tag_name }}
 
-  # Publishing the extension. Both stores trust this workflow through OIDC
-  # ("trusted publishing": no token is stored), when it runs in the
-  # `marketplace` environment, whose required reviewer approves each release.
+  # Publishing the extension. The stores trust this workflow through OIDC
+  # ("trusted publishing": no token is stored; the Marketplace takes a token
+  # meanwhile, see its job), when it runs in the `marketplace` environment,
+  # whose required reviewer approves each release.
   # Nothing is published until the repository variable VSCODE_PUBLISH is
   # "true": set it once the stores and the environment are configured
   # (CONTRIBUTING.md, "Releasing").
@@ -179,11 +180,22 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.vscode_tag || needs.release-please.outputs.tag_name }}
 
-      # vsce at the version package-lock.json pins.
+      # vsce at the version package-lock.json pins. The Marketplace does not
+      # accept trusted publishing yet (vsce --oidc is ready, the service answers
+      # "Trusted Publishing is not supported": microsoft/vsmarketplace#1422).
+      # Until it does, a personal access token stored as the `marketplace`
+      # environment's secret VSCE_PAT, which vsce reads, publishes instead;
+      # delete the secret to switch to trusted publishing.
       - name: Publish
         run: |
           npm ci --prefix editors/vscode --no-audit --no-fund
-          editors/vscode/node_modules/.bin/vsce publish --oidc --skip-duplicate --packagePath dist/vscode/*.vsix
+          auth=(--oidc)
+          if [[ -n $VSCE_PAT ]]; then
+            auth=()
+          fi
+          editors/vscode/node_modules/.bin/vsce publish "${auth[@]}" --skip-duplicate --packagePath dist/vscode/*.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
   open-vsx:
     name: publish to Open VSX

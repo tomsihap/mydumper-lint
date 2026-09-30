@@ -1141,8 +1141,10 @@ Docker base images.
   that release's archive, plus a universal package without executable (the extension
   then runs `mydumper-lint` from `PATH`); the extension's version is the release's.
   Attested, attached to the release, and published to the Visual Studio Marketplace and
-  Open VSX by trusted publishing (OIDC, no stored token) from the `marketplace`
-  environment, whose reviewer approves each release.
+  Open VSX from the `marketplace` environment, whose reviewer approves each release: by
+  trusted publishing (OIDC, no stored token) on Open VSX, and on the Marketplace once it
+  supports it (vsce `--oidc` is ready; until then, a token stored as the environment's
+  secret).
 
 ### 12.4 Distribution
 
