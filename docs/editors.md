@@ -17,20 +17,26 @@ mydumper version with the `mydumperVersion` setting (below), which takes precede
 the configuration file. Load sets (`load-sets:`, MDL509, MDL510, MDL603) are only analyzed
 by `mydumper-lint check`.
 
-Install mydumper-lint first (see the [README](../README.md#install)) and make sure
-`mydumper-lint` is in the `PATH` the editor sees.
+Other editors run the `mydumper-lint` executable: install it first (see the
+[README](../README.md#install)) and make sure it is in the `PATH` the editor sees, or give
+the editor its absolute path.
 
 ## VS Code
 
-The extension in [`editors/vscode`](../editors/vscode) starts the server for `.cnf` files.
-Build and install it:
+Install **mydumper-lint** (publisher `tomsihap`) from the Extensions view: the Visual
+Studio Marketplace in VS Code, Open VSX in VSCodium, Cursor, Windsurf and other editors
+built on VS Code. Every release's packages are also attached to its
+[GitHub release](https://github.com/tomsihap/mydumper-lint/releases) (`.vsix`, installed
+with **Extensions: Install from VSIX…**).
 
-```sh
-make vscode
-code --install-extension editors/vscode/mydumper-lint.vsix
-```
+The extension includes the `mydumper-lint` of its release for Linux (x64, arm64, Alpine),
+macOS (Intel, Apple silicon) and Windows (x64). It runs, in this order: the
+`mydumperLint.path` setting if set, the bundled executable, else `mydumper-lint` from
+`PATH` (the only choice on other platforms). The **mydumper-lint** output channel says
+which one. With Remote-SSH, WSL or dev containers, it runs on the remote machine, with that
+machine's package.
 
-Settings: `mydumperLint.path` (the executable), `mydumperLint.mydumperVersion`, and
+Settings: `mydumperLint.path`, `mydumperLint.mydumperVersion`, and
 `mydumperLint.trace.server`. To apply the safe fixes on save, in `settings.json`:
 
 ```json
@@ -40,6 +46,17 @@ Settings: `mydumperLint.path` (the executable), `mydumperLint.mydumperVersion`, 
 ```
 
 The extension maps `.cnf` to the `ini` language, so the files keep INI highlighting.
+
+To build it from this repository (Node 22 or later), with an executable built from the
+tree for this machine:
+
+```sh
+make vscode-host
+code --install-extension editors/vscode/mydumper-lint-darwin-arm64.vsix
+```
+
+The package is named after the machine's VS Code platform: `darwin-arm64` on Apple
+silicon, `linux-x64`, `win32-x64`… (vsce prints its name).
 
 ## Neovim (0.11 or later)
 
@@ -116,6 +133,9 @@ codeAction` and `textDocument/hover`.
 The server is tested in Go with a scripted client (`internal/lsp`, and
 `internal/cli/server_cmd_test.go` against the real linter and configuration discovery),
 and with `vscode-jsonrpc`, the protocol library of VS Code's client. The VS Code
-extension's wiring has unit tests (`editors/vscode/test`) and its package builds in CI.
+extension has unit tests (`editors/vscode/test`), and CI installs its linux-x64 package in
+VS Code (the latest and 1.91, the oldest it supports) and checks, with `mydumper-lint`
+removed from `PATH`, the diagnostic, hover, the version setting and both fixes
+(`make vscode-test`).
 The Neovim, Helix, Emacs and JetBrains configurations follow each editor's documented
 LSP setup; reports of what works or not in them are welcome.
