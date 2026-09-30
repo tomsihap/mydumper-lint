@@ -181,7 +181,7 @@ jobs:
   vscode:
     name: VS Code extension
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -190,9 +190,48 @@ jobs:
         with:
           persist-credentials: false
 
-      # mk/playground.mk: npm ci (package-lock.json), the unit tests, vsce package.
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      # @vscode/vsce needs Node 22 or later.
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      # mk/vscode.mk: npm ci (package-lock.json), the unit tests, the universal package.
       - name: Test and package the extension
         run: make vscode
+
+      # Every platform's package, from goreleaser's archives, as a release
+      # makes them (release.yml): a snapshot, archives only.
+      - name: Build the release archives (snapshot)
+        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --snapshot --clean --skip=docker,sign,sbom
+
+      - name: Package the extension for every platform
+        run: SNAPSHOT=1 editors/vscode/scripts/package-release.sh dist dist/vscode
+
+      # The linux-x64 package installed in VS Code: diagnostics, hover, the
+      # version setting, fixes, from the executable it bundles. On the latest
+      # VS Code, then on the oldest the extension supports (engines.vscode).
+      - name: Run the extension in VS Code (stable)
+        working-directory: editors/vscode
+        run: |
+          vsix=$(echo ../../dist/vscode/mydumper-lint-linux-x64-*.vsix)
+          VSIX="$vsix" xvfb-run -a node test/vscode/run.js
+
+      - name: Run the extension in VS Code (1.91.0)
+        working-directory: editors/vscode
+        run: |
+          vsix=$(echo ../../dist/vscode/mydumper-lint-linux-x64-*.vsix)
+          VSIX="$vsix" VSCODE_TEST_VERSION=1.91.0 xvfb-run -a node test/vscode/run.js
 
   actionlint:
     name: actionlint
