@@ -273,9 +273,19 @@ func (s *suite) runAndObserve(rs *runState, sc *Scenario, ref, dir string, p pla
 			"--host", mysqlHost, "--user", e2eUser, "--password", e2ePassword,
 			"--database", seededDatabase, "--outputdir", "/work/" + sourceDumpDir,
 		}
-		fmt.Fprintf(&rs.log, "\n$ mydumper %s\n", strings.Join(prep, " "))
-		r, err := s.runTool(ctx, ref, "mydumper", dir, nil, prep)
-		fmt.Fprintf(&rs.log, "exit %d in %s\n%s", r.ExitCode, r.Duration.Round(time.Millisecond), r.Stderr)
+		// The source dump is set-up, not an observation: when mydumper dies
+		// on a signal (v0.20.1-2 once crashed with SIGSEGV on the nightly),
+		// it is run once more.
+		var r cmdResult
+		var err error
+		for attempt := 1; attempt <= 2; attempt++ {
+			fmt.Fprintf(&rs.log, "\n$ mydumper %s\n", strings.Join(prep, " "))
+			r, err = s.runTool(ctx, ref, "mydumper", dir, nil, prep)
+			fmt.Fprintf(&rs.log, "exit %d in %s\n%s", r.ExitCode, r.Duration.Round(time.Millisecond), r.Stderr)
+			if err != nil || r.ExitCode < 128 {
+				break
+			}
+		}
 		if err != nil || r.ExitCode != 0 {
 			rs.o.Note = fmt.Sprintf("preparing the source dump failed: exit %d %v", r.ExitCode, err)
 			t.Fatalf("%s\n%s", rs.o.Note, r.Stderr)
