@@ -38,6 +38,6 @@
   name: mydumper-lint (Docker)
   description: Lint mydumper and myloader configuration files with the mydumper-lint container image.
   language: docker_image
-  entry: ghcr.io/tomsihap/mydumper-lint:0.0.0 check # x-release-please-version
+  entry: ghcr.io/tomsihap/mydumper-lint:0.1.0 check # x-release-please-version
   files: \.cnf$
   pass_filenames: true
