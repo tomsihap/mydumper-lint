@@ -1090,7 +1090,10 @@ rejection causes to MDL1xx rules.
   96.0 and 93.9 %; every surviving mutant was reviewed and is equivalent (a capacity hint,
   a bound on an unreachable input, a loop the recovery fixpoint heals). GOption edge
   cases the unit tests could not settle alone were recorded from GLib
-  (`testdata/goption-cases/04_edges.cases`).
+  (`testdata/goption-cases/04_edges.cases`). Test binaries run with their data segment
+  capped (`tools/mutation/memlimit.sh`): a mutant that appends forever dies of "out of
+  memory" and counts as killed, instead of exhausting the runner's memory until GitHub
+  shuts the runner down; a mutant that only loops still times out.
 - **Static analysis:** `go vet`; golangci-lint v2 with, among others, `exhaustive` (every
   switch over causes, kinds and reasons stays complete), `gosec`, `errorlint`, `revive`,
   `gocritic`, `nolintlint`; `govulncheck`.

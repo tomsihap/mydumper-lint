@@ -14,6 +14,11 @@ MUTATION_PACKAGES ?= preprocess keyfile goption model fix
 # redundant bound).
 MUTATION_EFFICACY ?= 90
 MUTATION_WORKERS ?= 4
+# Every test binary runs with its memory capped (tools/mutation/memlimit.sh),
+# so a mutant that allocates forever fails instead of exhausting the machine.
+# `go run` honours the same -exec: gremlins and the go commands it starts run
+# under the cap too, far above what they need.
+MUTATION_GOFLAGS := $(strip $(GOFLAGS) -exec=$(CURDIR)/tools/mutation/memlimit.sh)
 
 .PHONY: integration mutation
 
@@ -23,7 +28,7 @@ integration: ## Lint the upstream example files of every embedded tag (network)
 mutation: ## Mutation testing of the core packages (gremlins, slow)
 	@status=0; for p in $(MUTATION_PACKAGES); do \
 		echo "== internal/$$p"; \
-		$(GO) run github.com/go-gremlins/gremlins/cmd/gremlins@$(GREMLINS_VERSION) unleash \
+		GOFLAGS="$(MUTATION_GOFLAGS)" $(GO) run github.com/go-gremlins/gremlins/cmd/gremlins@$(GREMLINS_VERSION) unleash \
 			--timeout-coefficient 20 --workers $(MUTATION_WORKERS) --output-statuses lt \
 			--threshold-efficacy $(MUTATION_EFFICACY) ./internal/$$p || status=1; \
 	done; exit $$status
