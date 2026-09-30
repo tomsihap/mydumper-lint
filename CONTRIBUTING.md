@@ -178,8 +178,11 @@ attached to the release). The extension's version is the release's: release-plea
 
 Publishing the extension waits for the approval of the `marketplace` environment's
 reviewer (**Review deployments** on the workflow run), then publishes to the Visual Studio
-Marketplace and Open VSX with no stored token. A job that failed can be re-run alone:
-packages already published are skipped.
+Marketplace and Open VSX with no stored token. The packages come from the GitHub release,
+checked against their provenance attestation, and vsce and ovsx from the commit the
+workflow runs on. To publish a release's packages again (a store was not ready, a fix to
+publishing), run **Actions › Release › Run workflow** with `vscode_tag` set to its tag
+(`v0.1.0`): only the publishing jobs run, and packages already published are skipped.
 
 One-time setup, in this order (until the last step, releases skip publishing):
 
