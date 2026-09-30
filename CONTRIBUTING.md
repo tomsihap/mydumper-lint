@@ -83,7 +83,7 @@ something new about mydumper or GLib.
 | Upstream examples | `internal/lint/upstream_integration_test.go` | `make integration` (network): every tag's example file lints with no error |
 | Mutation testing | the core packages | `make mutation` (slow; nightly): gremlins, with a blocking efficacy threshold |
 | Playground | `web/playground/examples.test.mjs`, `internal/playground` | `make playground-test` (needs Node): the page's examples through the WebAssembly build; `make playground-serve` to try the page on http://localhost:8765 |
-| Language server | `internal/lsp`, `internal/cli/server_cmd_test.go`, `editors/vscode/test` | `make test` for the server; `make vscode` (needs Node) tests and packages the VS Code extension |
+| Language server | `internal/lsp`, `internal/cli/server_cmd_test.go`, `editors/vscode/test` | `make test` for the server; `make vscode` (needs Node 22) tests the VS Code extension and packages it; `make vscode-test` runs the package in VS Code (downloaded; on Linux, under `xvfb-run`); `make vscode-release-check` packages every platform from a goreleaser snapshot, as a release does |
 
 A golden case is a [txtar](https://pkg.go.dev/golang.org/x/tools/txtar) file:
 
@@ -167,6 +167,34 @@ Then review:
   (`feat(rules): …`, `fix(keyfile): …`): they drive the changelog and the version.
 - Behavior changes that could fail users' CI (a new error, a changed default) ship as
   preview rules first; see the design document §13.
+
+## Releasing
+
+Merging the release pull request that release-please keeps open tags the version and runs
+`.github/workflows/release.yml`: goreleaser (archives, checksums, SBOMs, signatures,
+attestations, the ghcr.io image), then the VS Code packages (one per platform, attested and
+attached to the release). The extension's version is the release's: release-please bumps
+`editors/vscode/package.json` too.
+
+Publishing the extension waits for the approval of the `marketplace` environment's
+reviewer (**Review deployments** on the workflow run), then publishes to the Visual Studio
+Marketplace and Open VSX with no stored token. A job that failed can be re-run alone:
+packages already published are skipped.
+
+One-time setup, in this order (until the last step, releases skip publishing):
+
+1. Visual Studio Marketplace (https://marketplace.visualstudio.com/manage): the publisher
+   `tomsihap` (`publisher` in `package.json`), then a trusted publisher for the repository
+   `tomsihap/mydumper-lint`, workflow `release.yml`, environment `marketplace`.
+2. Open VSX (https://open-vsx.org, signed in with GitHub): the Eclipse Foundation
+   publisher agreement, the namespace `tomsihap`, then the same trusted publisher
+   (https://open-vsx.org/user-settings/trusted-publishers).
+3. GitHub, **Settings › Environments**: an environment `marketplace` with yourself as
+   required reviewer, restricted to the `main` branch (release.yml runs on pushes to
+   `main`). Create it before the next step: a job creates a missing environment without
+   any protection.
+4. GitHub, **Settings › Secrets and variables › Actions › Variables**: `VSCODE_PUBLISH` =
+   `true`.
 
 ## Licensing rules
 

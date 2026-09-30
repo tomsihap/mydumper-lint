@@ -1115,12 +1115,12 @@ need Go and Docker: `make build`, `test`, `lint`, `fuzz`, `oracle`, `e2e`, `gen`
 
 | Workflow | Trigger | Content |
 |---|---|---|
-| `ci.yml` | push, pull request | build (Linux, macOS, Windows); unit and golden tests with `-race`; coverage gates; golangci-lint; govulncheck; generated files up to date; 60 s fuzz smoke; oracle conformance on GLib 2.68; the playground's WebAssembly build and examples; the VS Code extension's tests and package |
+| `ci.yml` | push, pull request | build (Linux, macOS, Windows); unit and golden tests with `-race`; coverage gates; golangci-lint; govulncheck; generated files up to date; 60 s fuzz smoke; oracle conformance on GLib 2.68; the playground's WebAssembly build and examples; the VS Code extension: unit tests, every platform's package from a goreleaser snapshot, and the packaged extension run in VS Code (stable and 1.91, the oldest supported) |
 | `oracle.yml` | pull requests touching the emulators, the oracle or testdata | conformance and 60 s differential fuzzing on the three GLib versions |
 | `e2e.yml` | pull requests touching rules, model, goption, optionsdb or e2e | e2e on the 4 sentinel versions |
 | `nightly.yml` | schedule | long fuzzing, mutation testing, full e2e matrix, upstream integration |
 | `upstream-sync.yml` | daily schedule | new mydumper tags ⇒ generator, cross-check, e2e ⇒ pull request |
-| `release.yml` | tag | goreleaser, signatures, attestations, Docker image |
+| `release.yml` | push to main (release-please) | release pull request; on release: goreleaser, signatures, attestations, Docker image, VS Code packages; after approval, publishes the extension (Visual Studio Marketplace, Open VSX) |
 | `pages.yml` | push to main (playground sources), dispatch | builds and tests the WebAssembly playground, publishes it to GitHub Pages |
 | `scorecard.yml`, `codeql.yml` | schedule, pull request | OpenSSF Scorecard, CodeQL |
 
@@ -1136,6 +1136,13 @@ Docker base images.
   reproducible timestamps; checksums; SBOM (SPDX); cosign keyless signatures; GitHub
   artifact attestations, verifiable with `gh attestation verify`.
 - Docker: `ghcr.io/tomsihap/mydumper-lint`, `FROM scratch`, non-root, multi-arch, signed.
+- VS Code: one package per platform (`linux-x64`, `linux-arm64`, `alpine-x64`,
+  `alpine-arm64`, `darwin-x64`, `darwin-arm64`, `win32-x64`), each with the executable of
+  that release's archive, plus a universal package without executable (the extension
+  then runs `mydumper-lint` from `PATH`); the extension's version is the release's.
+  Attested, attached to the release, and published to the Visual Studio Marketplace and
+  Open VSX by trusted publishing (OIDC, no stored token) from the `marketplace`
+  environment, whose reviewer approves each release.
 
 ### 12.4 Distribution
 
@@ -1147,6 +1154,7 @@ Docker base images.
 - A composite GitHub Action: downloads the release binary, verifies its checksum and
   attestation, runs `check --format github`, optionally uploads SARIF.
 - A Homebrew tap (optional; needs a `homebrew-tap` repository).
+- The VS Code extension, on the Visual Studio Marketplace and Open VSX (VSCodium, Cursor…).
 
 ### 12.5 Documentation
 
@@ -1265,6 +1273,17 @@ than pushing it away from its line; not offered for MDL1xx), and
 shows the rule's explanation. Load sets are not analyzed in the editor yet. Clients: a
 VS Code extension (`editors/vscode`, `vscode-languageclient`), and documented setups for
 Neovim, Helix, Emacs and JetBrains IDEs (LSP4IJ) in `docs/editors.md`.
+
+*VS Code extension on the stores.* Published from this repository by `release.yml`
+(§12.3): the extension adds no logic of its own, so it shares the release's version and
+bundles that release's executable, and a server change and its extension change are one
+pull request. The extension runs the `mydumperLint.path` setting if set, else the bundled
+executable, else `mydumper-lint` from `PATH`; `extensionKind: workspace` makes it run
+where the files are (Remote-SSH, WSL, containers), with that machine's package. esbuild
+bundles it with the language client into one file. CI installs the linux-x64 package in
+VS Code (`@vscode/test-electron`, without `mydumper-lint` in `PATH`) and checks the
+diagnostic, hover, the version setting, the fix-all action (equal to `check --fix`) and
+the quick fix.
 
 ---
 
