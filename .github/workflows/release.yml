@@ -94,6 +94,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # @vscode/vsce needs Node 22 or later.
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      # One VS Code package per platform, each with the executable of this
+      # release's archive for it, and a universal one without executable
+      # (design §14, M6; editors/vscode/scripts/package-release.sh).
+      - name: Package the VS Code extension
+        run: |
+          npm ci --prefix editors/vscode --no-audit --no-fund
+          editors/vscode/scripts/package-release.sh dist dist/vscode
+
       - name: Generate build provenance attestations
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
@@ -101,3 +115,93 @@ jobs:
             dist/mydumper-lint_*.tar.gz
             dist/mydumper-lint_*.zip
             dist/checksums.txt
+            dist/vscode/*.vsix
+
+      - name: Attach the VS Code packages to the release
+        run: gh release upload "$TAG" dist/vscode/*.vsix --repo "$GITHUB_REPOSITORY" --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+
+      - name: Keep the VS Code packages for the publishing jobs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: vscode-packages
+          path: dist/vscode/*.vsix
+          if-no-files-found: error
+          retention-days: 30
+
+  # Publishing the extension. Both stores trust this workflow through OIDC
+  # ("trusted publishing": no token is stored), when it runs in the
+  # `marketplace` environment, whose required reviewer approves each release.
+  # Nothing is published until the repository variable VSCODE_PUBLISH is
+  # "true": set it once the stores and the environment are configured
+  # (CONTRIBUTING.md, "Releasing"). A failed job can be re-run on its own:
+  # --skip-duplicate skips the packages already published.
+  marketplace:
+    name: publish to the Visual Studio Marketplace
+    needs: [release-please, goreleaser] # the tag, and the packages
+    if: vars.VSCODE_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: marketplace
+    permissions:
+      contents: read
+      id-token: write # exchanged for a short-lived Marketplace credential
+    steps:
+      - name: Check out the release tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - name: Download the VS Code packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: vscode-packages
+          path: dist/vscode
+
+      # vsce at the version package-lock.json pins.
+      - name: Publish
+        run: |
+          npm ci --prefix editors/vscode --no-audit --no-fund
+          editors/vscode/node_modules/.bin/vsce publish --oidc --skip-duplicate --packagePath dist/vscode/*.vsix
+
+  open-vsx:
+    name: publish to Open VSX
+    needs: [release-please, goreleaser] # the tag, and the packages
+    if: vars.VSCODE_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: marketplace
+    permissions:
+      contents: read
+      id-token: write # exchanged for a short-lived Open VSX token
+    steps:
+      - name: Check out the release tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - name: Download the VS Code packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: vscode-packages
+          path: dist/vscode
+
+      # ovsx at the version package-lock.json pins.
+      - name: Publish
+        run: |
+          npm ci --prefix editors/vscode --no-audit --no-fund
+          editors/vscode/node_modules/.bin/ovsx publish --trusted-publishing --skip-duplicate --packagePath dist/vscode/*.vsix
