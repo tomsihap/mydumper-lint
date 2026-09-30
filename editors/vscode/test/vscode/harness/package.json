@@ -1,0 +1,10 @@
+{
+  "name": "mydumper-lint-test-harness",
+  "description": "Hosts test/vscode/suite.js: VS Code runs extension tests on behalf of an extension under development. The extension under test is the installed VSIX.",
+  "version": "0.0.0",
+  "publisher": "tomsihap",
+  "private": true,
+  "engines": {
+    "vscode": "^1.91.0"
+  }
+}

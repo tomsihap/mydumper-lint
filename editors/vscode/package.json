@@ -12,6 +12,11 @@
   },
   "homepage": "https://github.com/tomsihap/mydumper-lint#readme",
   "bugs": "https://github.com/tomsihap/mydumper-lint/issues",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1e3a8a",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -22,10 +27,16 @@
     "mydumper",
     "myloader",
     "mysql",
+    "mariadb",
+    "backup",
     "cnf",
-    "linter"
+    "linter",
+    "lsp"
   ],
-  "main": "./extension.js",
+  "main": "./dist/extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
   "activationEvents": [
     "workspaceContains:**/*.cnf",
     "onLanguage:ini"
@@ -44,8 +55,8 @@
       "properties": {
         "mydumperLint.path": {
           "type": "string",
-          "default": "mydumper-lint",
-          "markdownDescription": "The `mydumper-lint` executable: a name found in `PATH`, or an absolute path.",
+          "default": "",
+          "markdownDescription": "The `mydumper-lint` executable: an absolute path, or a name found in `PATH`. Empty: the executable bundled with the extension, else `mydumper-lint` from `PATH`.",
           "scope": "machine-overridable"
         },
         "mydumperLint.mydumperVersion": {
@@ -74,12 +85,18 @@
   },
   "scripts": {
     "test": "node --test test/*.test.js",
-    "package": "vsce package --out mydumper-lint.vsix"
+    "test:vscode": "node test/vscode/run.js",
+    "bundle": "esbuild extension.js --bundle --platform=node --format=cjs --target=node20 --external:vscode --outfile=dist/extension.js",
+    "vscode:prepublish": "npm run bundle",
+    "package": "vsce package --no-dependencies --out mydumper-lint.vsix"
   },
   "dependencies": {
     "vscode-languageclient": "10.1.2"
   },
   "devDependencies": {
-    "@vscode/vsce": "4.0.0"
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.0.0",
+    "esbuild": "0.28.2",
+    "ovsx": "1.2.0"
   }
 }

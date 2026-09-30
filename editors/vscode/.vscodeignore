@@ -1,4 +1,12 @@
+# The package holds dist/extension.js (esbuild bundles the language client
+# into it: npm run bundle), package.json, README.md, LICENSE, the icon and,
+# in platform-specific packages, bin/.
+extension.js
+node_modules/**
 test/**
+scripts/**
+.vscode-test/**
 .vscodeignore
 *.vsix
-node_modules/.package-lock.json
+images/icon.svg
+package-lock.json
