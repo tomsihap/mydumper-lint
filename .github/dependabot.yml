@@ -45,13 +45,14 @@ updates:
       default-days: 7
     # Each oracle image pins a distribution for its GLib version: AlmaLinux 9
     # (2.68, the base of the official mydumper images) and Ubuntu 24.04 (2.80).
-    # A new major release would silently test another GLib: digests only.
+    # Another release would silently test another GLib: digests only. Ubuntu's
+    # interim releases (24.10, 25.04…) count as minor updates of 24.04.
     # Fedora rawhide (the newest GLib) follows its own tag.
     ignore:
       - dependency-name: almalinux
         update-types: [version-update:semver-major]
       - dependency-name: ubuntu
-        update-types: [version-update:semver-major]
+        update-types: [version-update:semver-major, version-update:semver-minor]
     groups:
       docker-minor-patch:
         update-types: [minor, patch]
