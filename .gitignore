@@ -27,3 +27,9 @@
 # VS Code extension (make vscode)
 /editors/vscode/node_modules/
 /editors/vscode/*.vsix
+# Filled while packaging (scripts/package-release.sh, make vscode-host)
+/editors/vscode/bin/
+/editors/vscode/dist/
+/editors/vscode/CHANGELOG.md
+# VS Code downloaded by the extension's tests (make vscode-test)
+/editors/vscode/.vscode-test/
