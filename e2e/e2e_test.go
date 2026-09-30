@@ -274,11 +274,18 @@ func (s *suite) runAndObserve(rs *runState, sc *Scenario, ref, dir string, p pla
 			"--database", seededDatabase, "--outputdir", "/work/" + sourceDumpDir,
 		}
 		// The source dump is set-up, not an observation: when mydumper dies
-		// on a signal (v0.20.1-2 once crashed with SIGSEGV on the nightly),
-		// it is run once more.
+		// on a signal (v0.20.1-1 and v0.20.1-2 sometimes crash with SIGSEGV
+		// on the nightly), it is run again. The crashed run leaves a partial
+		// dump, which mydumper refuses to write into: it is removed first
+		// (the container runs as the current user, so its files are ours).
 		var r cmdResult
 		var err error
-		for attempt := 1; attempt <= 2; attempt++ {
+		for attempt := 1; attempt <= 3; attempt++ {
+			if attempt > 1 {
+				if rmErr := os.RemoveAll(filepath.Join(dir, sourceDumpDir)); rmErr != nil {
+					t.Fatalf("removing the partial source dump: %v", rmErr)
+				}
+			}
 			fmt.Fprintf(&rs.log, "\n$ mydumper %s\n", strings.Join(prep, " "))
 			r, err = s.runTool(ctx, ref, "mydumper", dir, nil, prep)
 			fmt.Fprintf(&rs.log, "exit %d in %s\n%s", r.ExitCode, r.Duration.Round(time.Millisecond), r.Stderr)
