@@ -9,7 +9,7 @@
       "ignore_unknown_options": false,
       "loader_fingerprint": "e4fb37ba6af6bfdabd366b8566de784d1f85255d0cdea62a16613fbc2bcf1462",
       "preprocessor": false,
-      "image_verified": true
+      "image_verified": false
     },
     {
       "tag": "v0.19.1-2",
@@ -119,7 +119,7 @@
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
       "preprocessor": true,
-      "image_verified": true
+      "image_verified": false
     },
     {
       "tag": "v0.21.1-1",
@@ -139,7 +139,7 @@
       "ignore_unknown_options": false,
       "loader_fingerprint": "5506d7c34b988e32cec1127fc061b335a537a5ebcf60e8f48cff2bf3a73e503e",
       "preprocessor": true,
-      "image_verified": true
+      "image_verified": false
     },
     {
       "tag": "v0.21.2-2",
@@ -320,6 +320,31 @@
       "commit": "a079e05cda877cc691956e14aa855bf1c306b9e6",
       "date": "2026-09-15",
       "prerelease": true,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
+      "product_option_groups": [
+        "mydumper"
+      ],
+      "image_verified": true
+    },
+    {
+      "tag": "v1.0.9-1",
+      "commit": "21cb8487c4b6b58a9d1e769236a76a2c86afb5e9",
+      "prerelease": true,
+      "ignore_unknown_options": true,
+      "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
+      "preprocessor": true,
+      "product_option_groups": [
+        "mydumper"
+      ],
+      "image_verified": true
+    },
+    {
+      "tag": "v1.0.11-1",
+      "commit": "52d5dcd4d92a1ac5ac53aad6d61161de4cc5f1ac",
+      "date": "2026-10-08",
+      "prerelease": false,
       "ignore_unknown_options": true,
       "loader_fingerprint": "0fdc83c040a6762c2e0ee59fa8c8949e440c08c91550757ccf4616542b08d585",
       "preprocessor": true,
@@ -523,6 +548,7 @@
         },
         {
           "from": "v0.19.3-1",
+          "to": "v1.0.8-1",
           "short": "c",
           "arg": "callback",
           "flags": [
@@ -535,6 +561,16 @@
           ],
           "values_ignore_case": true,
           "source": "src/mydumper/mydumper_arguments.c:196"
+        },
+        {
+          "from": "v1.0.9-1",
+          "short": "c",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "extra",
+          "source": "src/mydumper/mydumper_arguments.c:228"
         }
       ]
     },
@@ -819,6 +855,7 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "arg": "callback",
           "group": "statement",
           "values": [
@@ -829,6 +866,12 @@
           ],
           "values_ignore_case": true,
           "source": "src/mydumper/mydumper_arguments.c:315"
+        },
+        {
+          "from": "v1.0.9-1",
+          "arg": "callback",
+          "group": "statement",
+          "source": "src/mydumper/mydumper_arguments.c:366"
         }
       ]
     },
@@ -1373,10 +1416,17 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "arg": "string",
           "group": "filter",
           "is_regex": true,
           "source": "src/mydumper/mydumper_arguments.c:283"
+        },
+        {
+          "from": "v1.0.9-1",
+          "arg": "string",
+          "group": "filter",
+          "source": "src/mydumper/mydumper_arguments.c:334"
         }
       ]
     },
@@ -1448,11 +1498,19 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "short": "x",
           "arg": "callback",
           "group": "filter",
           "is_regex": true,
           "source": "src/regex.c:45"
+        },
+        {
+          "from": "v1.0.9-1",
+          "short": "x",
+          "arg": "callback",
+          "group": "filter",
+          "source": "src/regex.c:44"
         }
       ]
     },
@@ -1799,6 +1857,7 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "arg": "callback",
           "values": [
             "AWS",
@@ -1806,6 +1865,11 @@
           ],
           "values_ignore_case": true,
           "source": "src/common_options.c:83"
+        },
+        {
+          "from": "v1.0.9-1",
+          "arg": "callback",
+          "source": "src/common_options.c:208"
         }
       ]
     },
@@ -1962,6 +2026,7 @@
         },
         {
           "from": "v0.20.1-1",
+          "to": "v1.0.8-1",
           "arg": "callback",
           "group": "lock",
           "values": [
@@ -1974,6 +2039,12 @@
           ],
           "values_ignore_case": true,
           "source": "src/mydumper/mydumper_arguments.c:248"
+        },
+        {
+          "from": "v1.0.9-1",
+          "arg": "callback",
+          "group": "lock",
+          "source": "src/mydumper/mydumper_arguments.c:239"
         }
       ]
     },
@@ -2300,6 +2371,7 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "arg": "callback",
           "flags": [
             "optional_arg"
@@ -2312,6 +2384,15 @@
           ],
           "values_ignore_case": true,
           "source": "src/myloader/myloader_arguments.c:177"
+        },
+        {
+          "from": "v1.0.9-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:193"
         }
       ]
     },
@@ -2878,6 +2959,7 @@
         },
         {
           "from": "v0.20.1-1",
+          "to": "v1.0.8-1",
           "arg": "callback",
           "flags": [
             "optional_arg"
@@ -2891,6 +2973,15 @@
           ],
           "values_ignore_case": true,
           "source": "src/myloader/myloader_arguments.c:185"
+        },
+        {
+          "from": "v1.0.9-1",
+          "arg": "callback",
+          "flags": [
+            "optional_arg"
+          ],
+          "group": "execution",
+          "source": "src/myloader/myloader_arguments.c:183"
         }
       ]
     },
@@ -3058,6 +3149,7 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "short": "Q",
           "arg": "callback",
           "group": "load_from_metadata",
@@ -3071,6 +3163,13 @@
           ],
           "values_ignore_case": true,
           "source": "src/myloader/myloader_arguments.c:141"
+        },
+        {
+          "from": "v1.0.9-1",
+          "short": "Q",
+          "arg": "callback",
+          "group": "load_from_metadata",
+          "source": "src/myloader/myloader_arguments.c:156"
         }
       ]
     },
@@ -3080,11 +3179,19 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "short": "x",
           "arg": "callback",
           "group": "filter",
           "is_regex": true,
           "source": "src/regex.c:45"
+        },
+        {
+          "from": "v1.0.9-1",
+          "short": "x",
+          "arg": "callback",
+          "group": "filter",
+          "source": "src/regex.c:44"
         }
       ]
     },
@@ -3430,6 +3537,7 @@
       "spans": [
         {
           "from": "v0.19.1-1",
+          "to": "v1.0.8-1",
           "arg": "callback",
           "values": [
             "AWS",
@@ -3437,6 +3545,11 @@
           ],
           "values_ignore_case": true,
           "source": "src/common_options.c:83"
+        },
+        {
+          "from": "v1.0.9-1",
+          "arg": "callback",
+          "source": "src/common_options.c:208"
         }
       ]
     },
