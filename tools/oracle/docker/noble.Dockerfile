@@ -3,7 +3,7 @@
 # Build: make oracle-images (build context: tools/oracle).
 
 # Base image: ubuntu:24.04, pinned by digest (Dependabot bumps it).
-FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3 AS build
+FROM ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 AS build
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gcc libc6-dev libglib2.0-dev pkgconf \
  && rm -rf /var/lib/apt/lists/*
@@ -12,7 +12,7 @@ RUN gcc -O2 -Wall -Wextra -o /oracle /src/oracle.c $(pkg-config --cflags --libs 
  && pkg-config --modversion glib-2.0 > /glib-version
 
 # Base image: ubuntu:24.04, same digest as above.
-FROM ubuntu:24.04@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3
+FROM ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libglib2.0-0t64 \
  && rm -rf /var/lib/apt/lists/*
