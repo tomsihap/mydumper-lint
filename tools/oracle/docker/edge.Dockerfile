@@ -4,7 +4,7 @@
 # Build: make oracle-images (build context: tools/oracle).
 
 # Base image: fedora:rawhide, pinned by digest (Dependabot bumps it).
-FROM fedora:rawhide@sha256:a9bab18d01cf2c2cf62f3e79c72623405bce14ac062995cc6651a3073c802e41 AS build
+FROM fedora:rawhide@sha256:78bb31de333664aa76c4bf54306791cd294c0bd4fbcfc4346e2286261de544c4 AS build
 RUN dnf -y install gcc glib2-devel pkgconf-pkg-config \
  && dnf clean all
 COPY oracle.c /src/oracle.c
@@ -12,7 +12,7 @@ RUN gcc -O2 -Wall -Wextra -o /oracle /src/oracle.c $(pkg-config --cflags --libs 
  && pkg-config --modversion glib-2.0 > /glib-version
 
 # Base image: fedora:rawhide, same digest as above.
-FROM fedora:rawhide@sha256:a9bab18d01cf2c2cf62f3e79c72623405bce14ac062995cc6651a3073c802e41
+FROM fedora:rawhide@sha256:78bb31de333664aa76c4bf54306791cd294c0bd4fbcfc4346e2286261de544c4
 RUN dnf -y install glib2 \
  && dnf -y upgrade glib2 \
  && dnf clean all
